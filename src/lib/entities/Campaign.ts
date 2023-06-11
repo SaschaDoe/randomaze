@@ -1,4 +1,4 @@
-import {Character} from "./Character";
+import {Character} from "./character/Character";
 import {IDGenerator} from "./IDGenerator";
 
 export class Campaign{

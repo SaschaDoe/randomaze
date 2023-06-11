@@ -6,4 +6,8 @@ export class RollResult{
         this.entry = entry;
         return this;
     }
+
+    getString() {
+        return this.entry.title;
+    }
 }

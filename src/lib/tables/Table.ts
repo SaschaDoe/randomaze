@@ -10,7 +10,8 @@ export class Table{
         this.entries = [];
     }
 
-    public roll(dice: Dice) {
+    public roll(dice?: Dice) {
+        if(dice === undefined) dice = new Dice(this.entries.length);
         let entry = this.entries[dice.roll()-1];
 
         return new RollResult().withEntry(entry);

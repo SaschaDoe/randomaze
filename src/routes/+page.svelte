@@ -1,7 +1,7 @@
 <script>
 
 import CharacterCard from "./CharacterCard.svelte";
-import {Character} from "$lib/entities/Character.ts";
+import {Character} from "$lib/entities/character/Character.ts";
 import {onMount} from "svelte";
 import {Campaign} from "$lib/entities/Campaign.ts";
 import {IDGenerator} from "$lib/entities/IDGenerator.ts";

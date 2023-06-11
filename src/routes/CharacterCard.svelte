@@ -1,5 +1,5 @@
 <script>
-    import {Character} from "$lib/entities/Character.ts";
+    import {Character} from "$lib/entities/character/Character.ts";
     import { createEventDispatcher } from 'svelte';
     import Modal from './Modal.svelte';
     let showModal = false;

@@ -1,9 +1,20 @@
 <script>
+    import Modal from "../Modal.svelte";
+
     export let table;
+    let result = null;
+    let showModal = false;
+
+    function roll(){
+        result = table.roll();
+        showModal = true;
+    }
 </script>
 
+<h1>{table.name}</h1>
+<button on:click={roll}>Roll</button>
+
 <table>
-    <caption>{table.name}</caption>
     <thead>
     <tr>
         <th>Index</th>
@@ -20,6 +31,13 @@
     </tbody>
 </table>
 
+{#if showModal}
+    <Modal on:close="{() => showModal = false}">
+        <p><strong>Rolled:</strong> {table.entries.indexOf(result.entry) + 1}</p>
+        <p><strong>Result:</strong> {result.entry.title}</p>
+    </Modal>
+{/if}
+
 <style>
     table {
         border-collapse: collapse;
@@ -27,7 +45,7 @@
         font-family: Arial, sans-serif;
     }
 
-    caption {
+    h1 {
         font-size: 1.5em;
         margin: 0.5em 0;
         font-weight: bold;
@@ -47,5 +65,20 @@
 
     tr:nth-child(even) {
         background-color: #f2f2f2;
+    }
+
+    button {
+        display: block;
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        font-size: 1em;
+        border: none;
+        color: white;
+        background-color: #333;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #555;
     }
 </style>
