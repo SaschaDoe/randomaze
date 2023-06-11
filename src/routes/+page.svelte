@@ -1,12 +1,12 @@
 <script>
 
 import CharacterCard from "./CharacterCard.svelte";
-import {Character} from "$lib/entities/character/Character.ts";
 import {onMount} from "svelte";
 import {Campaign} from "$lib/entities/Campaign.ts";
 import {IDGenerator} from "$lib/entities/IDGenerator.ts";
 import {loadCampaign, saveCampaign} from "$lib/persistence/IndexedDB.ts";
 import { campaignData } from "$lib/stores";
+import {CharacterCreator} from "$lib/entities/character/CharacterCreator.ts";
 
 let campaign = new Campaign();
 
@@ -16,7 +16,7 @@ onMount(async () => {
 });
 
 function addPartyMember() {
-    let partyMember = new Character();
+    let partyMember = CharacterCreator.create();
     campaign.party.push(partyMember);
     console.log("generated new party member"+partyMember.id);
     campaign = campaign; // force reactivity
@@ -34,7 +34,7 @@ function reset() {
 function deletePartyMember(event) {
     console.log("deleting party member "+event.detail);
     campaign.party = campaign.party.filter(p => p.id !== (event.detail));
-    campaign = {...campaign}; // trigger reactivity
+    campaign = {...campaign};
     onSave();
 }
 
@@ -83,3 +83,31 @@ async function onLoad() {
         {/each}
     </ul>
 </div>
+
+<style>
+
+    button {
+        padding: 10px 20px;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 10px;
+    }
+
+    .character-list {
+        margin: 20px 0;
+    }
+
+    .character-list ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .character-list li {
+        margin-bottom: 10px;
+    }
+
+
+</style>

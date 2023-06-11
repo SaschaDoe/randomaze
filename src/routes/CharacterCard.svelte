@@ -2,7 +2,10 @@
     import {Character} from "$lib/entities/character/Character.ts";
     import { createEventDispatcher } from 'svelte';
     import Modal from './Modal.svelte';
-    let showModal = false;
+    import ExtendedCharacterCard from "./ExtendedCharacterCard.svelte";
+
+    let showDeleteModal = false;
+    let showDetailsModal = false;
 
     export let character = new Character();
 
@@ -12,17 +15,49 @@
         console.log('deleteThisCharacter inside CharacterCard: '+character.id);
         dispatch('deletePartyMember', character.id);
     }
+
+    function closeDeleteModal() {
+        showDeleteModal = false;
+    }
+
+    function closeDetailsModal() {
+        showDetailsModal = false;
+    }
+
+    function openDetailsModal() {
+        showDetailsModal = true;
+    }
+
+    function openDeleteModal(e) {
+        e.stopPropagation();
+        showDeleteModal = true;
+    }
 </script>
-<h2>Character with id {character.id}</h2>
-<button class="delete-button" on:click={() => showModal = true}>Delete</button>
-{#if showModal}
-    <Modal on:close={() => showModal = false}>
-        <h2>Do you want Character {character.id} to delete?</h2>
-        <button on:click={() => { deleteThisCharacter(); showModal = false }}>Yes</button>
-        <button on:click={() => showModal = false}>No</button>
-    </Modal>
-{/if}
+
+<div class="character-card" >
+    <h2 on:click={openDetailsModal}>Character with id {character.id}</h2>
+    <button class="delete-button" on:click={openDeleteModal}>Delete</button>
+    {#if showDeleteModal}
+        <Modal on:close={closeDeleteModal}>
+            <h2>Do you want Character {character.id} to delete?</h2>
+            <button on:click={() => { deleteThisCharacter(); closeDeleteModal(); }}>Yes</button>
+            <button on:click={closeDeleteModal}>No</button>
+        </Modal>
+    {/if}
+    {#if showDetailsModal}
+        <Modal on:close={closeDetailsModal}>
+            <ExtendedCharacterCard {character}/>
+        </Modal>
+    {/if}
+</div>
 <style>
+    .character-card {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
+        min-width: 400px;
+    }
+
     .delete-button {
         background-color: red;
         color: white;
