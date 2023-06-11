@@ -5,7 +5,7 @@
     import {IDGenerator} from "$lib/entities/IDGenerator.ts";
     import {Campaign} from "$lib/entities/Campaign.ts";
 
-    let campaignDataText = ''; // Local variable to bind with textarea
+    let campaignDataText = '';
     let campaign = new Campaign();
 
     $: {
@@ -31,10 +31,10 @@
     }
 
     async function onSave() {
-        const campaignObject = JSON.parse(campaignDataText); // Parse JSON string to JavaScript object
-        const serializedCampaign = JSON.stringify(campaignObject); // Serialize the object to a string again for storage
+        const campaignObject = JSON.parse(campaignDataText);
+        const serializedCampaign = JSON.stringify(campaignObject);
         await saveCampaign(serializedCampaign);
-        campaignData.set(serializedCampaign); // Update the store
+        campaignData.set(serializedCampaign);
     }
 
     function copyToClipboard() {
@@ -68,20 +68,5 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         resize: vertical;
-    }
-
-    .save-button, .copy-button {
-        margin-top: 10px;
-        padding: 5px 10px;
-        font-size: 16px;
-        color: white;
-        background-color: #007BFF;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .save-button:hover, .copy-button:hover {
-        background-color: #0056b3;
     }
 </style>
