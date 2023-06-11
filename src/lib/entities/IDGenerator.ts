@@ -15,9 +15,11 @@ export class IDGenerator {
         return ++this.counter;
     }
 
+    public getCurrentId(): number {
+        return this.counter;
+    }
+
     public setId(id: number): void {
-        if (id > this.counter) {
-            this.counter = id;
-        }
+        this.counter = id;
     }
 }
