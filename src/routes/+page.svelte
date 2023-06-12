@@ -7,8 +7,32 @@ import {IDGenerator} from "$lib/entities/IDGenerator.ts";
 import {loadCampaign, saveCampaign} from "$lib/persistence/IndexedDB.ts";
 import { campaignData } from "$lib/stores";
 import {CharacterCreator} from "$lib/entities/character/CharacterCreator.ts";
+import Modal from "./Modal.svelte";
+import { tick } from 'svelte';
 
 let campaign = new Campaign();
+
+let isModalOpen = false;
+
+
+function openModal() {
+    isModalOpen = true;
+}
+
+function closeModal() {
+    isModalOpen = false;
+}
+
+
+
+function scrollToNewMember(id) {
+    tick().then(() => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+}
 
 onMount(async () => {
     console.log("mounted");
@@ -21,6 +45,8 @@ function addPartyMember() {
     console.log("generated new party member"+partyMember.id);
     campaign = campaign;
     onSave();
+    isModalOpen = false;
+    scrollToNewMember(partyMember.id);
 }
 
 
@@ -68,18 +94,24 @@ async function onLoad() {
     <meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<h1>Randomaze</h1>
+<div class="home-header">
+    <button class="reset-button" on:click={reset}>Reset</button>
+    <button class="add-button" on:click={openModal}><strong>+</strong></button>
+</div>
 
+{#if isModalOpen}
+    <Modal on:close={closeModal}>
+        <button on:click={addPartyMember}>Add Party Member</button>
+    </Modal>
+{/if}
 
-<button on:click={reset}>Reset</button>
-<button on:click={addPartyMember}>Generate Party Member</button>
 
 
 <div class="character-list">
     <h2>Characters</h2>
     <ul>
         {#each campaign.party as character}
-            <li>
+            <li id={character.id}>
                 <CharacterCard character={character} on:deletePartyMember={deletePartyMember}></CharacterCard>
             </li>
         {/each}
@@ -109,6 +141,23 @@ async function onLoad() {
 
     .character-list li {
         margin-bottom: 10px;
+    }
+
+    .home-header{
+        margin-top: 7px;
+        position: fixed;
+        background-color: white;
+        width: 100%;
+    }
+
+    .reset-button{
+        background-color: #ff0000;
+        color: #ffffff;
+    }
+
+    .add-button{
+        background-color: green;
+        color: #ffffff;
     }
 
 
