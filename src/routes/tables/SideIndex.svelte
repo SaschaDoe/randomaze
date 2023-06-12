@@ -89,17 +89,13 @@
 
     #table-of-contents {
         position: fixed;
-        top: 0;
+        top: 20px;
         left: 0;
         padding: 1rem;
         right: 1080px;
     }
 
-    :global(body) {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 10px;
-    }
+
 
 
     @media screen and (max-width: 1200px) {
