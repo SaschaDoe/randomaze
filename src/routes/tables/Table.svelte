@@ -1,5 +1,6 @@
 <script>
     import Modal from "../Modal.svelte";
+    import TableModal from "./TableModal.svelte";
 
     export let table;
     let result = null;
@@ -33,12 +34,7 @@
 
 {#if showModal}
     <Modal on:close="{() => showModal = false}">
-
-        {#each result.rolls as rolled, i}
-            <p>{rolled.table.title}: {rolled.getRolledIndex()} {rolled.entry.displayedText}</p>
-        {/each}
-        <p>Result: {result.string}</p>
-        <button on:click={() => roll()}>Roll Again</button>
+        <TableModal {result} {table} {roll} />
     </Modal>
 {/if}
 <style>
