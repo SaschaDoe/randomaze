@@ -75,6 +75,7 @@ async function onLoad() {
 
 
 <div class="character-list">
+    <h2>Characters</h2>
     <ul>
         {#each campaign.party as character}
             <li>

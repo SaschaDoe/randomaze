@@ -34,9 +34,14 @@
     }
 </script>
 
-<div class="character-card" >
-    <h2 on:click={openDetailsModal}>Character with id {character.id}</h2>
-    <button class="delete-button" on:click={openDeleteModal}>Delete</button>
+<div class="character-card">
+    <div class="header">
+        <h3 on:click={openDetailsModal}>Character with id {character.id}</h3>
+        <button class="delete-button" on:click={openDeleteModal}>Delete</button>
+    </div>
+    <div class="content" on:click={openDetailsModal}>
+        <p>Culture: {character.culture.name}</p>
+    </div>
     {#if showDeleteModal}
         <Modal on:close={closeDeleteModal}>
             <h2>Do you want Character {character.id} to delete?</h2>
@@ -50,12 +55,22 @@
         </Modal>
     {/if}
 </div>
+
 <style>
     .character-card {
         padding: 20px;
         border-radius: 10px;
         box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
         min-width: 400px;
+        display: flex;
+        flex-direction: column; /* Changed from row (default) to column */
+        align-items: stretch; /* Stretches the children to fit the width */
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .delete-button {

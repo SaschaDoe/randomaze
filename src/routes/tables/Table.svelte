@@ -35,6 +35,7 @@
     <Modal on:close="{() => showModal = false}">
         <p><strong>Rolled:</strong> {table.entries.indexOf(result.entry) + 1}</p>
         <p><strong>Result:</strong> {result.entry.title}</p>
+        <button on:click={roll}>Roll Again</button>  <!-- Added the on:click here -->
     </Modal>
 {/if}
 
