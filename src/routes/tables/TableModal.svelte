@@ -43,8 +43,8 @@
     .table-modal .roll-again-button, .table-modal .show-details-button {
         position: absolute;
         bottom: 10px;
-        padding: 10px;
-        font-size: 1.1rem;
+        padding: 6px 12px; /* Adjust the padding to make the buttons smaller */
+        font-size: 0.9rem; /* Adjust the font size to make the buttons smaller */
         background-color: #333;
         color: white;
         border: none;
