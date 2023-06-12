@@ -40,6 +40,7 @@
         <button class="delete-button" on:click={openDeleteModal}>Delete</button>
     </div>
     <div class="content" on:click={openDetailsModal}>
+        <p>{character.gender}</p>
         <p>Culture: {character.culture.name}</p>
     </div>
     {#if showDeleteModal}

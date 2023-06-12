@@ -1,5 +1,5 @@
 import {Table} from "../Table";
-import {Entry} from "../Entry";
+import {AfricanMaleNames} from "./AfricanMaleNameTable";
 
 export const AfricanFemaleNames =  [
     "Abatu", "Akanea", "Aktivi", "Alre-Go", "Alunga", "Amima", "Anakena", "Anekka-Ka", "Ariki", "Asmoa", "Ataranga",
@@ -12,7 +12,6 @@ export const AfricanFemaleNames =  [
 ];
 export class AfricanFemaleNameTable extends Table{
     constructor() {
-        super("African Female Names");
-        AfricanFemaleNames.forEach(name => this.entries.push(new Entry(name)));
+        super("African Female Names", AfricanMaleNames);
     }
 }

@@ -1,4 +1,3 @@
-import {Entry} from "../Entry";
 import {Table} from "../Table";
 
 export let CultureNames = [
@@ -8,10 +7,6 @@ export let CultureNames = [
 export class CultureNameTable extends Table{
 
     constructor() {
-        super("Culture Names");
-        for(let i = 0; i < CultureNames.length; i++){
-            let entry = new Entry(CultureNames[i]);
-            this.entries.push(entry);
-        }
+        super("Culture Names", CultureNames);
     }
 }

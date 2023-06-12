@@ -5,9 +5,13 @@ import {RollResult} from "./RollResult";
 export class Table{
     public readonly name: string;
     public readonly entries: Entry[];
-    constructor(name: string) {
+    constructor(name: string, entryTitles?: string[]) {
         this.name = name;
-        this.entries = [];
+        if(entryTitles !== undefined) {
+            this.entries = entryTitles.map(title => new Entry(title));
+        } else{
+            this.entries = [];
+        }
     }
 
     public roll(dice?: Dice) {
