@@ -1,5 +1,3 @@
-import {IDGenerator} from "../entities/IDGenerator";
-import {Campaign} from "../entities/Campaign";
 
 export class Localstorage{
     static saveCampaign(campaign){

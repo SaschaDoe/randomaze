@@ -88,15 +88,10 @@
     }
 
     #table-of-contents {
+        flex-basis: 20%;
         position: fixed;
-        top: 20px;
-        left: 0;
-        padding: 1rem;
-        right: 1080px;
+        width: 19%
     }
-
-
-
 
     @media screen and (max-width: 1200px) {
         #table-of-contents {

@@ -14,7 +14,7 @@
     {#if showDetails}
         <div class="roll-details">
             {#each result.rolls as rolled, i}
-                <p>{rolled.table.title}: {rolled.getRolledIndex()} {rolled.entry.displayedText}</p>
+                <p><strong>{rolled.table.title}</strong>: {rolled.getRolledIndex()} {rolled.entry.displayedText}</p>
             {/each}
         </div>
     {/if}
@@ -31,7 +31,8 @@
         padding: 1rem;
         border-radius: 1rem;
         box-shadow: 0 0 1rem black;
-        overflow-y: auto;
+        max-height: 450px;
+        min-height: 300px;
     }
 
     .table-modal .result-string {
@@ -65,5 +66,8 @@
         margin-top: 1rem;
         border-top: 1px solid #ddd;
         padding-top: 1rem;
+        overflow-y: auto;
+        height: 200px;
+
     }
 </style>
