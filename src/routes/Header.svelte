@@ -1,8 +1,8 @@
 <header>
     <nav class="header">
         <a href="/">Home</a>
-        <a href="/export">Export Import</a>
         <a href="/tables">Show all Tables</a>
+        <a href="/export">I/E</a>
         <a href="/about">About</a>
     </nav>
 </header>
