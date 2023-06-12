@@ -1,5 +1,4 @@
 <script>
-
     import {currentHeading} from "../store.ts";
     import {AllTables} from "$lib/tables/AllTables.ts";
 
@@ -7,6 +6,7 @@
         let category = AllTables[index];
         category.isOpen = !category.isOpen;
         AllTables[index] = category;
+        console.log("Category: "+ category.name + " is: " + category.isOpen);
     }
 </script>
 
@@ -20,7 +20,7 @@
                     <a on:click={() => toggle(index)} href="#{category.name}" class:active={$currentHeading === category.name}>
                         {category.name}
                     </a>
-                    <!--
+
                    {#if category.isOpen}
                        <ul>
                            {#each category.tables as table}
@@ -30,7 +30,7 @@
                            {/each}
                        </ul>
                    {/if}
-                      -->
+
                </li>
 
             {/each}
@@ -66,7 +66,7 @@
     /* Add media queries here */
     @media screen and (max-width: 1200px) {
         #table-of-contents {
-            position: sticky;
+            position: fixed;
             top: 0;
             right: auto;
             width: 100%;
