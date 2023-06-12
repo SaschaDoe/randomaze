@@ -4,10 +4,12 @@ const DB_NAME = 'myAppDatabase';
 const STORE_NAME = 'campaigns';
 
 export async function saveCampaign(campaign) {
-    const db = await openDB(DB_NAME, 1, {
+    console.log('try upgrade database');
+    const db = await openDB(DB_NAME, 3, {
         upgrade(db) {
-            // Create the object store if it doesn't exist yet
+            console.log('upgrade database');
             if (!db.objectStoreNames.contains(STORE_NAME)) {
+                console.log('no store found');
                 db.createObjectStore(STORE_NAME);
                 console.log('store created');
             }else{
@@ -24,7 +26,7 @@ export async function saveCampaign(campaign) {
 
 export async function loadCampaign() {
     console.log('loadCampaign');
-    const db = await openDB(DB_NAME, 1);
+    const db = await openDB(DB_NAME, 3);
     console.log('db', db);
     return await db.get(STORE_NAME, 'currentCampaign');
 }

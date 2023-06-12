@@ -19,7 +19,7 @@ function addPartyMember() {
     let partyMember = CharacterCreator.create();
     campaign.party.push(partyMember);
     console.log("generated new party member"+partyMember.id);
-    campaign = campaign; // force reactivity
+    campaign = campaign;
     onSave();
 }
 
@@ -42,6 +42,7 @@ async function onSave() {
     console.log("onSave");
     campaign.lastId = IDGenerator.getInstance().getCurrentId();
     const serializedCampaign = JSON.stringify(campaign);
+    console.log("saving campaign: "+serializedCampaign);
     await saveCampaign(serializedCampaign);
     campaignData.set(serializedCampaign);
 }
