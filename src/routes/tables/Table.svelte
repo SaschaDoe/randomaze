@@ -1,6 +1,7 @@
 <script>
     import Modal from "../Modal.svelte";
     import TableModal from "./TableModal.svelte";
+    import {currentHeading} from "../store.ts";
 
     export let table;
     let result = null;
@@ -10,9 +11,21 @@
         result = table.roll();
         showModal = true;
     }
+
+    function observe(node) {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    console.log("observed: "+ entry.target.id);
+                    currentHeading.set(entry.target);
+                }
+            });
+        });
+        observer.observe(node);
+    }
 </script>
 
-<h1>{table.title}</h1>
+<h1 id="{table.title}" use:observe>{table.title}</h1>
 <button on:click={() => roll()}>Roll</button>
 
 <table>
