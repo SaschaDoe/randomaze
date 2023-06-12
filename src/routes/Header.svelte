@@ -8,12 +8,28 @@
 </header>
 
 <style>
-    .header a {
-        margin-right: 20px;   /* add space to the right of each link */
-        text-decoration: none; /* remove underline */
-        color: #333;          /* make links dark grey */
+    body {
+        margin: 0;
+        padding: 0;
     }
+
+    .header{
+        top: 0;
+        padding-top: 10px;
+        position: fixed;
+        z-index: 100;
+        width: 100%;
+        height: 30px;
+        background-color: white;
+    }
+
+    .header a {
+        margin-right: 20px;
+        text-decoration: none;
+        color: #333;
+    }
+
     .header a:hover {
-        color: #007BFF;       /* make links turn blue when hovered over */
+        color: #007BFF;
     }
 </style>
