@@ -1,5 +1,4 @@
-import {Table} from "../Table";
-import {AfricanMaleNames} from "./AfricanMaleNameTable";
+import {Table} from "../../Table";
 
 export const AfricanFemaleNames =  [
     "Abatu", "Akanea", "Aktivi", "Alre-Go", "Alunga", "Amima", "Anakena", "Anekka-Ka", "Ariki", "Asmoa", "Ataranga",
@@ -12,6 +11,7 @@ export const AfricanFemaleNames =  [
 ];
 export class AfricanFemaleNameTable extends Table{
     constructor() {
-        super("African Female Names", AfricanMaleNames);
+        super("African Female Names");
+        this.ArrayAsTableEntries(AfricanFemaleNames);
     }
 }

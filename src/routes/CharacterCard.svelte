@@ -36,12 +36,12 @@
 
 <div class="character-card">
     <div class="header">
-        <h3 on:click={openDetailsModal}>Character with id {character.id}</h3>
+        <h3 on:click={openDetailsModal}>{character.id} : {character.name}</h3>
         <button class="delete-button" on:click={openDeleteModal}>Delete</button>
     </div>
     <div class="content" on:click={openDetailsModal}>
         <p>{character.gender}</p>
-        <p>Culture: {character.culture.name}</p>
+        <p>{character.culture.name}</p>
     </div>
     {#if showDeleteModal}
         <Modal on:close={closeDeleteModal}>

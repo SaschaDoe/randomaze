@@ -1,10 +1,9 @@
-export class Dice{
-    public readonly sides: number;
-    constructor(sides?: number) {
-        if(sides === undefined) sides = 6;
-        this.sides = sides;
+export class Dice {
+    roll(max: number) {
+        return Math.floor(Math.random() * max);
     }
-    public roll(): number {
-        return Math.floor(Math.random() * this.sides) + 1;
+
+    rollFloat(max: number) {
+        return Math.random() * max;
     }
 }

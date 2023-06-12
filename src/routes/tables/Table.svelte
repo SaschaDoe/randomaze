@@ -11,8 +11,8 @@
     }
 </script>
 
-<h1>{table.name}</h1>
-<button on:click={roll}>Roll</button>
+<h1>{table.title}</h1>
+<button on:click={() => roll()}>Roll</button>
 
 <table>
     <thead>
@@ -22,10 +22,10 @@
     </tr>
     </thead>
     <tbody>
-    {#each table.entries as entry, i (entry.title)}
+    {#each table.entries as entry, i}
         <tr>
             <td>{i+1}</td>
-            <td>{entry.title}</td>
+            <td>{entry.displayedText}</td>
         </tr>
     {/each}
     </tbody>
@@ -33,12 +33,14 @@
 
 {#if showModal}
     <Modal on:close="{() => showModal = false}">
-        <p><strong>Rolled:</strong> {table.entries.indexOf(result.entry) + 1}</p>
-        <p><strong>Result:</strong> {result.entry.title}</p>
-        <button on:click={roll}>Roll Again</button>  <!-- Added the on:click here -->
+
+        {#each result.rolls as rolled, i}
+            <p>{rolled.table.title}: {rolled.getRolledIndex()} {rolled.entry.displayedText}</p>
+        {/each}
+        <p>Result: {result.string}</p>
+        <button on:click={() => roll()}>Roll Again</button>
     </Modal>
 {/if}
-
 <style>
     table {
         border-collapse: collapse;

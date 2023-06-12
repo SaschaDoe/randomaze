@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export const AfricanMaleNames = [
     "Abioye", "Adisa", "Akintunde", "Akinwande", "Babajide", "Bankole", "Chibuike", "Chijioke", "Chike", "Chima",
@@ -13,7 +13,8 @@ export const AfricanMaleNames = [
 
 export class AfricanMaleNameTable extends Table{
     constructor() {
-        super("African Male Names", AfricanMaleNames);
+        super("African Male Names");
+        this.ArrayAsTableEntries(AfricanMaleNames);
 
     }
 }

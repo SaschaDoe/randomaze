@@ -4,8 +4,8 @@ import {Dice} from "../../tables/Dice";
 
 export class CultureCreator{
     public static create(dice? :Dice){
-        let culture = new Culture();
-        culture.name = new CultureNameTable().roll(dice).getString();
+        let name = new CultureNameTable().roll(dice).string
+        let culture = new Culture(name);
         return culture;
     }
 }
