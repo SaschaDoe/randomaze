@@ -8,7 +8,8 @@ import {FakeDice} from "../../tables/FakeDice";
 describe('nameCreator', () => {
     it('should give Abioye when given male african with 0', function () {
         let femaleGender = Genders[0];
-        let africanCulture = new Culture(CultureNames[0]);
+        let africanCulture = new Culture();
+        africanCulture.name = CultureNames[0];
         let nameCreator = new NameCreator()
             .withGender(femaleGender)
             .withCulture(africanCulture);
@@ -21,7 +22,8 @@ describe('nameCreator', () => {
 
     it('should give Gutda when given female german with 0', function () {
         let maleGender = Genders[1];
-        let germanCulture = new Culture(CultureNames[1]);
+        let germanCulture = new Culture();
+        germanCulture.name = CultureNames[1];
         let nameCreator = new NameCreator()
             .withGender(maleGender)
             .withCulture(germanCulture);

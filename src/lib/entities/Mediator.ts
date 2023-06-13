@@ -2,10 +2,12 @@ import type {CampaignHandler} from "./CampaignHandler";
 import {Campaign} from "./Campaign";
 import {CultureCreator} from "./culture/CultureCreator";
 import {CharacterCreator} from "./character/CharacterCreator";
+import {GalaxyCreator} from "./galaxy/GalaxyCreator";
 
 export enum HandlerType{
     CharacterCreator,
     CultureCreator,
+    GalaxyCreator,
 }
 
 export class Mediator {
@@ -17,6 +19,7 @@ export class Mediator {
         this.handlers = {
             [HandlerType.CharacterCreator]: new CharacterCreator(this.campaign, this),
             [HandlerType.CultureCreator]: new CultureCreator(this.campaign, this),
+            [HandlerType.GalaxyCreator]: new GalaxyCreator(this.campaign, this),
         };
     }
 
