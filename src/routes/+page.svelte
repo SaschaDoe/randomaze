@@ -63,6 +63,7 @@ function addEntity(id){
 function reset() {
     console.log("resetting");
     campaign = new Campaign();
+    mediator = new Mediator(campaign);
     IDGenerator.getInstance().setId(0)
     onSave();
 }
@@ -110,6 +111,15 @@ async function onLoad() {
     }
 }
 
+let showResetModal = false;
+function closeResetModal() {
+    showResetModal = false;
+}
+
+function openResetModal(e) {
+    e.stopPropagation();
+    showResetModal = true;
+}
 
 </script>
 
@@ -119,7 +129,16 @@ async function onLoad() {
 </svelte:head>
 
 <div class="home-header">
-    <button class="reset-button" on:click={reset}>Reset</button>
+
+    <button class="reset-button" on:click={openResetModal}>Reset</button>
+    {#if showResetModal}
+        <Modal on:close={closeResetModal}>
+            <h2>Do you want to reset all?</h2>
+            <button on:click={() => { reset(); closeResetModal(); }}>Yes</button>
+            <button on:click={closeResetModal}>No</button>
+        </Modal>
+    {/if}
+
     <button class="add-button" on:click={openModal}><strong>+</strong></button>
 </div>
 
