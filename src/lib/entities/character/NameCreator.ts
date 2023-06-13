@@ -1,4 +1,4 @@
-import {Culture} from "./Culture";
+import {Culture} from "../culture/Culture";
 import {Dice} from "../../tables/Dice";
 import {Table} from "../../tables/Table";
 import {GermanMaleFirstnameTable} from "../../tables/name/german/GermanMaleFirstnameTable";

@@ -6,11 +6,12 @@ import {Campaign} from "$lib/entities/Campaign.ts";
 import {IDGenerator} from "$lib/entities/IDGenerator.ts";
 import {loadCampaign, saveCampaign} from "$lib/persistence/IndexedDB.ts";
 import { campaignData } from "$lib/stores";
-import {CharacterCreator} from "$lib/entities/character/CharacterCreator.ts";
 import Modal from "./Modal.svelte";
 import { tick } from 'svelte';
+import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
 
 let campaign = new Campaign();
+let mediator = new Mediator(campaign);
 
 let isModalOpen = false;
 
@@ -40,13 +41,16 @@ onMount(async () => {
 });
 
 function addPartyMember() {
-    let partyMember = CharacterCreator.create();
-    campaign.party.push(partyMember);
-    console.log("generated new party member"+partyMember.id);
+    let partyMemberId = mediator.getHandler(HandlerType.CharacterCreator).handle();
+    addEntity(partyMemberId);
+}
+
+function addEntity(id){
+    console.log("generated new entity with id "+id);
     campaign = campaign;
     onSave();
     isModalOpen = false;
-    scrollToNewMember(partyMember.id);
+    scrollToNewMember(id);
 }
 
 
@@ -78,6 +82,7 @@ async function onLoad() {
     const serializedCampaign = await loadCampaign();
     if (serializedCampaign) {
         campaign = JSON.parse(serializedCampaign);
+        mediator = new Mediator(campaign);
         IDGenerator.getInstance().setId(campaign.lastId);
         campaignData.set(serializedCampaign);
         console.log("loaded campaign");
@@ -108,7 +113,7 @@ async function onLoad() {
 
 
 <div class="character-list">
-    <h2>Characters</h2>
+    <h2 id="Characters">Characters</h2>
     <ul>
         {#each campaign.party as character}
             <li id={character.id}>
@@ -116,6 +121,16 @@ async function onLoad() {
             </li>
         {/each}
     </ul>
+    <h2 id="Cultures">Cultures</h2>
+    <!--
+    <ul>
+        {#each campaign.cultures as culture}
+            <li id={culture.id}>
+                <CultureCard culture={culture} on:deletePartyMember={deleteCulture}></CultureCard>
+            </li>
+        {/each}
+    </ul>
+    -->
 </div>
 
 <style>

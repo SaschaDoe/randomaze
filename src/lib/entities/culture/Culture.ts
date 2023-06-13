@@ -2,8 +2,7 @@ import {Entity} from "../Entity";
 
 export class Culture extends Entity{
     public name: string;
-    constructor(name: string) {
+    constructor() {
         super();
-        this.name = name;
     }
 }

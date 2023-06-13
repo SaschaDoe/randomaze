@@ -1,7 +1,7 @@
 import {describe} from "vitest";
 import {NameCreator} from "./NameCreator";
 import {Genders} from "../../tables/character/GenderTable";
-import {Culture} from "./Culture";
+import {Culture} from "../culture/Culture";
 import {CultureNames} from "../../tables/character/CultureNameTable";
 import {FakeDice} from "../../tables/FakeDice";
 

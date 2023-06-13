@@ -1,7 +1,7 @@
 import {Table} from "../../Table";
 
 export const GermanFemaleFirstnameFirst =  [
-    "Gut", "Sieg", "Wald", "Ott", "In", "Ger", "Wal", "Ur", "Wil", "Brun"
+    "Gut", "Sieg", "Wald", "Ott", "In", "Ger", "Wal", "Ur", "Wil", "Brun", "Il"
 ];
 
 export class GermanFemaleFirstnameFirstTable extends Table{

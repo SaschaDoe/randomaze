@@ -1,31 +1,31 @@
-import {describe, it, expect} from "vitest";
+import {describe, expect, it} from "vitest";
 import {FakeDice} from "../../tables/FakeDice";
-import {CharacterCreator} from "./CharacterCreator";
 import {CultureNames} from "../../tables/character/CultureNameTable";
 import {Genders} from "../../tables/character/GenderTable";
-
+import {HandlerType, Mediator} from "../Mediator";
+import {Campaign} from "../Campaign";
+import {AfricanMaleNames} from "../../tables/name/african/AfricanMaleNameTable";
+import {GermanFemaleFirstnameSingle} from "../../tables/name/german/GermanFemaleFirstnameSingleTable";
 describe('character creator', () => {
-    it('should create a character with culture', () => {
-        let character = CharacterCreator.create(new FakeDice().withRollResult(0));
+    const createCharacter = (rollResult: number | string) => {
+        let campaign = new Campaign();
+        let mediator = new Mediator(campaign);
+        let characterCreator = mediator.getHandler(HandlerType.CharacterCreator);
+        characterCreator.handle(new FakeDice().withRollResult(Number(rollResult)));
+        return campaign.party[0];
+    };
 
-        expect(character.culture.name).toBe(CultureNames[0]);
-    });
-
-    it('should create a character with gender', () => {
-        let character = CharacterCreator.create(new FakeDice().withRollResult(0));
-
-        expect(character.gender).toBe(Genders[0]);
-    });
-
-    it('should create a character with name Abioye when rolled 1', () => {
-        let character = CharacterCreator.create(new FakeDice().withRollResult(0));
-
-        expect(character.name).toBe("Abioye");
-    });
-
-    it('should create a character with name Ilse when rolled 2', () => {
-        let character = CharacterCreator.create(new FakeDice().withRollResult(1));
-
-        expect(character.name).toBe("Ilse");
-    });
+    it.each([
+        [0, CultureNames[0], Genders[0], AfricanMaleNames[0]],
+        [1, CultureNames[1], Genders[1], GermanFemaleFirstnameSingle[1]]
+    ])('should create a character with correct culture, gender, and name given roll %i',
+        (rollResult,
+         expectedCulture,
+         expectedGender,
+         expectedName) => {
+            let character = createCharacter(rollResult);
+            expect(character.culture.name).toBe(expectedCulture);
+            expect(character.gender).toBe(expectedGender);
+            expect(character.name).toBe(expectedName);
+        });
 });

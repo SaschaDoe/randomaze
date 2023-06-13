@@ -3,6 +3,7 @@ import {AddTableEntry} from "../../AddTableEntry";
 import {GermanFemaleFirstnameSecondTable} from "./GermanFemaleFirstnameSecondTable";
 import {GermanFemaleFirstnameFirstTable} from "./GermanFemaleFirstnameFirstTable";
 import {DisplayedTextEntry} from "../../DisplayedTextEntry";
+import {GermanFemaleFirstnameSingleTable} from "./GermanFemaleFirstnameSingleTable";
 
 export class GermanFemaleFirstnameTable extends Table {
     constructor() {
@@ -11,9 +12,8 @@ export class GermanFemaleFirstnameTable extends Table {
             new AddTableEntry("{German Female Firstname Part 1} + {German Female Firstname Part 2}")
                 .addTable(new GermanFemaleFirstnameFirstTable())
                 .addTable(new GermanFemaleFirstnameSecondTable()),
-            new DisplayedTextEntry("Ilse"),
-            new DisplayedTextEntry("Ingrid"),
-            new DisplayedTextEntry("Petra"),
+            new AddTableEntry("{German Female Firstname Part 1}")
+                .addTable(new GermanFemaleFirstnameSingleTable())
         ];
 
     }
