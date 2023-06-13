@@ -3,6 +3,7 @@
     import { createEventDispatcher } from 'svelte';
     import Modal from './Modal.svelte';
     import ExtendedCharacterCard from "./ExtendedCharacterCard.svelte";
+    import ExtendedGalaxyCard from "./ExtendedGalaxyCard.svelte";
 
     let showDeleteModal = false;
     let showDetailsModal = false;
@@ -70,6 +71,9 @@
             <!-- You can use a dynamic component here based on the type -->
             {#if type === 'character'}
                 <ExtendedCharacterCard character={entity}/>
+            {/if}
+            {#if type === 'galaxy'}
+                <ExtendedGalaxyCard galaxy={entity}/>
             {/if}
             <!-- Add additional conditions for other types here -->
         </Modal>

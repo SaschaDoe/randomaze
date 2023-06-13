@@ -1,11 +1,28 @@
 <script>
-    export let campaign;
+    import {Campaign, getEntityTypes} from "$lib/entities/Campaign.ts";
+    import { onMount } from 'svelte';
 
+    export let campaign = new Campaign();
+    $: entityTypes = getEntityTypes(campaign);
     let isSideIndexOpen = false;
 
     function toggleSideIndex() {
         isSideIndexOpen = !isSideIndexOpen;
     }
+
+    onMount(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1200) {
+                isSideIndexOpen = false;
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    });
 </script>
 
 <div class="container">
@@ -16,78 +33,59 @@
             </button>
             {#if isSideIndexOpen}
                 <ul>
-                    {#if campaign.party.length > 0}
-                        <li>
-                            <a href="#Characters">Characters</a>
-                            <ul>
-                                {#each campaign.party as character}
-                                    <li>
-                                        <a href="#{character.id}">{character.name}</a>
-                                    </li>
-                                {/each}
-                            </ul>
-                        </li>
-                    {/if}
-                    {#if campaign.cultures.length > 0}
-                        <li>
-                            <a href="#Cultures">Cultures</a>
-                            <ul>
-                                {#each campaign.cultures as culture}
-                                    <li>
-                                        <a href="#{culture.id}">{culture.name}</a>
-                                    </li>
-                                {/each}
-                            </ul>
-                        </li>
-                    {/if}
+                    {#each entityTypes as entityType}
+                        {#if campaign[entityType].length > 0}
+                            <li>
+                                <a href="#{entityType}">{entityType}</a>
+                                <ul>
+                                    {#each campaign[entityType] as entity}
+                                        <li>
+                                            <a href="#{entity.id}">{entity.name}</a>
+                                        </li>
+                                    {/each}
+                                </ul>
+                            </li>
+                        {/if}
+                    {/each}
                 </ul>
             {/if}
         </div>
         <div class="widescreen">
             <ul>
-                {#if campaign.party.length > 0}
-                    <li>
-                        <a href="#Characters">Characters</a>
-                        <ul>
-                            {#each campaign.party as character}
-                                <li>
-                                    <a href="#{character.id}">{character.name}</a>
-                                </li>
-                            {/each}
-                        </ul>
-                    </li>
-                {/if}
-                {#if campaign.cultures.length > 0}
-                    <li>
-                        <a href="#Cultures">Cultures</a>
-                        <ul>
-                            {#each campaign.cultures as culture}
-                                <li>
-                                    <a href="#{culture.id}">{culture.name}</a>
-                                </li>
-                            {/each}
-                        </ul>
-                    </li>
-                {/if}
+                {#each entityTypes as entityType}
+                    {#if campaign[entityType].length > 0}
+                        <li>
+                            <a href="#{entityType}">{entityType}</a>
+                            <ul>
+                                {#each campaign[entityType] as entity}
+                                    <li>
+                                        <a href="#{entity.id}">{entity.name}</a>
+                                    </li>
+                                {/each}
+                            </ul>
+                        </li>
+                    {/if}
+                {/each}
             </ul>
         </div>
     </div>
 </div>
 
 <style>
-    .container{
+    .container {
         margin-top: 50px;
     }
+
     a {
         color: black;
     }
 
-    .widescreen{
-        display: block;
+    .widescreen {
+        display: none;
     }
 
-    .small-screen{
-        display: none;
+    .small-screen {
+        display: block;
     }
 
     #entity-index {
@@ -111,12 +109,22 @@
             padding-top: 3rem;
         }
 
-        .widescreen{
+        .widescreen {
             display: none;
         }
 
-        .small-screen{
+        .small-screen {
             display: block;
+        }
+    }
+
+    @media screen and (min-width: 1200px) {
+        .widescreen {
+            display: block;
+        }
+
+        .small-screen {
+            display: none;
         }
     }
 </style>

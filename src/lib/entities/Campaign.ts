@@ -15,4 +15,10 @@ export class Campaign{
         this.lastId = 0;
     }
 
+
+
+}
+
+export function getEntityTypes(campaign: Campaign){
+    return Object.keys(campaign).filter(key => Array.isArray(campaign[key]));
 }

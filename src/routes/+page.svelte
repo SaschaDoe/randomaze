@@ -52,6 +52,11 @@ function addCulture() {
     addEntity(cultureId);
 }
 
+function addGalaxy() {
+    let galaxyId = mediator.getHandler(HandlerType.GalaxyCreator).handle();
+    addEntity(galaxyId);
+}
+
 function addEntity(id){
     console.log("generated new entity with id "+id);
     campaign = campaign;
@@ -145,12 +150,11 @@ function openResetModal(e) {
         <button class="add-button" on:click={openModal}><strong>+</strong></button>
     </div>
     <div class="entities-container">
-
-
         {#if isModalOpen}
             <Modal on:close={closeModal}>
                 <button on:click={addPartyMember}>Add Party Member</button>
                 <button on:click={addCulture}>Add Culture</button>
+                <button on:click={addGalaxy}>Add Galaxy</button>
             </Modal>
         {/if}
 
@@ -173,6 +177,16 @@ function openResetModal(e) {
                     {#each campaign.cultures as culture}
                         <li id={culture.id}>
                             <EntityCard entity={culture} type="culture" on:deleteEntity={deleteEntity} />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+            {#if campaign.galaxies.length > 0}
+                <h2 id="Galaxies">Galaxies</h2>
+                <ul>
+                    {#each campaign.galaxies as galaxy}
+                        <li id={galaxy.id}>
+                            <EntityCard entity={galaxy} type="galaxy" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
                         </li>
                     {/each}
                 </ul>
