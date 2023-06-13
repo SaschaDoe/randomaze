@@ -133,8 +133,6 @@ async function onLoad() {
     </Modal>
 {/if}
 
-
-
 <div class="character-list">
     <h2 id="Characters">Characters</h2>
     <ul>
@@ -144,19 +142,16 @@ async function onLoad() {
             </li>
         {/each}
 
-
-
     </ul>
     <h2 id="Cultures">Cultures</h2>
-    <!--
     <ul>
         {#each campaign.cultures as culture}
             <li id={culture.id}>
-                 <EntityCard {culture} type="culture" on:deleteEntity={deleteEntity} />
+                 <EntityCard entity={culture} type="culture" on:deleteEntity={deleteEntity} />
             </li>
         {/each}
     </ul>
-    -->
+
 </div>
 
 <style>

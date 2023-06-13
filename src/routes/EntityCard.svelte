@@ -72,8 +72,8 @@
         box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
         min-width: 400px;
         display: flex;
-        flex-direction: column; /* Changed from row (default) to column */
-        align-items: stretch; /* Stretches the children to fit the width */
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .header {
