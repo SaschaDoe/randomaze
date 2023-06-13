@@ -8,6 +8,7 @@ import Modal from "./Modal.svelte";
 import { tick } from 'svelte';
 import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
 import EntityCard from "./EntityCard.svelte";
+import EntitySideIndex from "./EntitySideIndex.svelte";
 
 let campaign = new Campaign();
 let mediator = new Mediator(campaign);
@@ -128,49 +129,80 @@ function openResetModal(e) {
     <meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<div class="home-header">
+<div class="main-container">
+    <EntitySideIndex campaign={campaign}></EntitySideIndex>
+    <div class="home-header">
 
-    <button class="reset-button" on:click={openResetModal}>Reset</button>
-    {#if showResetModal}
-        <Modal on:close={closeResetModal}>
-            <h2>Do you want to reset all?</h2>
-            <button on:click={() => { reset(); closeResetModal(); }}>Yes</button>
-            <button on:click={closeResetModal}>No</button>
-        </Modal>
-    {/if}
+        <button class="reset-button" on:click={openResetModal}>Reset</button>
+        {#if showResetModal}
+            <Modal on:close={closeResetModal}>
+                <h2>Do you want to reset all?</h2>
+                <button on:click={() => { reset(); closeResetModal(); }}>Yes</button>
+                <button on:click={closeResetModal}>No</button>
+            </Modal>
+        {/if}
 
-    <button class="add-button" on:click={openModal}><strong>+</strong></button>
-</div>
+        <button class="add-button" on:click={openModal}><strong>+</strong></button>
+    </div>
+    <div class="entities-container">
 
-{#if isModalOpen}
-    <Modal on:close={closeModal}>
-        <button on:click={addPartyMember}>Add Party Member</button>
-        <button on:click={addCulture}>Add Culture</button>
-    </Modal>
-{/if}
 
-<div class="character-list">
-    <h2 id="Characters">Characters</h2>
-    <ul>
-        {#each campaign.party as character}
-            <li id={character.id}>
-                <EntityCard entity={character} type="character" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
-            </li>
-        {/each}
+        {#if isModalOpen}
+            <Modal on:close={closeModal}>
+                <button on:click={addPartyMember}>Add Party Member</button>
+                <button on:click={addCulture}>Add Culture</button>
+            </Modal>
+        {/if}
 
-    </ul>
-    <h2 id="Cultures">Cultures</h2>
-    <ul>
-        {#each campaign.cultures as culture}
-            <li id={culture.id}>
-                 <EntityCard entity={culture} type="culture" on:deleteEntity={deleteEntity} />
-            </li>
-        {/each}
-    </ul>
+        <div class="character-list">
+            {#if campaign.party.length > 0}
+                <h2 id="Characters">Characters</h2>
+                <h2 id="Party">Party</h2>
+                <ul>
+                    {#each campaign.party as character}
+                        <li id={character.id}>
+                            <EntityCard entity={character} type="character" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+            {#if campaign.cultures.length > 0}
+                <h2 id="Cultures">Cultures</h2>
+                <ul>
 
+                    {#each campaign.cultures as culture}
+                        <li id={culture.id}>
+                            <EntityCard entity={culture} type="culture" on:deleteEntity={deleteEntity} />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+        </div>
+    </div>
 </div>
 
 <style>
+    .main-container {
+        display: flex;
+        align-items: start; /* aligns items to start of the main axis */
+        justify-content: space-between; /* provides space between flex items */
+        gap: 1rem; /* provides gap between flex items */
+
+    }
+
+    .entities-container {
+        flex-basis: 80%; /* sets initial size of the entities-container */
+        position: relative; /* sets the positioning context for its children */
+    }
+
+    .home-header{
+        position: fixed; /* makes the header stick to the top of the entities-container */
+        margin-top: 7px;
+        width: 100%;
+        background-color: white;
+        z-index: 1; /* ensures the header is displayed above other content */
+    }
+
 
     button {
         padding: 10px 20px;
@@ -195,12 +227,7 @@ function openResetModal(e) {
         margin-bottom: 10px;
     }
 
-    .home-header{
-        margin-top: 7px;
-        position: fixed;
-        background-color: white;
-        width: 100%;
-    }
+
 
     .reset-button{
         background-color: #ff0000;
