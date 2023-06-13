@@ -32,6 +32,10 @@ function scrollToNewMember(id) {
     });
 }
 
+function scrollToEntity(event) {
+    scrollToNewMember(event.detail);
+}
+
 onMount(async () => {
     console.log("mounted");
     await onLoad();
@@ -60,13 +64,6 @@ function reset() {
     console.log("resetting");
     campaign = new Campaign();
     IDGenerator.getInstance().setId(0)
-    onSave();
-}
-
-function deletePartyMember(event) {
-    console.log("deleting party member "+event.detail);
-    campaign.party = campaign.party.filter(p => p.id !== (event.detail));
-    campaign = {...campaign};
     onSave();
 }
 
@@ -138,7 +135,7 @@ async function onLoad() {
     <ul>
         {#each campaign.party as character}
             <li id={character.id}>
-                <EntityCard entity={character} type="character" on:deleteEntity={deleteEntity} />
+                <EntityCard entity={character} type="character" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
             </li>
         {/each}
 

@@ -33,6 +33,17 @@
         e.stopPropagation();
         showDeleteModal = true;
     }
+
+    function scrollToCulture(e) {
+        e.stopPropagation();
+        scrollToEntity(entity.culture.id);
+    }
+
+    function scrollToEntity(id){
+        dispatch('scrollToEntity', id);
+    }
+
+
 </script>
 
 <div class="card">
@@ -43,7 +54,7 @@
     <div class="content" on:click={openDetailsModal}>
         {#if type === 'character'}
             <p>{entity.gender}</p>
-            <p>{entity.culture.name}</p>
+            <a on:click={scrollToCulture}>{entity.culture.id}: {entity.culture.name}</a>
         {/if}
         <!-- Add additional conditions for other types here -->
     </div>
@@ -89,5 +100,14 @@
         border-radius: 5px;
         padding: 5px;
         margin: 5px;
+    }
+
+    .content a {
+        color: #007bff;
+        cursor: pointer;
+    }
+
+    .content a:hover {
+        color: #0056b3;
     }
 </style>
