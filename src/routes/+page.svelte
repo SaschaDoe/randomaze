@@ -1,6 +1,4 @@
 <script>
-
-import CharacterCard from "./CharacterCard.svelte";
 import {onMount} from "svelte";
 import {Campaign} from "$lib/entities/Campaign.ts";
 import {IDGenerator} from "$lib/entities/IDGenerator.ts";
@@ -9,6 +7,7 @@ import { campaignData } from "$lib/stores";
 import Modal from "./Modal.svelte";
 import { tick } from 'svelte';
 import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
+import EntityCard from "./EntityCard.svelte";
 
 let campaign = new Campaign();
 let mediator = new Mediator(campaign);
@@ -23,8 +22,6 @@ function openModal() {
 function closeModal() {
     isModalOpen = false;
 }
-
-
 
 function scrollToNewMember(id) {
     tick().then(() => {
@@ -43,6 +40,11 @@ onMount(async () => {
 function addPartyMember() {
     let partyMemberId = mediator.getHandler(HandlerType.CharacterCreator).handle();
     addEntity(partyMemberId);
+}
+
+function addCulture() {
+    let cultureId = mediator.getHandler(HandlerType.CultureCreator).handle();
+    addEntity(cultureId);
 }
 
 function addEntity(id){
@@ -64,6 +66,26 @@ function reset() {
 function deletePartyMember(event) {
     console.log("deleting party member "+event.detail);
     campaign.party = campaign.party.filter(p => p.id !== (event.detail));
+    campaign = {...campaign};
+    onSave();
+}
+
+function deleteEntity(event) {
+    const { id, type } = event.detail;
+    console.log(`Deleting ${type} with id ${id}`);
+
+    switch (type) {
+        case 'character':
+            campaign.party = campaign.party.filter(p => p.id !== id);
+            break;
+        case 'culture':
+            campaign.cultures = campaign.cultures.filter(c => c.id !== id);
+            break;
+        // Add additional cases for other types here
+        default:
+            console.error(`Unknown entity type: ${type}`);
+    }
+
     campaign = {...campaign};
     onSave();
 }
@@ -107,6 +129,7 @@ async function onLoad() {
 {#if isModalOpen}
     <Modal on:close={closeModal}>
         <button on:click={addPartyMember}>Add Party Member</button>
+        <button on:click={addCulture}>Add Culture</button>
     </Modal>
 {/if}
 
@@ -117,16 +140,19 @@ async function onLoad() {
     <ul>
         {#each campaign.party as character}
             <li id={character.id}>
-                <CharacterCard character={character} on:deletePartyMember={deletePartyMember}></CharacterCard>
+                <EntityCard entity={character} type="character" on:deleteEntity={deleteEntity} />
             </li>
         {/each}
+
+
+
     </ul>
     <h2 id="Cultures">Cultures</h2>
     <!--
     <ul>
         {#each campaign.cultures as culture}
             <li id={culture.id}>
-                <CultureCard culture={culture} on:deletePartyMember={deleteCulture}></CultureCard>
+                 <EntityCard {culture} type="culture" on:deleteEntity={deleteEntity} />
             </li>
         {/each}
     </ul>
