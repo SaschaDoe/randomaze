@@ -1,8 +1,11 @@
 import {RollResult} from "./RollResult";
 
 export abstract class Entry {
-    public readonly displayedText: string;
-    protected constructor(labelInTable: string) {
+    public displayedText: string;
+    protected constructor(labelInTable?: string) {
+        if(!labelInTable){
+            labelInTable = this.constructor.name;
+        }
         this.displayedText = labelInTable;
     }
     execute(rollResult: RollResult) {

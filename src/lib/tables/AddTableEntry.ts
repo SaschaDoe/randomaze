@@ -2,11 +2,12 @@ import {Entry} from "./Entry";
 import {RollResult} from "./RollResult";
 import {Table} from "./Table";
 import {SingleRoll} from "./SingleRoll";
+import {Dice} from "./Dice";
 
 class Addition{
     string: string;
     table: Table;
-    stringfunction: (input: string) => string;
+    stringfunction: (input: string, dice?: Dice) => string;
     static ofString(input: string){
         let addition = new Addition();
         addition.string = input;
@@ -38,7 +39,7 @@ class Addition{
 
 export class AddTableEntry extends Entry {
     private readonly additions: Addition[] = [];
-    constructor(displayedText: string) {
+    constructor(displayedText?: string) {
         super(displayedText);
     }
     execute(rollResult: RollResult) {
@@ -53,7 +54,7 @@ export class AddTableEntry extends Entry {
                 rollResult.rolls.push(roll);
                 additionString = result.string;
             }else{
-                additionString = addition.stringfunction(rollResult.string);
+                additionString = addition.stringfunction(rollResult.string, rollResult.dice);
             }
 
             if(additionString){
@@ -64,15 +65,18 @@ export class AddTableEntry extends Entry {
 
     addTable(table: Table){
         this.additions.push(Addition.ofTable(table));
+        this.displayedText += "{"+table.title+"} ";
         return this;
     }
     addString(string: string){
         this.additions.push(Addition.ofString(string));
+        this.displayedText += string;
         return this;
     }
 
     addFunction(func: (input: string) => (string)) {
         this.additions.push(Addition.ofStringFunction(func));
+        this.displayedText += "{"+func.name+"} ";
         return this;
     }
 }

@@ -14,11 +14,13 @@ import {GalaxyDescriptorsTable} from "./galaxy/GalaxyDescriptorsTable";
 import {GalaxyNounsTable} from "./galaxy/GalaxyNounsTable";
 import {GalaxyNameTable} from "./galaxy/GalaxyNameTable";
 import {GalaxyTypeTable} from "./galaxy/GalaxyTypeTable";
+import {RandomNameTable} from "./name/RandomNameTable";
 
 const characterTables = [new GenderTable(), new CultureNameTable()];
 const characterCategory = new Category("Character Tables", characterTables);
 
 const nameTables = [
+    new RandomNameTable(),
     new AfricanFemaleNameTable(),
     new AfricanMaleNameTable(),
     new GermanFemaleFirstnameTable(),

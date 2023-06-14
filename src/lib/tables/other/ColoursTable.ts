@@ -1,16 +1,15 @@
 import {Table} from "../Table";
 
-export const Colours = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "black", "white", "purple",
-    "gray", "pink", "purple", "teal", "cyan", "magenta", "aquamarine", "silver", "golden", "beige", "azure", "bronze",
-    "brown",
+export const CssColors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "black", "white", "purple",
+    "gray", "pink", "purple", "teal", "cyan", "magenta", "aquamarine", "silver", "beige", "azure", "brown"
 ];
 
 
 export class ColoursTable extends Table{
 
     constructor() {
-        super("Colours");
-        this.ArrayAsTableEntries(Colours);
+        super("Colors");
+        this.ArrayAsTableEntries(CssColors);
     }
 
 }
