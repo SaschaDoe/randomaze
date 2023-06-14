@@ -29,8 +29,8 @@
 
     .modal-content {
         background-color: #fff;
-        border-radius: 8px;
         max-width: 90%;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        min-width: 450px;
     }
 </style>
