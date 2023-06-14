@@ -23,7 +23,7 @@
         </table>
         <div class="solar-systems">
             <h3>Solar Systems:</h3>
-            <button class="scan-btn">Scan for System</button>
+            <button class="scan-btn">Scan</button>
         </div>
         <p>No Solar Systems available</p>
     </div>
