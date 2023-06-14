@@ -1,6 +1,6 @@
 import {Table} from "../Table";
 export const GalaxyTypes = [
-    "spiral", "nebular", "anomaly",
+    "spiral", "nebular", "irregular",
 ];
 export class GalaxyTypeTable extends Table{
     constructor() {

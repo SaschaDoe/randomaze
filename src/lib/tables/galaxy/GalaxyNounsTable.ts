@@ -1,8 +1,8 @@
 import {Table} from "../Table";
-export const GalaxyNouns = ["veil", "lens", "dominion", "empire", "expanse", "frontier", "halo", "kingdom",
+export const GalaxyNouns = ["veil", "lens", "dominion", "empire", "frontier", "kingdom",
     "realm", "dynasty", "nexus", "enclave", "quandary", "dawn", "sovereignty", "refuge", "haven", "sanctuary",
     "sanctuary", "expanse", "ascendancy", "freedom", "calling", "solitude", "horizon", "lair", "fire", "forge",
-    "fate", "deep", "cluster", "nebula", "end", "Gain", "sector", "group"];
+    "fate", "deep", "cluster", "end", "Gain", "sector", "group"];
 
 
 export class GalaxyNounsTable extends Table{

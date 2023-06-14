@@ -4,5 +4,11 @@ export class Galaxy extends Entity{
     name: string;
     imagePath: string;
     color: string;
+    rotationVelocity: number;
+    size: string;
+    sizeInLightyears: number;
+    mass: string;
+    massInSolarMasses: string;
+    hasActiveGalacticNucleus: boolean;
 
 }

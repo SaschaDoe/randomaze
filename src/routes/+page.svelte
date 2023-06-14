@@ -213,6 +213,7 @@ function openResetModal(e) {
     .entities-container {
         flex-basis: 80%; /* sets initial size of the entities-container */
         position: relative; /* sets the positioning context for its children */
+        margin-top: 50px;
     }
 
     .home-header{

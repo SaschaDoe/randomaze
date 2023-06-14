@@ -30,7 +30,7 @@ describe("GalaxyCreator", () => {
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
-        expect(campaign.galaxies[0].name).toEqual("nebula's veil 0");
+        expect(campaign.galaxies[0].name).toEqual("shattered veil 0");
     });
 
     it("should create a galaxy with first spiral image given roll 0",  () => {
@@ -60,8 +60,8 @@ describe("GalaxyCreator", () => {
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
-        expect(campaign.galaxies[0].name).toEqual("nebula's veil 0");
-        expect(campaign.galaxies[0].color).toEqual("transparent");
+        expect(campaign.galaxies[0].name).toEqual("shattered veil 0");
+        expect(campaign.galaxies[0].color).toEqual("red");
     });
 
     it("should create a galaxy with color red given yellow in name",  () => {
@@ -73,5 +73,37 @@ describe("GalaxyCreator", () => {
 
         expect(campaign.galaxies[0].name).toEqual("yellow dominion 2");
         expect(campaign.galaxies[0].color).toEqual("yellow");
+    });
+
+    it("should create a galaxy with rotation velocity > 150 and < 300",  () => {
+        let campaign = new Campaign();
+        let mediator = new Mediator(campaign);
+        let fakeDice = new FakeDice().withRollResult(2);
+
+        mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
+
+        expect(campaign.galaxies[0].rotationVelocity).greaterThan(150).lessThan(300);
+    });
+
+    it("should create a galaxy with size tiny, small, medium, large, gigantic", () => {
+        let campaign = new Campaign();
+        let mediator = new Mediator(campaign);
+        let fakeDice = new FakeDice().withRollResult(2);
+
+        mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
+
+        const possibleSizes = ["tiny", "small", "medium", "large", "gigantic"];
+        expect(possibleSizes).toContain(campaign.galaxies[0].size);
+    });
+
+    it("should create a galaxy with mass tiny, small, medium, large, gigantic", () => {
+        let campaign = new Campaign();
+        let mediator = new Mediator(campaign);
+        let fakeDice = new FakeDice().withRollResult(2);
+
+        mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
+
+        const possibleSizes = ["tiny", "small", "medium", "large", "gigantic"];
+        expect(possibleSizes).toContain(campaign.galaxies[0].mass);
     });
 });

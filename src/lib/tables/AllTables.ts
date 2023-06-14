@@ -15,6 +15,8 @@ import {GalaxyNounsTable} from "./galaxy/GalaxyNounsTable";
 import {GalaxyNameTable} from "./galaxy/GalaxyNameTable";
 import {GalaxyTypeTable} from "./galaxy/GalaxyTypeTable";
 import {RandomNameTable} from "./name/RandomNameTable";
+import {ColoursTable} from "./other/ColoursTable";
+import {SizeTable} from "./other/SizeTable";
 
 const characterTables = [new GenderTable(), new CultureNameTable()];
 const characterCategory = new Category("Character Tables", characterTables);
@@ -33,16 +35,23 @@ const nameTables = [
 ];
 const nameCategory = new Category("Name Tables", nameTables);
 
-const planetTables = [
+const galaxyTables = [
     new GalaxyTypeTable(),
     new GalaxyNameTable(),
     new GalaxyDescriptorsTable(),
     new GalaxyNounsTable(),
 ];
-const planetCategory = new Category("Planet Tables", planetTables);
+const planetCategory = new Category("Galaxy Tables", galaxyTables);
+
+const otherTables = [
+   new ColoursTable(),
+    new SizeTable(),
+];
+const otherCategory = new Category("Other Tables", otherTables);
 
 export const AllTables: Category[] = [
     characterCategory,
     nameCategory,
     planetCategory,
+    otherCategory,
       ];
