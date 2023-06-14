@@ -17,7 +17,7 @@ describe('nameCreator', () => {
 
         let name = nameCreator.create(fakeDice);
 
-        expect(name).toBe("Abioye");
+        expect(name).toBe("abioye");
     });
 
     it('should give Gutda when given female german with 0', function () {
@@ -31,6 +31,6 @@ describe('nameCreator', () => {
 
         let name = nameCreator.create(fakeDice);
 
-        expect(name).toBe("Gutda");
+        expect(name).toBe("gutda");
     });
 })

@@ -1,14 +1,14 @@
 import {Table} from "../../Table";
 
 export const AfricanMaleNames = [
-    "Abioye", "Adisa", "Akintunde", "Akinwande", "Babajide", "Bankole", "Chibuike", "Chijioke", "Chike", "Chima",
-    "Chinua", "Chukwuemeka", "Daberechi", "Echezona", "Emeka", "Femi", "Gbenga", "Ifeanyi", "Ikenna", "Jide",
-    "Kamau", "Kehinde", "Kofi", "Kwame", "Kwesi", "Lekan", "Nkosi", "Obi", "Ola", "Olumide",
-    "Onyekachi", "Onyemachi", "Opeyemi", "Osei", "Osita", "Sekou", "Taiwo", "Tunde", "Uche", "Yao",
-    "Zikora", "Zuberi", "Adedeji", "Adewale", "Adisa", "Afolabi", "Akinlabi", "Chidi", "Chijindu", "Chukwudi",
-    "Chukwuemeka", "Ekene", "Ifedayo", "Igwe", "Ikechukwu", "Ikemefuna", "Kelechi", "Kwabena", "Kwadwo", "Obinna",
-    "Okafor", "Olufemi", "Oluwaseun", "Omotunde", "Onochie", "Orji", "Osahon", "Uchechukwu", "Uchenna", "Uzochi",
-    "Uzoma", "Yobachi"
+    "abioye", "adisa", "akintunde", "akinwande", "babajide", "bankole", "chibuike", "chijioke", "chike", "chima",
+    "chinua", "chukwuemeka", "daberechi", "echezona", "emeka", "femi", "gbenga", "ifeanyi", "ikenna", "jide",
+    "kamau", "kehinde", "kofi", "kwame", "kwesi", "lekan", "nkosi", "obi", "ola", "olumide",
+    "onyekachi", "onyemachi", "opeyemi", "osei", "osita", "sekou", "taiwo", "tunde", "uche", "yao",
+    "zikora", "zuberi", "adedeji", "adewale", "adisa", "afolabi", "akinlabi", "chidi", "chijindu", "chukwudi",
+    "chukwuemeka", "ekene", "ifedayo", "igwe", "ikechukwu", "ikemefuna", "kelechi", "kwabena", "kwadwo", "obinna",
+    "okafor", "olufemi", "oluwaseun", "omotunde", "onochie", "orji", "osahon", "uchechukwu", "uchenna", "uzochi",
+    "uzoma", "yobachi"
 ];
 
 export class AfricanMaleNameTable extends Table{

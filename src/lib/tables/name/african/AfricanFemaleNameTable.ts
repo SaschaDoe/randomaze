@@ -1,13 +1,13 @@
 import {Table} from "../../Table";
 
-export const AfricanFemaleNames =  [
-    "Abatu", "Akanea", "Aktivi", "Alre-Go", "Alunga", "Amima", "Anakena", "Anekka-Ka", "Ariki", "Asmoa", "Ataranga",
-    "Bakiri", "Dasu", "Dawa", "Dpao", "Ekaro", "Esla", "Fekka", "Hahi", "Hoa", "Jaja", "Babumba", "Jemima", "Ka", "Kalu",
-    "Kamali", "Katinga", "Khaikhai", "Kiri", "Kohao", "Kptanu", "Kumtami", "Kupe", "Lante", "Lisu", "Lolae", "Lupao",
-    "Makkika", "Manisa", "Manui", "Manutara", "Mina-Moa", "Minoma", "Miraro", "Miru", "Muna", "Nahimi", "Nimuh", "Nimou",
-    "Niwu", "Nuso-Nu", "Onigo", "Piku", "Pria-Papap", "Rangi", "Rasuli", "Ratan", "Rawiri", "Riro", "Roniga", "Rotang",
-    "Safu", "Sama", "Sapa", "Satoh", "Simo", "Simu", "Swiwa", "Taaro", "Tahai", "Tare", "Temura", "Tipo-Tapo", "Totora",
-    "Trana", "Uluruh", "Una", "Uriga", "Wela", "Wipati", "Yacar", "Yimari", "Yuta"
+export const AfricanFemaleNames = [
+    "abatu", "akanea", "aktiv", "alre-go", "alunga", "amima", "anakena", "anekka-ka", "ariki", "asmoa", "ataranga",
+    "bakiri", "dasu", "dawa", "dpao", "ekaro", "esla", "fekka", "hahi", "hoa", "jaja", "babumba", "jemima", "ka", "kalu",
+    "kamali", "katinga", "khaikhai", "kiri", "kohao", "kptanu", "kumtami", "kupe", "lante", "lisu", "lolae", "lupao",
+    "makkika", "manisa", "manui", "manutara", "mina-moa", "minoma", "miraro", "miru", "muna", "nahimi", "nimuh", "nimou",
+    "niwu", "nuso-nu", "onigo", "piku", "pria-papap", "rangi", "rasuli", "ratan", "rawiri", "riro", "roniga", "rotang",
+    "safu", "sama", "sapa", "satoh", "simo", "simu", "swiwa", "taaro", "tahai", "tare", "temura", "tipo-tapo", "totora",
+    "trana", "uluruh", "una", "uriga", "wela", "wipati", "yacar", "yimari", "yuta"
 ];
 export class AfricanFemaleNameTable extends Table{
     constructor() {

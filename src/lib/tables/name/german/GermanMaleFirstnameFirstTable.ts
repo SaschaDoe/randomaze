@@ -2,11 +2,11 @@ import {Table} from "../../Table";
 
 
 export const GermanMaleSurnameFirst =  [
-    "Adal", "Adel", "Alar", "Alber", "Ald", "Amal", "Ansel", "Armin", "Diet", "Eck", "Eber",
-    "Egil", "Erman", "Fried", "Ger", "Gisel", "Godt", "Gunther", "Hein", "Her",
-    "Hugo", "Karl", "Konrad", "Land", "Leo", "Lud", "Os", "Rein", "Rich", "Rud",
-    "Ulf", "Volk", "Walter", "Wil", "Win", "Wolf", "Wulf", "Zwin", "Al", "Arn", "Bald", "Bert",
-    "Egin", "Engel", "Irmin", "Lamb", "Mein", "Nor", "Rainer", "Rud", "Sig", "Sieg", "Ott",
+    "adal", "adel", "alar", "alber", "ald", "amal", "ansel", "armin", "diet", "eck", "eber",
+    "egil", "erman", "fried", "ger", "gisel", "godt", "gunther", "hein", "her",
+    "hugo", "karl", "konrad", "land", "leo", "lud", "os", "rein", "rich", "rud",
+    "ulf", "volk", "walter", "wil", "win", "wolf", "wulf", "zwin", "al", "arn", "bald", "bert",
+    "egin", "engel", "irmin", "lamb", "mein", "nor", "rainer", "rud", "sig", "sieg", "ott",
 ];
 
 export class GermanMaleFirstnameFirstTable extends Table{
