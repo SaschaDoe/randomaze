@@ -107,7 +107,13 @@ async function onLoad() {
     console.log("try to load campaign");
     const serializedCampaign = await loadCampaign();
     if (serializedCampaign) {
-        campaign = JSON.parse(serializedCampaign);
+        try{
+            campaign = JSON.parse(serializedCampaign);
+        } catch (e) {
+            console.log("error parsing campaign in onLoad")
+            console.log(e);
+            campaign = new Campaign();
+        }
         mediator = new Mediator(campaign);
         IDGenerator.getInstance().setId(campaign.lastId);
         campaignData.set(serializedCampaign);
