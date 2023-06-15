@@ -5,9 +5,14 @@
     export let campaign = new Campaign();
     $: entityTypes = getEntityTypes(campaign);
     let isSideIndexOpen = false;
+    let selectedEntityType = null;
 
     function toggleSideIndex() {
         isSideIndexOpen = !isSideIndexOpen;
+    }
+
+    function selectEntityType(entityType) {
+        selectedEntityType = entityType === selectedEntityType ? null : entityType;
     }
 
     onMount(() => {
@@ -37,9 +42,11 @@
                 <div class="list">
                     <ul>
                         {#each entityTypes as entityType}
-                            {#if campaign[entityType].length > 0}
-                                <li>
-                                    <a href="#{entityType}">{entityType}</a>
+                            <li>
+                                <a href="#{entityType}" on:click|preventDefault={() => selectEntityType(entityType)}>
+                                    {entityType}
+                                </a>
+                                {#if entityType === selectedEntityType && campaign[entityType].length > 0}
                                     <ul>
                                         {#each campaign[entityType] as entity}
                                             <li>
@@ -47,8 +54,8 @@
                                             </li>
                                         {/each}
                                     </ul>
-                                </li>
-                            {/if}
+                                {/if}
+                            </li>
                         {/each}
                     </ul>
                 </div>
@@ -57,9 +64,11 @@
         <div class="widescreen">
             <ul>
                 {#each entityTypes as entityType}
-                    {#if campaign[entityType].length > 0}
-                        <li>
-                            <a href="#{entityType}">{entityType}</a>
+                    <li>
+                        <a href="#{entityType}" on:click|preventDefault={() => selectEntityType(entityType)}>
+                            {entityType}
+                        </a>
+                        {#if entityType === selectedEntityType && campaign[entityType].length > 0}
                             <ul>
                                 {#each campaign[entityType] as entity}
                                     <li>
@@ -67,13 +76,14 @@
                                     </li>
                                 {/each}
                             </ul>
-                        </li>
-                    {/if}
+                        {/if}
+                    </li>
                 {/each}
             </ul>
         </div>
     </div>
 </div>
+
 
 <style>
     .container {
