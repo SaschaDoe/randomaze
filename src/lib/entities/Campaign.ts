@@ -7,7 +7,6 @@ export class Campaign{
     public cultures: Culture[];
     public lastId: number;
     public galaxies: Galaxy[];
-
     constructor(){
         this.party = [];
         this.cultures = [];

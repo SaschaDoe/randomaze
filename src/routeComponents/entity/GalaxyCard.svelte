@@ -1,6 +1,7 @@
 <script>
     import GalaxyDetails from "./GalaxyDetails.svelte";
     import GalaxyAnomalies from "./GalaxyAnomalies.svelte";
+    import GalaxyAddSystem from "./GalaxyAddSystem.svelte";
 
     export let galaxy;
 
@@ -64,7 +65,7 @@
             {#if currentTab === 'details'}
                 <GalaxyDetails galaxy={galaxy}></GalaxyDetails>
             {:else if currentTab === 'systems'}
-                <p>No System</p>
+                <GalaxyAddSystem galaxy={galaxy}></GalaxyAddSystem>
             {:else if currentTab === 'anomalies'}
                 <GalaxyAnomalies galaxy={galaxy}></GalaxyAnomalies>
             {/if}
@@ -96,6 +97,7 @@
         display: flex;
         justify-content: space-between;
         cursor: crosshair;
+        overflow: hidden;
     }
 
     .image-section {

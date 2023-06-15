@@ -74,7 +74,7 @@ export class GalaxyCreator implements CampaignHandler{
         galaxy.ageInYears = this.getAgeInYears(galaxy.age);
         galaxy.anomalies = [];
         galaxy.isAlreadyScannedForAnomalies = false;
-
+        galaxy.solarSystems = [];
         this.campaign.galaxies.push(galaxy);
         return galaxy.id;
     }

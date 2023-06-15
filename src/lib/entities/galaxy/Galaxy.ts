@@ -1,4 +1,5 @@
 import {Entity} from "../Entity";
+import {SolarSystem} from "../solarSystem/SolarSystem";
 export class Galaxy extends Entity{
     type: string;
     name: string;
@@ -15,5 +16,7 @@ export class Galaxy extends Entity{
     anomalies: string[];
 
     isAlreadyScannedForAnomalies: boolean;
+
+    solarSystems: SolarSystem[];
 
 }
