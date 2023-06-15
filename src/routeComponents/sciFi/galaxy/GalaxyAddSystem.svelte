@@ -2,13 +2,13 @@
 
     import {SolarSystemCreator} from "$lib/entities/solarSystem/SolarSystemCreator.ts";
 
-    export let galaxy;
-    $: noSystem = galaxy.solarSystems.length === 0 && galaxy.isAlreadyScannedForSystems;
+    export let entity;
+    $: noSystem = entity.solarSystems.length === 0 && entity.isAlreadyScannedForSystems;
 
     function scan() {
-            SolarSystemCreator.addTo(galaxy);
-            galaxy = galaxy;
-            console.log("Scanned systems: ", galaxy.systems);
+            SolarSystemCreator.addTo(entity);
+            entity = entity;
+            console.log("Scanned systems: ", entity.systems);
     }
 </script>
 
@@ -21,7 +21,7 @@
             {#if noSystem}
                 <p>No systems found</p>
             {/if}
-            {#each galaxy.solarSystems as system}
+            {#each entity.solarSystems as system}
                 <li class="entity-field">
                     <button class="field-name">{system.id}: {system.name}</button>
                 </li>

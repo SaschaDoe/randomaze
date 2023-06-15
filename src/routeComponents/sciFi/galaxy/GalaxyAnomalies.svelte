@@ -1,15 +1,15 @@
 <script>
     import {GalaxyAnomalieAdder as GalaxyAnomaliesAdder} from "$lib/entities/galaxy/GalaxyAnomalieAdder.ts";
 
-    export let galaxy;
-    $: nothingFound = galaxy.anomalies.length === 0 && galaxy.isAlreadyScannedForAnomalies;
+    export let entity;
+    $: nothingFound = entity.anomalies.length === 0 && entity.isAlreadyScannedForAnomalies;
 
     function scan() {
-        if(!galaxy.isAlreadyScannedForAnomalies){
-            galaxy.isAlreadyScannedForAnomalies = true;
-            GalaxyAnomaliesAdder.scan(galaxy);
-            galaxy = galaxy;
-            console.log("Scanned anomalies: ", galaxy.anomalies);
+        if(!entity.isAlreadyScannedForAnomalies){
+            entity.isAlreadyScannedForAnomalies = true;
+            GalaxyAnomaliesAdder.scan(entity);
+            entity = entity;
+            console.log("Scanned anomalies: ", entity.anomalies);
         }else{
             console.log("Already scanned");
         }
@@ -18,7 +18,7 @@
 
 <div class="entity-details">
     <div class="title-and-button">
-        {#if !galaxy.isAlreadyScannedForAnomalies}
+        {#if !entity.isAlreadyScannedForAnomalies}
             <h3 class="anomalies-title">Not scanned yet</h3>
             <button class="scan-button" on:click={scan}>Scan</button>
         {:else}
@@ -30,7 +30,7 @@
         {#if nothingFound}
             <p>No anomalies found</p>
         {/if}
-        {#each galaxy.anomalies as anomaly}
+        {#each entity.anomalies as anomaly}
             <li class="entity-field">
                 <div class="field-value">{anomaly}</div>
             </li>

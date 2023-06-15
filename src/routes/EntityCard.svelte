@@ -3,7 +3,9 @@
     import { createEventDispatcher } from 'svelte';
     import Modal from './Modal.svelte';
     import ExtendedCharacterCard from "./ExtendedCharacterCard.svelte";
-    import GalaxyCard from "../routeComponents/entity/GalaxyCard.svelte";
+    import GalaxyCard from "../routeComponents/sciFi/galaxy/GalaxyCard.svelte";
+    import SolarSystemCard from "../routeComponents/sciFi/solarSystem/SolarSystemCard.svelte";
+    import GalaxyCard2 from "../routeComponents/sciFi/galaxy/GalaxyCard2.svelte";
 
     let showDeleteModal = false;
     let showDetailsModal = false;
@@ -73,9 +75,12 @@
                 <ExtendedCharacterCard character={entity}/>
             {/if}
             {#if type === 'galaxy'}
-                <GalaxyCard galaxy={entity}/>
+                <GalaxyCard2 galaxy={entity}/>
             {/if}
-            <!-- Add additional conditions for other types here -->
+            {#if type === 'solarSystem'}
+                <SolarSystemCard galaxy={entity}/>
+            {/if}
+
         </Modal>
     {/if}
 </div>

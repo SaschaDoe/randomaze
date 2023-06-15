@@ -1,13 +1,13 @@
 <script>
-    export let galaxy;
+    export let entity;
 
     let fields = [
-        { name: "Type", value: galaxy.type },
-        { name: "Age", value: galaxy.ageInYears + " million years (" +galaxy.age + ")"},
-        { name: "Size", value: galaxy.sizeInLightyears+" ly (" +galaxy.size +")" },
-        { name: "Mass", value: galaxy.massInSolarMasses+" solar masses (" + galaxy.size +")" },
-        { name: "Active Nucleus", value: galaxy.hasActiveGalacticNucleus },
-        { name: "Rotation Velocity", value: galaxy.rotationVelocity+" km/s" },
+        { name: "Type", value: entity.type },
+        { name: "Age", value: entity.ageInYears + " million years (" +entity.age + ")"},
+        { name: "Size", value: entity.sizeInLightyears+" ly (" +entity.size +")" },
+        { name: "Mass", value: entity.massInSolarMasses+" solar masses (" + entity.size +")" },
+        { name: "Active Nucleus", value: entity.hasActiveGalacticNucleus },
+        { name: "Rotation Velocity", value: entity.rotationVelocity+" km/s" },
     ];
 </script>
 

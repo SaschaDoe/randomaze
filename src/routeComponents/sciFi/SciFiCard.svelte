@@ -1,17 +1,37 @@
 <script>
-    import GalaxyDetails from "./GalaxyDetails.svelte";
-    import GalaxyAnomalies from "./GalaxyAnomalies.svelte";
-    import GalaxyAddSystem from "./GalaxyAddSystem.svelte";
-
-    export let galaxy;
-
-    let currentTab = 'details'; // 'details', 'systems', 'anomalies'
-    let tabs = ['details', 'systems', 'anomalies'];
-    let currentIndex = 0;
+    export let entity;
+    export let components; // array of objects { name: '...', component: ... }
+    export let defaultTab;
+    let tabs = [];
+    let currentTab = defaultTab;
+    let currentIndex = tabs.findIndex(t => t === defaultTab);
 
     let isMobile = window.innerWidth <= 700;
     let showSection = isMobile ? 'info' : 'both'; // Default to 'info'
     let lastMobileSection = 'info'; // Remember last shown section on mobile
+
+
+    $: {
+        if (components && components.length > 0) {
+            tabs = components.map(c => c.name);
+
+            if (defaultTab === undefined) {
+                defaultTab = tabs[0];
+            }
+            currentTab = defaultTab;
+            currentIndex = tabs.findIndex(t => t === defaultTab);
+        }
+    }
+
+    $: {
+        if (defaultTab === undefined && components && components.length > 0) {
+            defaultTab = components[0].name;
+        }
+        currentTab = defaultTab;
+        currentIndex = components.findIndex(c => c.name === defaultTab);
+    }
+
+
 
     function nextTab() {
         if (currentIndex < tabs.length - 1) {
@@ -42,15 +62,10 @@
     });
 </script>
 
-
 <div class="container">
     {#if showSection === 'image' || showSection === 'both'}
         <div class="image-section">
-            <div class="galaxy-name-id">{galaxy.id}: {galaxy.name}</div>
-            <div class="image-container">
-                <img class="galaxy-image" src={galaxy.imagePath} alt="Random Galaxy">
-                <div class="color-overlay" style="background: {galaxy.color};"></div>
-            </div>
+            <slot name="image"></slot>
         </div>
     {/if}
 
@@ -62,13 +77,11 @@
                 <button on:click={nextTab} disabled={currentIndex === tabs.length - 1} class="nav-button">▶</button>
             </div>
 
-            {#if currentTab === 'details'}
-                <GalaxyDetails galaxy={galaxy}></GalaxyDetails>
-            {:else if currentTab === 'systems'}
-                <GalaxyAddSystem galaxy={galaxy}></GalaxyAddSystem>
-            {:else if currentTab === 'anomalies'}
-                <GalaxyAnomalies galaxy={galaxy}></GalaxyAnomalies>
-            {/if}
+            {#each components as component (component.name)}
+                {#if component.name === currentTab}
+                    <svelte:component this={component.component} entity={entity} />
+                {/if}
+            {/each}
         </div>
     {/if}
 
@@ -100,25 +113,8 @@
         overflow: hidden;
     }
 
-    .image-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        width: 350px;
-    }
-    .galaxy-name-id {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-    }
-    .image-container {
-        position: relative;
-        height: 400px;
-        width: 350px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+
+
     .entity-information {
         display: flex;
         flex-direction: column;
@@ -133,16 +129,7 @@
         background-color: rgba(0,0,0,0.7);
     }
 
-    .galaxy-image, .color-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-    .color-overlay {
-        mix-blend-mode: multiply;
-    }
+
     .navigation {
         display: flex;
         align-items: center;
