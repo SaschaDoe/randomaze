@@ -3,11 +3,13 @@ import {Campaign} from "./Campaign";
 import {CultureCreator} from "./culture/CultureCreator";
 import {CharacterCreator} from "./character/CharacterCreator";
 import {GalaxyCreator} from "./galaxy/GalaxyCreator";
+import {GalaxyAnomalieAdder} from "./galaxy/GalaxyAnomalieAdder";
 
 export enum HandlerType{
     CharacterCreator,
     CultureCreator,
     GalaxyCreator,
+    GalaxyAnomalieAdder,
 }
 
 export class Mediator {

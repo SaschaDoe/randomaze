@@ -1,5 +1,6 @@
 <script>
     import GalaxyDetails from "./GalaxyDetails.svelte";
+    import GalaxyAnomalies from "./GalaxyAnomalies.svelte";
 
     export let galaxy;
 
@@ -65,7 +66,7 @@
             {:else if currentTab === 'systems'}
                 <p>No System</p>
             {:else if currentTab === 'anomalies'}
-                <p>No anomaly</p>
+                <GalaxyAnomalies galaxy={galaxy}></GalaxyAnomalies>
             {/if}
         </div>
     {/if}

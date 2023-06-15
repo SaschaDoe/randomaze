@@ -10,6 +10,7 @@ import {OtherGalaxyImagesTable} from "../../tables/galaxy/OtherGalaxyImagesTable
 import {CssColors} from "../../tables/other/ColoursTable";
 import {Sizes, SizeTable} from "../../tables/other/SizeTable";
 import {AgeTable} from "../../tables/other/AgeTable";
+import {EclipticGalaxyImagesTable} from "../../tables/galaxy/EclipticGalaxyImagesTable";
 
 
 
@@ -42,7 +43,9 @@ export class GalaxyCreator implements CampaignHandler{
         galaxy.imagePath = "/galaxies/";
         if(galaxy.type === "spiral"){
             galaxy.imagePath += new SpiralGalaxyImagesTable().roll(dice).string;
-        }else{
+        }else if(galaxy.type === "ecliptic") {
+            galaxy.imagePath += new EclipticGalaxyImagesTable().roll(dice).string;
+        } else{
             galaxy.imagePath += new OtherGalaxyImagesTable().roll(dice).string;
         }
        galaxy.color = this.getColorFrom(galaxy.name);
@@ -55,8 +58,6 @@ export class GalaxyCreator implements CampaignHandler{
             }
             galaxy.color = "transparent";
         }
-
-        this.campaign.galaxies.push(galaxy);
         galaxy.rotationVelocity = this.dice.rollInterval(150, 300);
         let sizeFromName = this.getSizeFromName(galaxy.name);
         if(sizeFromName === ""){
@@ -71,6 +72,10 @@ export class GalaxyCreator implements CampaignHandler{
         galaxy.hasActiveGalacticNucleus = this.dice.roll(100) > 90;
         galaxy.age = new AgeTable().roll(dice).string;
         galaxy.ageInYears = this.getAgeInYears(galaxy.age);
+        galaxy.anomalies = [];
+        galaxy.isAlreadyScannedForAnomalies = false;
+
+        this.campaign.galaxies.push(galaxy);
         return galaxy.id;
     }
 

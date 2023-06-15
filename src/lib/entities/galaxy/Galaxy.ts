@@ -12,5 +12,8 @@ export class Galaxy extends Entity{
     hasActiveGalacticNucleus: boolean;
     age: string;
     ageInYears: number;
+    anomalies: string[];
+
+    isAlreadyScannedForAnomalies: boolean;
 
 }
