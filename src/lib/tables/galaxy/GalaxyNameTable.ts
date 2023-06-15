@@ -6,6 +6,7 @@ import {ColoursTable} from "../other/ColoursTable";
 import {GalaxyTypeTable} from "./GalaxyTypeTable";
 import {RandomNameTable} from "../name/RandomNameTable";
 import {Dice} from "../Dice";
+import {SizeTable} from "../other/SizeTable";
 
 export function NonOrNumberOrLetter(input: string, dice?: Dice){
     let number = 0
@@ -70,6 +71,11 @@ export class GalaxyNameTable extends Table{
                 .addTable(new RandomNameTable())
                 .addString("'s ")
                 .addTable(new GalaxyNounsTable())
+                .addFunction(NonOrNumberOrLetter),
+            new AddTableEntry()
+                .addTable(new SizeTable())
+                .addString(" ")
+                .addTable(new GalaxyTypeTable())
                 .addFunction(NonOrNumberOrLetter),
         ];
     }

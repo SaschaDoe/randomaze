@@ -8,7 +8,7 @@ import {GalaxyNameTable} from "../../tables/galaxy/GalaxyNameTable";
 import {SpiralGalaxyImagesTable} from "../../tables/galaxy/SpiralGalaxyImagesTable";
 import {OtherGalaxyImagesTable} from "../../tables/galaxy/OtherGalaxyImagesTable";
 import {CssColors} from "../../tables/other/ColoursTable";
-import {SizeTable} from "../../tables/other/SizeTable";
+import {Sizes, SizeTable} from "../../tables/other/SizeTable";
 import {AgeTable} from "../../tables/other/AgeTable";
 
 
@@ -58,7 +58,13 @@ export class GalaxyCreator implements CampaignHandler{
 
         this.campaign.galaxies.push(galaxy);
         galaxy.rotationVelocity = this.dice.rollInterval(150, 300);
-        galaxy.size = new SizeTable().roll(dice).string;
+        let sizeFromName = this.getSizeFromName(galaxy.name);
+        if(sizeFromName === ""){
+            galaxy.size = new SizeTable().roll(dice).string;
+        }else{
+            galaxy.size = sizeFromName;
+        }
+
         galaxy.sizeInLightyears = this.getSizeInLightyears(galaxy.size);
         galaxy.mass = new SizeTable().roll(dice).string;
         galaxy.massInSolarMasses = this.getSizeInSolarMasses(galaxy.mass);
@@ -161,5 +167,18 @@ export class GalaxyCreator implements CampaignHandler{
         }
 
         return ageInMillionYears;
+    }
+
+    private getSizeFromName(name: string) {
+        const words = name.split(' ');
+
+        for(let color of Sizes){
+            for(let word of words){
+                if(word === color){
+                    return color;
+                }
+            }
+        }
+        return "";
     }
 }

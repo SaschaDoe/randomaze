@@ -68,18 +68,18 @@ describe("GalaxyCreator", () => {
     it("should create a galaxy with color red given yellow in name",  () => {
         let campaign = new Campaign();
         let mediator = new Mediator(campaign);
-        let fakeDice = new FakeDice().withRollResult(2);
+        let fakeDice = new FakeDice().withRollResult(1).withRollResults([1,2]);
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
-        expect(campaign.galaxies[0].name).toEqual("yellow dominion 2");
-        expect(campaign.galaxies[0].color).toEqual("yellow");
+        expect(campaign.galaxies[0].name).toEqual("orange lens 1");
+        expect(campaign.galaxies[0].color).toEqual("orange");
     });
 
     it("should create a galaxy with rotation velocity > 150 and < 300",  () => {
         let campaign = new Campaign();
         let mediator = new Mediator(campaign);
-        let fakeDice = new FakeDice().withRollResult(2);
+        let fakeDice = new FakeDice().withRollResult(1);
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
@@ -89,7 +89,7 @@ describe("GalaxyCreator", () => {
     it("should create a galaxy with size tiny, small, medium, large, gigantic", () => {
         let campaign = new Campaign();
         let mediator = new Mediator(campaign);
-        let fakeDice = new FakeDice().withRollResult(2);
+        let fakeDice = new FakeDice().withRollResult(1);
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
@@ -100,7 +100,7 @@ describe("GalaxyCreator", () => {
     it("should create a galaxy with mass tiny, small, medium, large, gigantic", () => {
         let campaign = new Campaign();
         let mediator = new Mediator(campaign);
-        let fakeDice = new FakeDice().withRollResult(2);
+        let fakeDice = new FakeDice().withRollResult(1);
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
@@ -111,11 +111,22 @@ describe("GalaxyCreator", () => {
     it("should create a galaxy with age ancient, old, middle-aged, young, just-created", () => {
         let campaign = new Campaign();
         let mediator = new Mediator(campaign);
-        let fakeDice = new FakeDice().withRollResult(2);
+        let fakeDice = new FakeDice().withRollResult(1);
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
         const possibleSizes = ["just-created", "young", "middle-aged", "old", "ancient"];
         expect(possibleSizes).toContain(campaign.galaxies[0].age);
+    });
+
+    it("should create a galaxy with big in its name than it is that size", () => {
+        let campaign = new Campaign();
+        let mediator = new Mediator(campaign);
+        let fakeDice = new FakeDice().withRollResult(1).withRollResults([1,7]);
+
+        mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
+
+        expect(campaign.galaxies[0].name).toEqual("small nebular 1");
+        expect(campaign.galaxies[0].size).toEqual("small");
     });
 });
