@@ -118,13 +118,19 @@
         justify-content: center;
     }
     .entity-information {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Changed from 'space-between' to 'flex-start' */
         width: 350px;
+        height: 420px; /* Adjust this to the desired height */
+        overflow: auto; /* This allows the content to scroll */
         border: 2px solid lawngreen;
         border-radius: 10px;
         padding: 10px;
         margin-left: 20px;
         background-color: rgba(0,0,0,0.7);
     }
+
     .galaxy-image, .color-overlay {
         position: absolute;
         top: 0;

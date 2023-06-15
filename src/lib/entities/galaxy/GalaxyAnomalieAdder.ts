@@ -1,6 +1,3 @@
-import type {CampaignHandler} from "../CampaignHandler";
-import {Mediator} from "../Mediator";
-import {Campaign} from "../Campaign";
 import {Dice} from "../../tables/Dice";
 import {Galaxy} from "./Galaxy";
 import {GalaxyAnomaliesTable} from "../../tables/galaxy/GalaxyAnomaliesTable";
@@ -14,7 +11,7 @@ export class GalaxyAnomalieAdder{
         }
         
         let randomNumber = dice.roll(20);
-        let numberOfAnomalies = 0;
+        let numberOfAnomalies: number;
         if(randomNumber <= 3){
             numberOfAnomalies = 0;
         }else if(randomNumber > 9 && randomNumber <= 15){
