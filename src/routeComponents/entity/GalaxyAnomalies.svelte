@@ -20,10 +20,11 @@
     <div class="title-and-button">
         {#if !galaxy.isAlreadyScannedForAnomalies}
             <h3 class="anomalies-title">Not scanned yet</h3>
+            <button class="scan-button" on:click={scan}>Scan</button>
         {:else}
             <h3 class="anomalies-title">Findings</h3>
         {/if}
-        <button class="scan-button" on:click={scan}>Scan</button>
+
     </div>
     <ul>
         {#if nothingFound}
