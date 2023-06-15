@@ -14,8 +14,6 @@ export class SolarSystemNameTable extends Table{
                 .addTable(new SolarSystemDescriptorsTable())
                 .addFunction(NonOrNumberOrLetter),
             new AddTableEntry()
-                .addTable(new RandomNameTable())
-                .addString(" ")
                 .addTable(new SolarSystemDescriptorsTable())
                 .addFunction(NonOrNumberOrLetter),
         ];
