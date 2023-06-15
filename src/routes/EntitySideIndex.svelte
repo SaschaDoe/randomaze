@@ -28,26 +28,30 @@
 <div class="container">
     <div id="entity-index">
         <div class="small-screen">
-            <button on:click={toggleSideIndex}>
-                {isSideIndexOpen ? '▲ Hide Entities' : '▼ Show Entities'}
-            </button>
+            <div class="hide-show-buttons">
+                <button on:click={toggleSideIndex}>
+                    {isSideIndexOpen ? '▲ Hide Entities' : '▼ Show Entities'}
+                </button>
+            </div>
             {#if isSideIndexOpen}
-                <ul>
-                    {#each entityTypes as entityType}
-                        {#if campaign[entityType].length > 0}
-                            <li>
-                                <a href="#{entityType}">{entityType}</a>
-                                <ul>
-                                    {#each campaign[entityType] as entity}
-                                        <li>
-                                            <a href="#{entity.id}">{entity.name}</a>
-                                        </li>
-                                    {/each}
-                                </ul>
-                            </li>
-                        {/if}
-                    {/each}
-                </ul>
+                <div class="list">
+                    <ul>
+                        {#each entityTypes as entityType}
+                            {#if campaign[entityType].length > 0}
+                                <li>
+                                    <a href="#{entityType}">{entityType}</a>
+                                    <ul>
+                                        {#each campaign[entityType] as entity}
+                                            <li>
+                                                <a href="#{entity.id}">{entity.name}</a>
+                                            </li>
+                                        {/each}
+                                    </ul>
+                                </li>
+                            {/if}
+                        {/each}
+                    </ul>
+                </div>
             {/if}
         </div>
         <div class="widescreen">
@@ -86,6 +90,17 @@
 
     .small-screen {
         display: block;
+        max-height: 200px; /* or any other value */
+        overflow-y: auto;
+    }
+
+    .hide-show-buttons{
+        position: fixed;
+        margin-top: 10px;
+    }
+
+    .list{
+        margin-top: 50px;
     }
 
     #entity-index {
