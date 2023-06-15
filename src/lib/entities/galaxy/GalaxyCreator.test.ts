@@ -61,8 +61,9 @@ describe("GalaxyCreator", () => {
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
         expect(campaign.galaxies[0].name).toEqual("shattered veil 0");
-        expect(campaign.galaxies[0].color).toEqual("red");
+        expect(campaign.galaxies[0].color).toEqual("transparent");
     });
+
 
     it("should create a galaxy with color red given yellow in name",  () => {
         let campaign = new Campaign();
@@ -82,7 +83,7 @@ describe("GalaxyCreator", () => {
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
 
-        expect(campaign.galaxies[0].rotationVelocity).greaterThan(150).lessThan(300);
+        expect(campaign.galaxies[0].rotationVelocity).greaterThan(150).lessThan(301);
     });
 
     it("should create a galaxy with size tiny, small, medium, large, gigantic", () => {
@@ -105,5 +106,16 @@ describe("GalaxyCreator", () => {
 
         const possibleSizes = ["tiny", "small", "medium", "large", "gigantic"];
         expect(possibleSizes).toContain(campaign.galaxies[0].mass);
+    });
+
+    it("should create a galaxy with age ancient, old, middle-aged, young, just-created", () => {
+        let campaign = new Campaign();
+        let mediator = new Mediator(campaign);
+        let fakeDice = new FakeDice().withRollResult(2);
+
+        mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
+
+        const possibleSizes = ["just-created", "young", "middle-aged", "old", "ancient"];
+        expect(possibleSizes).toContain(campaign.galaxies[0].age);
     });
 });

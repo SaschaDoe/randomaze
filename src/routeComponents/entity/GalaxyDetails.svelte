@@ -3,11 +3,11 @@
 
     let fields = [
         { name: "Type", value: galaxy.type },
-        { name: "Rotation Velocity", value: galaxy.rotationVelocity+" km/s" },
-        { name: "Size", value: galaxy.size },
-        { name: "Diameter", value: galaxy.sizeInLightyears+" lightyears" },
-        { name: "Mass", value: galaxy.massInSolarMasses+" solar masses" },
+        { name: "Age", value: galaxy.ageInYears + " million years (" +galaxy.age + ")"},
+        { name: "Size", value: galaxy.sizeInLightyears+" ly (" +galaxy.size +")" },
+        { name: "Mass", value: galaxy.massInSolarMasses+" solar masses (" + galaxy.size +")" },
         { name: "Active Nucleus", value: galaxy.hasActiveGalacticNucleus },
+        { name: "Rotation Velocity", value: galaxy.rotationVelocity+" km/s" },
     ];
 </script>
 

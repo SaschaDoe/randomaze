@@ -9,6 +9,7 @@ import {SpiralGalaxyImagesTable} from "../../tables/galaxy/SpiralGalaxyImagesTab
 import {OtherGalaxyImagesTable} from "../../tables/galaxy/OtherGalaxyImagesTable";
 import {CssColors} from "../../tables/other/ColoursTable";
 import {SizeTable} from "../../tables/other/SizeTable";
+import {AgeTable} from "../../tables/other/AgeTable";
 
 
 
@@ -45,6 +46,15 @@ export class GalaxyCreator implements CampaignHandler{
             galaxy.imagePath += new OtherGalaxyImagesTable().roll(dice).string;
         }
        galaxy.color = this.getColorFrom(galaxy.name);
+        if(galaxy.color === "black"){
+            let randomNumber = this.dice.roll(2);
+            if(randomNumber === 0){
+                galaxy.imagePath = "/galaxies/stars.png";
+            }else{
+                galaxy.imagePath = "/galaxies/starsDarker.png";
+            }
+            galaxy.color = "transparent";
+        }
 
         this.campaign.galaxies.push(galaxy);
         galaxy.rotationVelocity = this.dice.rollInterval(150, 300);
@@ -53,14 +63,20 @@ export class GalaxyCreator implements CampaignHandler{
         galaxy.mass = new SizeTable().roll(dice).string;
         galaxy.massInSolarMasses = this.getSizeInSolarMasses(galaxy.mass);
         galaxy.hasActiveGalacticNucleus = this.dice.roll(100) > 90;
+        galaxy.age = new AgeTable().roll(dice).string;
+        galaxy.ageInYears = this.getAgeInYears(galaxy.age);
         return galaxy.id;
     }
 
 
     private getColorFrom(name: string) {
+        const words = name.split(' ');
+
         for(let color of CssColors){
-            if(name.includes(color)){
-                return color;
+            for(let word of words){
+                if(word === color){
+                    return color;
+                }
             }
         }
         return "transparent";
@@ -119,4 +135,31 @@ export class GalaxyCreator implements CampaignHandler{
     }
 
 
+    private getAgeInYears(age: string) {
+        let ageInMillionYears = 0;
+        switch (age) {
+            case "just-created": {
+                ageInMillionYears = this.dice.rollInterval(1, 400);
+                break;
+            }
+            case "young": {
+                ageInMillionYears = this.dice.rollInterval(400, 1000);
+                break;
+            }
+            case "middle-aged": {
+                ageInMillionYears = this.dice.rollInterval(1000, 10000);
+                break;
+            }
+            case "old": {
+                ageInMillionYears = this.dice.rollInterval(10000, 14000);
+                break;
+            }
+            case "ancient": {
+                ageInMillionYears = this.dice.rollInterval(14000, 15000);
+                break;
+            }
+        }
+
+        return ageInMillionYears;
+    }
 }

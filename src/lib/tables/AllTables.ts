@@ -17,6 +17,7 @@ import {GalaxyTypeTable} from "./galaxy/GalaxyTypeTable";
 import {RandomNameTable} from "./name/RandomNameTable";
 import {ColoursTable} from "./other/ColoursTable";
 import {SizeTable} from "./other/SizeTable";
+import {AgeTable} from "./other/AgeTable";
 
 const characterTables = [new GenderTable(), new CultureNameTable()];
 const characterCategory = new Category("Character Tables", characterTables);
@@ -44,6 +45,7 @@ const galaxyTables = [
 const planetCategory = new Category("Galaxy Tables", galaxyTables);
 
 const otherTables = [
+    new AgeTable(),
    new ColoursTable(),
     new SizeTable(),
 ];

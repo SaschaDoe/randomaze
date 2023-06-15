@@ -10,5 +10,7 @@ export class Galaxy extends Entity{
     mass: string;
     massInSolarMasses: string;
     hasActiveGalacticNucleus: boolean;
+    age: string;
+    ageInYears: number;
 
 }
