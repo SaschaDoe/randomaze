@@ -21,6 +21,9 @@ export class SolarSystemCreator{
 
         solarSystem.stageDescription = stageObject.description;
         solarSystem.age = this.getYearInBillionsFrom(stageObject, dice);
+        solarSystem.isSelected = false;
+        solarSystem.positionX = dice.rollInterval(20,330);
+        solarSystem.positionY = dice.rollInterval(20,330);
 
         galaxy.solarSystems.push(solarSystem);
         return solarSystem;

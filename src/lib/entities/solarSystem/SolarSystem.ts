@@ -6,5 +6,8 @@ export class SolarSystem extends Entity{
     stage: string;
     stageDescription: string;
     age: number;
+    isSelected: boolean;
+    positionX: number;
+    positionY: number;
 
 }

@@ -1,14 +1,21 @@
 <script>
-
     import {SolarSystemCreator} from "$lib/entities/solarSystem/SolarSystemCreator.ts";
+    import {selectedSystem} from "./systemStore.ts";
 
     export let entity;
     $: noSystem = entity.solarSystems.length === 0 && entity.isAlreadyScannedForSystems;
+    let selectedSolarSystem = null;
 
     function scan() {
-            SolarSystemCreator.addTo(entity);
-            entity = entity;
-            console.log("Scanned systems: ", entity.systems);
+        let solarSystem = SolarSystemCreator.addTo(entity);
+        selectedSolarSystem = solarSystem;
+        selectedSystem.set(solarSystem);
+        entity = entity;
+    }
+
+    function selectSystem(system) {
+        selectedSolarSystem = system;
+        selectedSystem.set(system);
     }
 </script>
 
@@ -22,8 +29,8 @@
                 <p>No systems found</p>
             {/if}
             {#each entity.solarSystems as system}
-                <li class="entity-field">
-                    <button class="field-name">{system.id}: {system.name}</button>
+                <li class="entity-field {selectedSolarSystem === system ? 'selected' : ''}">
+                    <button class="field-name" on:click={() => selectSystem(system)}>{system.id}: {system.name}</button>
                 </li>
             {/each}
         </ul>
@@ -37,6 +44,12 @@
         color: lawngreen;
         margin-top: 10px;
         overflow: hidden;
+    }
+
+    .entity-field:hover .field-name,
+    .entity-field.selected .field-name {
+        background: lawngreen;
+        color: black;
     }
 
     .title-and-button {
