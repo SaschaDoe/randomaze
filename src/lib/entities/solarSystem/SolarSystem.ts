@@ -1,4 +1,5 @@
 import {Entity} from "../Entity";
+import {Planet} from "../planet/Planet";
 
 export class SolarSystem extends Entity{
     name: string;
@@ -9,5 +10,6 @@ export class SolarSystem extends Entity{
     isSelected: boolean;
     positionX: number;
     positionY: number;
+    planets: Planet[];
 
 }

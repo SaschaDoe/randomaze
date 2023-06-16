@@ -24,6 +24,7 @@ export class SolarSystemCreator{
         solarSystem.isSelected = false;
         solarSystem.positionX = dice.rollInterval(20,330);
         solarSystem.positionY = dice.rollInterval(20,330);
+        solarSystem.planets = [];
 
         galaxy.solarSystems.push(solarSystem);
         return solarSystem;
@@ -34,5 +35,20 @@ export class SolarSystemCreator{
         let maxDuration = parseInt(stage.maxDuration);
 
         return dice.rollInterval(minDuration, maxDuration);
+    }
+
+    static create() {
+        let solarSystem = new SolarSystem();
+        solarSystem.name = "Solar System";
+        solarSystem.size = "medium";
+        solarSystem.stage = "mainSequence";
+        solarSystem.stageDescription = "The main sequence is sometimes called the hydrogen-burning sequence, because it is the part of the stellar evolution where stars get the energy they need to shine from the nuclear fusion of hydrogen into helium.";
+        solarSystem.age = 4.6;
+        solarSystem.isSelected = false;
+        solarSystem.positionX = 0;
+        solarSystem.positionY = 0;
+        solarSystem.planets = [];
+
+        return solarSystem;
     }
 }

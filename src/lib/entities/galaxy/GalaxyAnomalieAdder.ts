@@ -14,7 +14,7 @@ export class GalaxyAnomalieAdder{
         let numberOfAnomalies: number;
         if(randomNumber <= 3){
             numberOfAnomalies = 0;
-        }else if(randomNumber > 9 && randomNumber <= 15){
+        }else if(randomNumber > 4 && randomNumber <= 15){
             numberOfAnomalies = 1;
         }else if(randomNumber > 15 && randomNumber <= 18){
             numberOfAnomalies = 2;

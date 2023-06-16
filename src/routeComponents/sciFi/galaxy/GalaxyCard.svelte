@@ -20,10 +20,10 @@
         <div class="image-container">
             <img class="galaxy-image" src={galaxy.imagePath} alt="Random Galaxy">
             {#each galaxy.solarSystems as system (system.id)}
-                {#if $selectedSystem && system.id === $selectedSystem.id}
-                    <div class="solar-system-bracket" style="left: {system.positionX}px; top: {system.positionY}px;"></div>
-                {/if}
+                <div class={($selectedSystem && system.id === $selectedSystem.id) ? 'solar-system-bracket selected' : 'solar-system-bracket'}
+                     style="left: {system.positionX}px; top: {system.positionY}px;"></div>
             {/each}
+
             <div class="color-overlay" style="background: {galaxy.color};"></div>
         </div>
     </div>
@@ -44,16 +44,21 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover; /* This line ensures the aspect ratio is maintained */
+        object-fit: cover;
     }
     .solar-system-bracket {
         position: absolute;
-        border: 2px solid lawngreen; /* Adjust color as needed */
-        width: 25px; /* Adjust size as needed */
-        height: 25px; /* Adjust size as needed */
+        border: 2px solid gray;
+        width: 25px;
+        height: 25px;
         box-sizing: border-box;
-        transform: translate(-50%, -50%); /* Ensures the bracket is centered on the coordinates */
+        transform: translate(-50%, -50%);
     }
+
+    .solar-system-bracket.selected {
+        border-color: lawngreen; /* color for selected system */
+    }
+
     .galaxy-image, .color-overlay {
         position: absolute;
         top: 0;

@@ -1,10 +1,10 @@
 import {Table} from "../Table";
 
 export let SystemSuffixes = [
-    "system", "complex", "singularity", "cluster", "conflux", "continuum", "web", "lattice", "domain",
-    "expanse", "majoris", "triangle", "junction", "quartex", "radius", "thicket", "network", "vortex", "whirlpool",
-    "xone", "yards", "zone", "formation", "nexus", "galaxy", "universe", "field", "sector", "quadrant",
-    "ellipse", "orbit", "constellation"
+    "system", "complex", "singularity", "cluster", "conflux", "continuum", "lattice", "domain", "realm",
+    "expanse", "majoris", "triangle", "junction", "quartex", "radius", "thicket", "network", "vortex",
+    "zone", "formation", "nexus", "sector", "quadrant", "ellipse", "orbit", "constellation", "profit", "prime",
+    "basis", "foundation", "home", "gathering",
 ];
 
 export class SolarSystemDescriptorsTable extends Table{
