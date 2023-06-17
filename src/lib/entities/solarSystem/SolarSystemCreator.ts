@@ -4,6 +4,7 @@ import {SolarSystem} from "./SolarSystem";
 import {SolarSystemNameTable} from "../../tables/solarSystem/SolarSystemNameTable";
 import {SizeTable} from "../../tables/other/SizeTable";
 import {SolarSystemStages, SolarSystemStageTable} from "../../tables/solarSystem/SolarSystemStageTable";
+import {PlanetCreator} from "../planet/PlanetCreator";
 
 export class SolarSystemCreator{
 
@@ -24,7 +25,12 @@ export class SolarSystemCreator{
         solarSystem.isSelected = false;
         solarSystem.positionX = dice.rollInterval(20,330);
         solarSystem.positionY = dice.rollInterval(20,330);
+
         solarSystem.planets = [];
+        let numberOfPlanets = dice.rollInterval(1,10);
+        for(let i = 0; i < numberOfPlanets; i++){
+            PlanetCreator.addTo(solarSystem, dice);
+        }
 
         galaxy.solarSystems.push(solarSystem);
         return solarSystem;

@@ -7,7 +7,6 @@ export let PlanetNorwegianNouns = [
     { output: 'Ild', english: 'Fire' },
     { output: 'Vann', english: 'Water' },
     { output: 'Vind', english: 'Wind' },
-    { output: 'Himmel', english: 'Sky' },
     { output: 'Jord', english: 'Earth' },
     { output: 'Skog', english: 'Forest' },
     { output: 'Hav', english: 'Sea' },
@@ -31,16 +30,11 @@ export let PlanetNorwegianNouns = [
     { output: 'Skjønnhet', english: 'Beauty' },
     { output: 'Evighet', english: 'Eternity' },
     { output: 'Lykke', english: 'Happiness' },
-    { output: 'Frihet', english: 'Freedom' },
     { output: 'Eventyr', english: 'Adventure' },
     { output: 'Ære', english: 'Honor' },
     { output: 'Kraft', english: 'Power' },
     { output: 'Skjebne', english: 'Destiny' },
-    { output: 'Vennskap', english: 'Friendship' },
-    { output: 'Velstand', english: 'Prosperity' },
-    { output: 'Mirakel', english: 'Miracle' },
     { output: 'Tro', english: 'Belief' },
-    { output: 'Rettferdighet', english: 'Justice' },
 ];
 
 export class PlanetNorwegianNounsTable extends Table{

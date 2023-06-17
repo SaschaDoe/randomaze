@@ -60,6 +60,15 @@
             showSection = lastMobileSection; // Restore last shown section when resizing back to small
         }
     });
+
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
+
+    function changeEntity() {
+        console.log('change Entity in SciFiCard');
+        dispatch('changeEntity');
+    }
+
 </script>
 
 <div class="container">
@@ -79,7 +88,7 @@
 
             {#each components as component (component.name)}
                 {#if component.name === currentTab}
-                    <svelte:component this={component.component} entity={entity} />
+                    <svelte:component this={component.component} entity={entity} on:changeEntity={changeEntity} />
                 {/if}
             {/each}
         </div>

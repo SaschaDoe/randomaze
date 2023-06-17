@@ -1,7 +1,7 @@
 import {Table} from "../Table";
 export let PlanetGreekNouns = [
     { output: 'phōt', english: 'Light' },
-    { output: 'eirēn', english: 'Peace' },
+    { output: 'eir', english: 'Peace' },
     { output: 'sidēr', english: 'Iron' },
     { output: 'pyr', english: 'Fire' },
     { output: 'hydr', english: 'Water' },
@@ -11,7 +11,7 @@ export let PlanetGreekNouns = [
     { output: 'dendr', english: 'Tree' },
     { output: 'thálass', english: 'Sea' },
     { output: 'hēl', english: 'Sun' },
-    { output: 'selēn', english: 'Moon' },
+    { output: 'sel', english: 'Moon' },
     { output: 'astr', english: 'Star' },
     { output: 'chrys', english: 'Gold' },
     { output: 'argyr', english: 'Silver' },
@@ -29,12 +29,10 @@ export let PlanetGreekNouns = [
     { output: 'arete', english: 'Virtue' },
     { output: 'soph', english: 'Wisdom' },
     { output: 'thar', english: 'Courage' },
-    { output: 'erota', english: 'Love' },
-    { output: 'hero', english: 'Hero' },
-    { output: 'kataklysmos', english: 'Cataclysm' },
-    { output: 'doxa', english: 'Glory' },
+    { output: 'kataklys', english: 'Cataclysm' },
+    { output: 'dox', english: 'Glory' },
     { output: 'thavm', english: 'Wonder' },
-    { output: 'tele', english: 'Distance' },
+    { output: 'tel', english: 'Distance' },
     { output: 'zōē', english: 'Life' },
     { output: 'phil', english: 'Friend' },
 ];

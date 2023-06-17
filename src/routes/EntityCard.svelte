@@ -5,6 +5,7 @@
     import ExtendedCharacterCard from "./ExtendedCharacterCard.svelte";
     import SolarSystemCard from "../routeComponents/sciFi/solarSystem/SolarSystemCard.svelte";
     import GalaxyCard from "../routeComponents/sciFi/galaxy/GalaxyCard.svelte";
+    import {selectedSystem} from "../routeComponents/sciFi/galaxy/systemStore.ts";
 
     let showDeleteModal = false;
     let showDetailsModal = false;
@@ -20,11 +21,20 @@
     }
 
     function closeDeleteModal() {
+        console.log('closeDeleteModal inside EntityCard');
         showDeleteModal = false;
     }
 
     function closeDetailsModal() {
         showDetailsModal = false;
+    }
+
+    function changeEntity(){
+        console.log('closeDetailsModal inside EntityCard');
+        entity = $selectedSystem;
+        console.log('select system inside EntityCard');
+        console.log(entity);
+        type = "solarSystem";
     }
 
     function openDetailsModal() {
@@ -74,12 +84,11 @@
                 <ExtendedCharacterCard character={entity}/>
             {/if}
             {#if type === 'galaxy'}
-                <GalaxyCard galaxy={entity}/>
+                <GalaxyCard on:changeEntity={changeEntity} galaxy={entity}/>
             {/if}
             {#if type === 'solarSystem'}
-                <SolarSystemCard galaxy={entity}/>
+                <SolarSystemCard solarSystem={entity}/>
             {/if}
-
         </Modal>
     {/if}
 </div>

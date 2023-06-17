@@ -85,7 +85,6 @@ function deleteEntity(event) {
         case 'culture':
             campaign.cultures = campaign.cultures.filter(c => c.id !== id);
             break;
-        // Add additional cases for other types here
         default:
             console.error(`Unknown entity type: ${type}`);
     }

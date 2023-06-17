@@ -47,4 +47,14 @@ describe("SolarSystemCreator", () => {
 
         expect(solarSystem.stage).toEqual("molecular cloud");
     });
+
+    it("should create solar system with 1 planet",  () => {
+
+        mediator.getHandler(HandlerType.GalaxyCreator).handle();
+        let fakeDice = new FakeDice().withRollResult(1);
+        let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
+
+        expect(solarSystem.planets.length).toEqual(1);
+    });
+
 });

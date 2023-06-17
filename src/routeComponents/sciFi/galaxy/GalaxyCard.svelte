@@ -4,17 +4,25 @@
     import GalaxyAddSystem from "./GalaxyAddSystem.svelte";
     import SciFiCard from "../SciFiCard.svelte";
     import {selectedSystem} from "./systemStore.ts";
+    import {createEventDispatcher, onMount} from "svelte";
     export let galaxy;
+    const dispatch = createEventDispatcher();
 
     let components = [
         { name: 'details', component: GalaxyDetails },
         { name: 'systems', component: GalaxyAddSystem },
         { name: 'anomalies', component: GalaxyAnomalies },
     ];
+
+    function changeEntity() {
+        console.log("closeDetailsModal in GalaxyCard");
+        dispatch("changeEntity");
+    }
+
 </script>
 
 
-<SciFiCard entity={galaxy} components={components} defaultTab="details">
+<SciFiCard entity={galaxy} components={components} defaultTab="details" on:changeEntity={changeEntity}>
     <div slot="image">
         <div class="galaxy-name-id">{galaxy.id}: {galaxy.name}</div>
         <div class="image-container">

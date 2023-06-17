@@ -3,6 +3,7 @@
     const dispatch = createEventDispatcher();
 
     function closeModal() {
+        console.log('close modal');
         dispatch('close');
     }
 </script>

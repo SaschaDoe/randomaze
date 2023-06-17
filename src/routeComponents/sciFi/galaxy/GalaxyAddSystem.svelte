@@ -1,10 +1,16 @@
 <script>
     import {SolarSystemCreator} from "$lib/entities/solarSystem/SolarSystemCreator.ts";
+    import {createEventDispatcher, onMount} from "svelte";
     import {selectedSystem} from "./systemStore.ts";
+    import Modal from "../../../routes/Modal.svelte";
+    import SolarSystemCard from "../solarSystem/SolarSystemCard.svelte";
 
     export let entity;
     $: noSystem = entity.solarSystems.length === 0 && entity.isAlreadyScannedForSystems;
     let selectedSolarSystem = null;
+
+
+    const dispatch = createEventDispatcher();
 
     function scan() {
         let solarSystem = SolarSystemCreator.addTo(entity);
@@ -13,10 +19,31 @@
         entity = entity;
     }
 
+    let showSolarSystemModal = false;
+    let selectCounter = 0;
     function selectSystem(system) {
+        if($selectedSystem === system){
+            selectCounter++;
+        }
+
+        if(selectCounter === 1) {
+            selectCounter = 0;
+            console.log("closeModal in GalaxyAddSystems");
+            dispatch('changeEntity');
+            showSolarSystemModal = true;
+            return;
+        }
         selectedSolarSystem = system;
         selectedSystem.set(system);
     }
+
+    function closeSolarSystemModal() {
+        showSolarSystemModal = false;
+    }
+
+    onMount (() => {
+        selectedSolarSystem = $selectedSystem;
+    })
 </script>
 
 <div class="entity-details">
@@ -36,6 +63,12 @@
         </ul>
     </div>
 </div>
+
+{#if showSolarSystemModal}
+    <Modal on:close={closeSolarSystemModal}>
+        <SolarSystemCard solarSystem={selectedSolarSystem}/>
+    </Modal>
+{/if}
 
 <style>
     .entity-details {

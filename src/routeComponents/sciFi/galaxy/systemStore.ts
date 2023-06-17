@@ -1,3 +1,4 @@
-import { writable } from 'svelte/store'; // Corrected import path
+import { writable } from 'svelte/store';
 
-export let selectedSystem = writable(null);
+export const selectedSystem = writable(null);
+export const isSystemSelected = writable(false);

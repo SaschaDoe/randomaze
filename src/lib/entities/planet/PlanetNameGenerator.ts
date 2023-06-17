@@ -1,4 +1,4 @@
-import {LatinSuffixes, LatinSuffixesTable} from "../../tables/other/LatinSuffixesTable";
+import {Suffixes, SuffixesTable} from "../../tables/other/SuffixesTable";
 import {Dice} from "../../tables/Dice";
 import {PlanetArabicNouns, PlanetArabicNounsTable} from "../../tables/planet/PlanetArabicNounsTable";
 import {PlanetGreekNouns, PlanetGreekNounsTable} from "../../tables/planet/PlanetGreekNounsTable";
@@ -7,6 +7,7 @@ import {PlanetJapaneseNouns, PlanetJapaneseNounsTable} from "../../tables/planet
 import {PlanetLatinNouns, PlanetLatinNounsTable} from "../../tables/planet/PlanetLatinNounsTable";
 import {PlanetNorwegianNouns, PlanetNorwegianNounsTable} from "../../tables/planet/PlanetNordicNounsTable";
 import {PlanetSanskritNouns, PlanetSanskritNounsTable} from "../../tables/planet/PlanetSanskritNounsTable";
+import {Prefixes, PrefixTable} from "../../tables/other/PrefixTable";
 
 export let CultureNameTable: any;
 CultureNameTable = {
@@ -32,7 +33,7 @@ export class PlanetNameGenerator{
 
         let firstNameTranslation: string;
         let firstNameMeaning: string;
-        if (CultureNameTable[cultureForNameFirstPart][1].find((noun) => noun.output === firstName)) {
+        if (CultureNameTable[cultureForNameFirstPart][1].find((noun) => noun.output === firstName).transliteration) {
             firstNameTranslation = CultureNameTable[cultureForNameFirstPart][1].find((noun) => noun.output === firstName).transliteration;
         } else {
             firstNameTranslation = firstName;
@@ -42,24 +43,40 @@ export class PlanetNameGenerator{
         let secondName = CultureNameTable[cultureForNameSecondPart][0].roll(dice).string;
         let secondNameTranslation = "";
         let secondNameMeaning = "";
-        if (CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName)) {
+        if (CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName).transliteration) {
             secondNameTranslation = CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName).transliteration;
         } else {
             secondNameTranslation = secondName;
         }
         secondNameMeaning = CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName).english;
 
-        let isSuffix = dice.roll(2) === 1;
-        let suffix = "";
-        let suffixMeaning = "";
-        if(isSuffix){
-            suffix = new LatinSuffixesTable().roll(dice).string;
-            suffixMeaning = LatinSuffixes.find((s) => s.suffix === s)?.meaning;
+        let isPrefix = dice.roll(4) === 1;
+        let prefixName = "";
+        let prefixTranslation = "";
+        let prefixMeaning = "";
+
+        if(isPrefix){
+            prefixName = new PrefixTable().roll(dice).string;
+            let prefix = Prefixes.find((p) => p.prefix === prefixName);
+            prefixTranslation =prefix.transliteration;
+            prefixMeaning = prefix.meaning;
         }
 
-        let planetName = firstName + secondName + suffix
-        let planetNameTranslation = `(${firstNameTranslation} ${secondNameTranslation})`;
-        let planetNameMeaning = `(${firstNameMeaning} ${secondNameMeaning}${suffix}${suffix ? suffixMeaning : ""})`;
+        let isSuffix = dice.roll(4) === 1;
+        let suffixName = "";
+        let suffixTranslation = "";
+        let suffixMeaning = "";
+
+        if(isSuffix){
+            suffixName = new SuffixesTable().roll(dice).string;
+            let suffix = Suffixes.find((p) => p.suffix === suffixName);
+            suffixTranslation =suffix.transliteration;
+            suffixMeaning = suffix.meaning;
+        }
+
+        let planetName = prefixName + firstName + secondName + suffixName
+        let planetNameTranslation = prefixTranslation + firstNameTranslation + secondNameTranslation + suffixTranslation;
+        let planetNameMeaning = prefixMeaning + firstNameMeaning + secondNameMeaning + suffixMeaning;
         return [planetName, planetNameTranslation, planetNameMeaning];
     }
 }
