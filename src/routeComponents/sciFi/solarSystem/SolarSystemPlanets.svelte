@@ -1,7 +1,42 @@
 <script>
-    export let entity;
+    import {selectedPlanet} from "./planetStore.ts";
+    import {onMount} from "svelte";
+    import {selectedSystem} from "../galaxy/systemStore.ts";
+    import Modal from "../../../routes/Modal.svelte";
+    import PlanetCard from "../planet/PlanetCard.svelte";
 
+    export let entity;
+    let currentSelectedPlanet = {};
     $: noSystem = entity.planets.length < 1;
+    let selectCounter = 0;
+    let showPlanetModal = false;
+    function selectSystem(planet) {
+        if($selectedPlanet === planet){
+            selectCounter++;
+        }
+
+        if(selectCounter === 1) {
+            selectCounter = 0;
+            console.log("closeModal in GalaxyAddSystems");
+
+            showPlanetModal = true;
+            return;
+        }
+        currentSelectedPlanet = planet;
+        selectedPlanet.set(planet);
+
+    }
+
+    onMount (() => {
+        currentSelectedPlanet = $selectedSystem;
+    })
+
+
+    function closePlanetModal() {
+        showPlanetModal = false;
+    }
+
+    
 </script>
 
 <div class="entity-details">
@@ -14,7 +49,7 @@
             {/if}
             {#each entity.planets as planet}
                 <li class="entity-field">
-                    <button class="field-name">
+                    <button class="field-name" on:click={() => selectSystem(planet)}>
                         <span><strong>{planet.id}: {planet.name}</strong></span>
                         {#if planet.nameTranslation !== "-"}
                             <span>{planet.nameTranslation} </span>
@@ -26,6 +61,12 @@
         </ul>
     </div>
 </div>
+
+{#if showPlanetModal}
+    <Modal on:close={closePlanetModal}>
+        <PlanetCard planet={$selectedPlanet}/>
+    </Modal>
+{/if}
 
 <style>
     .entity-details {
