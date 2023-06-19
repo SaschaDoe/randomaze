@@ -8,12 +8,15 @@ export class Campaign{
     public lastId: number;
     public galaxies: Galaxy[];
     constructor(){
+        this.reset();
+    }
+
+    public reset(){
         this.party = [];
         this.cultures = [];
         this.galaxies = [];
         this.lastId = 0;
     }
-
 
 
 }

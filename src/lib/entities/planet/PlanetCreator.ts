@@ -4,6 +4,7 @@ import {Planet} from "./Planet";
 import {SolarSystem} from "../solarSystem/SolarSystem";
 import {PlanetTypeTable} from "../../tables/planet/PlanetTypeTable";
 import {PlanetNameGenerator} from "./PlanetNameGenerator";
+import {Save} from "../../persistence/Saver";
 
 export class PlanetCreator{
     static addTo(solarSystem: SolarSystem, dice?: Dice): Planet{
@@ -15,6 +16,7 @@ export class PlanetCreator{
         planet.nameMeaning = planetName.getMeaning();
 
         solarSystem.planets.push(planet);
+        Save();
         return planet;
     }
 

@@ -18,7 +18,7 @@ import {
     PlanetSanskritAdjectives,
     PlanetSanskritAdjectivesTable
 } from "../../tables/planet/PlanetSanskritAdjectivesTable";
-import {PlanetChineseAdjectivesTable} from "../../tables/planet/PlanetChineseAdjectivesTable";
+import {PlanetChineseAdjectives, PlanetChineseAdjectivesTable} from "../../tables/planet/PlanetChineseAdjectivesTable";
 import {ComplexName} from "../name/ComplexName";
 
 export let CultureNameTable: any;
@@ -30,7 +30,7 @@ CultureNameTable = {
     latin: [new PlanetLatinNounsTable(), PlanetLatinNouns],
     nordic: [new PlanetNorwegianNounsTable(), PlanetNorwegianNouns],
     sanskrit: [new PlanetSanskritNounsTable(), PlanetSanskritNouns, new PlanetSanskritAdjectivesTable(), PlanetSanskritAdjectives],
-    chinese: [new PlanetChineseNounsTable(), PlanetChineseNouns, new PlanetChineseAdjectivesTable(), PlanetChineseNouns],
+    chinese: [new PlanetChineseNounsTable(), PlanetChineseNouns, new PlanetChineseAdjectivesTable(), PlanetChineseAdjectives],
 }
 
 export class PlanetNameGenerator{

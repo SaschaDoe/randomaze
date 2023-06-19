@@ -5,6 +5,7 @@ import {SolarSystemNameTable} from "../../tables/solarSystem/SolarSystemNameTabl
 import {SizeTable} from "../../tables/other/SizeTable";
 import {SolarSystemStages, SolarSystemStageTable} from "../../tables/solarSystem/SolarSystemStageTable";
 import {PlanetCreator} from "../planet/PlanetCreator";
+import {Save} from "../../persistence/Saver";
 
 export class SolarSystemCreator{
 
@@ -33,6 +34,7 @@ export class SolarSystemCreator{
         }
 
         galaxy.solarSystems.push(solarSystem);
+        Save().then(r => {console.log("saved: "); console.log(r)});
         return solarSystem;
     }
 

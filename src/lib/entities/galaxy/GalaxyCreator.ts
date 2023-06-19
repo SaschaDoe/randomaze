@@ -11,6 +11,7 @@ import {CssColors} from "../../tables/other/ColoursTable";
 import {Sizes, SizeTable} from "../../tables/other/SizeTable";
 import {AgeTable} from "../../tables/other/AgeTable";
 import {EclipticGalaxyImagesTable} from "../../tables/galaxy/EclipticGalaxyImagesTable";
+import {Save} from "../../persistence/Saver";
 
 
 
@@ -76,6 +77,7 @@ export class GalaxyCreator implements CampaignHandler{
         galaxy.isAlreadyScannedForAnomalies = false;
         galaxy.solarSystems = [];
         this.campaign.galaxies.push(galaxy);
+        Save();
         return galaxy.id;
     }
 

@@ -1,17 +1,14 @@
 <script>
 import {onMount} from "svelte";
-import {Campaign} from "$lib/entities/Campaign.ts";
 import {IDGenerator} from "$lib/entities/IDGenerator.ts";
-import {loadCampaign, saveCampaign} from "$lib/persistence/IndexedDB.ts";
-import { campaignData } from "$lib/stores";
 import Modal from "./Modal.svelte";
 import { tick } from 'svelte';
 import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
 import EntityCard from "./EntityCard.svelte";
 import EntitySideIndex from "./EntitySideIndex.svelte";
+import {campaignStore, Load, PersistantCmpaign, Save} from "$lib/persistence/Saver.ts";
 
-let campaign = new Campaign();
-let mediator = new Mediator(campaign);
+let mediator = new Mediator(PersistantCmpaign);
 
 let isModalOpen = false;
 
@@ -27,6 +24,8 @@ function closeModal() {
 function scrollToNewMember(id) {
     tick().then(() => {
         const element = document.getElementById(id);
+        console.log("scrolling to element: ");
+        console.log(element);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
@@ -39,7 +38,7 @@ function scrollToEntity(event) {
 
 onMount(async () => {
     console.log("mounted");
-    await onLoad();
+    mediator = await Load();
 });
 
 function addPartyMember() {
@@ -54,24 +53,24 @@ function addCulture() {
 
 function addGalaxy() {
     let galaxyId = mediator.getHandler(HandlerType.GalaxyCreator).handle();
+    console.log("generated new galaxy with id "+galaxyId)
     addEntity(galaxyId);
 }
 
-function addEntity(id){
+async function addEntity(id){
     console.log("generated new entity with id "+id);
-    campaign = campaign;
-    onSave();
+    await Save();
     isModalOpen = false;
+    await tick();
     scrollToNewMember(id);
 }
 
-
 function reset() {
     console.log("resetting");
-    campaign = new Campaign();
-    mediator = new Mediator(campaign);
+    $campaignStore.reset();
+    mediator = new Mediator($campaignStore);
     IDGenerator.getInstance().setId(0)
-    onSave();
+    Save();
 }
 
 function deleteEntity(event) {
@@ -80,46 +79,15 @@ function deleteEntity(event) {
 
     switch (type) {
         case 'character':
-            campaign.party = campaign.party.filter(p => p.id !== id);
+            $campaignStore.party = $campaignStore.party.filter(p => p.id !== id);
             break;
         case 'culture':
-            campaign.cultures = campaign.cultures.filter(c => c.id !== id);
+            $campaignStore.cultures = $campaignStore.cultures.filter(c => c.id !== id);
             break;
         default:
             console.error(`Unknown entity type: ${type}`);
     }
-
-    campaign = {...campaign};
-    onSave();
-}
-
-async function onSave() {
-    console.log("onSave");
-    campaign.lastId = IDGenerator.getInstance().getCurrentId();
-    const serializedCampaign = JSON.stringify(campaign);
-    console.log("saving campaign: "+serializedCampaign);
-    await saveCampaign(serializedCampaign);
-    campaignData.set(serializedCampaign);
-}
-
-async function onLoad() {
-    console.log("try to load campaign");
-    const serializedCampaign = await loadCampaign();
-    if (serializedCampaign) {
-        try{
-            campaign = JSON.parse(serializedCampaign);
-        } catch (e) {
-            console.log("error parsing campaign in onLoad")
-            console.log(e);
-            campaign = new Campaign();
-        }
-        mediator = new Mediator(campaign);
-        IDGenerator.getInstance().setId(campaign.lastId);
-        campaignData.set(serializedCampaign);
-        console.log("loaded campaign");
-    } else {
-        console.log("no campaign found");
-    }
+    Save();
 }
 
 let showResetModal = false;
@@ -140,7 +108,7 @@ function openResetModal(e) {
 </svelte:head>
 
 <div class="main-container">
-    <EntitySideIndex campaign={campaign}></EntitySideIndex>
+    <EntitySideIndex campaign={$campaignStore}></EntitySideIndex>
     <div class="home-header">
 
         <button class="reset-button" on:click={openResetModal}>Reset</button>
@@ -164,32 +132,32 @@ function openResetModal(e) {
         {/if}
 
         <div class="character-list">
-            {#if campaign.party.length > 0}
+            {#if $campaignStore.party.length > 0}
                 <h2 id="Characters">Characters</h2>
                 <h2 id="Party">Party</h2>
                 <ul>
-                    {#each campaign.party as character}
+                    {#each $campaignStore.party as character}
                         <li id={character.id}>
                             <EntityCard entity={character} type="character" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
                         </li>
                     {/each}
                 </ul>
             {/if}
-            {#if campaign.cultures.length > 0}
+            {#if $campaignStore.cultures.length > 0}
                 <h2 id="Cultures">Cultures</h2>
                 <ul>
 
-                    {#each campaign.cultures as culture}
+                    {#each $campaignStore.cultures as culture}
                         <li id={culture.id}>
                             <EntityCard entity={culture} type="culture" on:deleteEntity={deleteEntity} />
                         </li>
                     {/each}
                 </ul>
             {/if}
-            {#if campaign.galaxies.length > 0}
+            {#if $campaignStore.galaxies.length > 0}
                 <h2 id="Galaxies">Galaxies</h2>
                 <ul>
-                    {#each campaign.galaxies as galaxy}
+                    {#each $campaignStore.galaxies as galaxy}
                         <li id={galaxy.id}>
                             <EntityCard entity={galaxy} type="galaxy" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
                         </li>
