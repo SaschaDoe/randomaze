@@ -1,7 +1,7 @@
 <script>
     export let entity;
 
-    $: noSystem = entity.planets.length === 1;
+    $: noSystem = entity.planets.length < 1;
 </script>
 
 <div class="entity-details">

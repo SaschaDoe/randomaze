@@ -10,9 +10,9 @@ export class PlanetCreator{
         let planet = new Planet();
         planet.type = new PlanetTypeTable().roll(dice).string;
         let planetName = PlanetNameGenerator.generate(dice);
-        planet.name = planetName[0];
-        planet.nameTranslation = planetName[1];
-        planet.nameMeaning = planetName[2];
+        planet.name = planetName.getName();
+        planet.nameTranslation = planetName.getTransliteration();
+        planet.nameMeaning = planetName.getMeaning();
 
         solarSystem.planets.push(planet);
         return planet;

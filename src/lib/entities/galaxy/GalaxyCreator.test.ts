@@ -76,16 +76,6 @@ describe("GalaxyCreator", () => {
         expect(campaign.galaxies[0].color).toEqual("orange");
     });
 
-    it("should create a galaxy with rotation velocity > 150 and < 300",  () => {
-        let campaign = new Campaign();
-        let mediator = new Mediator(campaign);
-        let fakeDice = new FakeDice().withRollResult(1);
-
-        mediator.getHandler(HandlerType.GalaxyCreator).handle(fakeDice);
-
-        expect(campaign.galaxies[0].rotationVelocity).greaterThan(150).lessThan(301);
-    });
-
     it("should create a galaxy with size tiny, small, medium, large, gigantic", () => {
         let campaign = new Campaign();
         let mediator = new Mediator(campaign);

@@ -25,10 +25,11 @@ describe("PlanetCreator", () => {
         expect(planet.type).toEqual("desert");
     })
 
-    it("should create a planet with name ... given roll 0",  () => {
+    it("should create a planet with name nur nur given roll 0",  () => {
         planet = PlanetCreator.addTo(solarSystem, fakeDice);
+
         expect(planet.name).toEqual("نورنور");
-        expect(planet.nameTranslation).toEqual("(Nur Nur)");
-        expect(planet.nameMeaning).toEqual("(Light Light)");
+        expect(planet.nameTranslation).toEqual("nur nur");
+        expect(planet.nameMeaning).toEqual("(Light)(Light)");
     })
 });

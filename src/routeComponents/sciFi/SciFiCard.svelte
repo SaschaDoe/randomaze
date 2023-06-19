@@ -61,13 +61,6 @@
         }
     });
 
-    import { createEventDispatcher } from 'svelte';
-    const dispatch = createEventDispatcher();
-
-    function changeEntity() {
-        console.log('change Entity in SciFiCard');
-        dispatch('changeEntity');
-    }
 
 </script>
 
@@ -88,7 +81,7 @@
 
             {#each components as component (component.name)}
                 {#if component.name === currentTab}
-                    <svelte:component this={component.component} entity={entity} on:changeEntity={changeEntity} />
+                    <svelte:component this={component.component} entity={entity}/>
                 {/if}
             {/each}
         </div>

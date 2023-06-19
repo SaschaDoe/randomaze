@@ -29,7 +29,7 @@
         if(selectCounter === 1) {
             selectCounter = 0;
             console.log("closeModal in GalaxyAddSystems");
-            dispatch('changeEntity');
+
             showSolarSystemModal = true;
             return;
         }

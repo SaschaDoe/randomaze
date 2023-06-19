@@ -25,4 +25,8 @@ export class FakeDice extends Dice{
         this.rollResults = numbers;
         return this;
     }
+
+    rollInterval(min, max): any {
+        return this.roll();
+    }
 }

@@ -39,7 +39,7 @@ export let SolarSystemStages = [
     },
     {
         name: "black dwarf",
-        description: "In theory, after a very long time, the white dwarf will cool enough to become a black dwarf. However, the universe is not old enough for any black dwarfs to exist yet.",
+        description: "After a very long time, a white dwarf will cool enough to become a black dwarf.",
         minDuration: "1000000",
         maxDuration: "100000000",
     }

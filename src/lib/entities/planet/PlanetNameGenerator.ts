@@ -8,75 +8,154 @@ import {PlanetLatinNouns, PlanetLatinNounsTable} from "../../tables/planet/Plane
 import {PlanetNorwegianNouns, PlanetNorwegianNounsTable} from "../../tables/planet/PlanetNordicNounsTable";
 import {PlanetSanskritNouns, PlanetSanskritNounsTable} from "../../tables/planet/PlanetSanskritNounsTable";
 import {Prefixes, PrefixTable} from "../../tables/other/PrefixTable";
+import {PlanetChineseNouns, PlanetChineseNounsTable} from "../../tables/planet/PlanetChineseNounsTable";
+import {PlanetArabicAdjectives, PlanetArabicAdjectivesTable} from "../../tables/planet/PlanetArabicAdjectivesTable";
+import {
+    PlanetJapaneseAdjectives,
+    PlanetJapaneseAdjectivesTable
+} from "../../tables/planet/PlanetJapaneseAdjectivesTable";
+import {
+    PlanetSanskritAdjectives,
+    PlanetSanskritAdjectivesTable
+} from "../../tables/planet/PlanetSanskritAdjectivesTable";
+import {PlanetChineseAdjectivesTable} from "../../tables/planet/PlanetChineseAdjectivesTable";
+import {ComplexName} from "../name/ComplexName";
 
 export let CultureNameTable: any;
 CultureNameTable = {
-    arabic: [new PlanetArabicNounsTable(), PlanetArabicNouns],
+    arabic: [new PlanetArabicNounsTable(), PlanetArabicNouns, new PlanetArabicAdjectivesTable(), PlanetArabicAdjectives],
     greek: [new PlanetGreekNounsTable(), PlanetGreekNouns],
     inuit: [new PlanetInuitNounsTable(), PlanetInuitNouns],
-    japanese: [new PlanetJapaneseNounsTable(), PlanetJapaneseNouns],
+    japanese: [new PlanetJapaneseNounsTable(), PlanetJapaneseNouns, new PlanetJapaneseAdjectivesTable(), PlanetJapaneseAdjectives],
     latin: [new PlanetLatinNounsTable(), PlanetLatinNouns],
     nordic: [new PlanetNorwegianNounsTable(), PlanetNorwegianNouns],
-    sanskrit: [new PlanetSanskritNounsTable(), PlanetSanskritNouns],
+    sanskrit: [new PlanetSanskritNounsTable(), PlanetSanskritNouns, new PlanetSanskritAdjectivesTable(), PlanetSanskritAdjectives],
+    chinese: [new PlanetChineseNounsTable(), PlanetChineseNouns, new PlanetChineseAdjectivesTable(), PlanetChineseNouns],
 }
 
 export class PlanetNameGenerator{
-    public static generate(dice?: Dice): string[]{
+    public static generate(dice?: Dice): ComplexName{
         if(!dice){
             dice = new Dice();
         }
-        let cultureNames = ["arabic", "greek", "inuit", "japanese", "latin", "nordic", "sanskrit"];
-        let cultureForNameFirstPart = cultureNames[dice.roll(cultureNames.length)];
-        let cultureForNameSecondPart = cultureNames[dice.roll(cultureNames.length)];
 
-        let firstName = CultureNameTable[cultureForNameFirstPart][0].roll(dice).string;
+        let complexName = new ComplexName();
 
-        let firstNameTranslation: string;
-        let firstNameMeaning: string;
-        if (CultureNameTable[cultureForNameFirstPart][1].find((noun) => noun.output === firstName).transliteration) {
-            firstNameTranslation = CultureNameTable[cultureForNameFirstPart][1].find((noun) => noun.output === firstName).transliteration;
-        } else {
-            firstNameTranslation = firstName;
-        }
-        firstNameMeaning = CultureNameTable[cultureForNameFirstPart][1].find((noun) => noun.output === firstName).english;
+        complexName = this.addPrefix(dice, complexName);
 
-        let secondName = CultureNameTable[cultureForNameSecondPart][0].roll(dice).string;
-        let secondNameTranslation = "";
-        let secondNameMeaning = "";
-        if (CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName).transliteration) {
-            secondNameTranslation = CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName).transliteration;
-        } else {
-            secondNameTranslation = secondName;
-        }
-        secondNameMeaning = CultureNameTable[cultureForNameSecondPart][1].find((noun) => noun.output === secondName).english;
+        complexName = this.addAdjective(dice, complexName);
+        console.log("with adjective: " +complexName.getTransliteration())
 
-        let isPrefix = dice.roll(4) === 1;
-        let prefixName = "";
-        let prefixTranslation = "";
-        let prefixMeaning = "";
+        complexName = this.addNouns(dice, complexName);
+        console.log("with noun: " +complexName.getTransliteration())
 
-        if(isPrefix){
-            prefixName = new PrefixTable().roll(dice).string;
-            let prefix = Prefixes.find((p) => p.prefix === prefixName);
-            prefixTranslation =prefix.transliteration;
-            prefixMeaning = prefix.meaning;
-        }
+        complexName = this.addSuffix(dice, complexName);
 
-        let isSuffix = dice.roll(4) === 1;
-        let suffixName = "";
-        let suffixTranslation = "";
-        let suffixMeaning = "";
+        return complexName;
 
-        if(isSuffix){
-            suffixName = new SuffixesTable().roll(dice).string;
+    }
+
+    private static addSuffix(dice: Dice, complexName: ComplexName) {
+        let isSuffix = dice.roll(5) === 1;
+        if (isSuffix) {
+            let suffixName = new SuffixesTable().roll(dice).string;
             let suffix = Suffixes.find((p) => p.suffix === suffixName);
-            suffixTranslation =suffix.transliteration;
-            suffixMeaning = suffix.meaning;
+            let suffixTranslation = suffix.transliteration;
+            let suffixMeaning = suffix.meaning;
+            complexName = complexName.with(suffixName, suffixTranslation, suffixMeaning);
+        }
+        return complexName;
+    }
+
+    private static addAdjective(dice: Dice, complexName: ComplexName) {
+        let numberOfAdjectives = dice.roll(2);
+        if (numberOfAdjectives === 1) {
+            console.log("Adding adjective")
+            let adjectieCultures = this.getCulturesWithAdjectives(CultureNameTable);
+            let entry = this.randomEntryAdjectiveFrom(adjectieCultures, dice);
+            console.log(entry);
+            let adjective = entry.output;
+            console.log("Adjective: " + adjective)
+            let transliteration;
+            if(entry.transliteration){
+                transliteration = entry.transliteration;
+            }else{
+                transliteration = adjective;
+            }
+            let meaning = entry.english;
+            complexName = complexName.with(adjective, transliteration, meaning);
+        }
+        return complexName;
+    }
+
+    private static addNouns(dice: Dice, complexName: ComplexName) {
+        let randomNumber = dice.roll(20);
+        let numberOfNouns = 1;
+        if (randomNumber >= 18) {
+            numberOfNouns = 2;
         }
 
-        let planetName = prefixName + firstName + secondName + suffixName
-        let planetNameTranslation = prefixTranslation + firstNameTranslation + secondNameTranslation + suffixTranslation;
-        let planetNameMeaning = prefixMeaning + firstNameMeaning + secondNameMeaning + suffixMeaning;
-        return [planetName, planetNameTranslation, planetNameMeaning];
+        for (let i = 0; i < numberOfNouns; i++) {
+            let entry = this.randomEntry(dice);
+            let noun = entry.output;
+            let transliteration = "";
+            if(entry.transliteration){
+                transliteration = entry.transliteration;
+            }else{
+                transliteration = noun;
+            }
+            let meaning = entry.english;
+
+            complexName = complexName.with(noun, transliteration, meaning);
+        }
+        return complexName;
+    }
+
+    private static addPrefix(dice: Dice, complexName: ComplexName) {
+        let isPrefix = dice.roll(5) === 1;
+        if (isPrefix) {
+            let prefixName = new PrefixTable().roll(dice).string;
+            let prefix = Prefixes.find((p) => p.prefix === prefixName);
+            let prefixTranslation = prefix.transliteration;
+            let prefixMeaning = prefix.meaning;
+            complexName = complexName.with(prefixName, prefixTranslation, prefixMeaning);
+        }
+        return complexName;
+    }
+
+    private static getCulturesWithAdjectives(cultureTable) {
+        let culturesWithAdjectives = [];
+
+        for(let culture in cultureTable) {
+            if(cultureTable[culture].length === 4) {
+                culturesWithAdjectives.push(culture);
+            }
+        }
+
+        return culturesWithAdjectives;
+    }
+
+    private static randomEntry(dice: Dice) {
+        let cultureNames = Object.keys(CultureNameTable).length;
+        let randomCultureIndex = dice.roll(cultureNames);
+        let cultureName = Object.keys(CultureNameTable)[randomCultureIndex];
+        let table = CultureNameTable[cultureName][0];
+        let noun = table.roll(dice).string;
+        let entry = CultureNameTable[cultureName][1].find((n) => n.output === noun);
+        return entry;
+    }
+
+    private static randomEntryAdjectiveFrom(cultureNames: string[], dice: Dice) {
+        let randomCultureIndex = dice.roll(cultureNames.length);
+        let cultureName = cultureNames[randomCultureIndex];
+        let table = CultureNameTable[cultureName][2];
+        console.log("adjective table: ");
+        console.log(table);
+        let adjective = table.roll(dice).string;
+        console.log("adjective: " + adjective);
+        let entry = CultureNameTable[cultureName][3].find((n) => n.output === adjective);
+        console.log("entry: ");
+        console.log(entry);
+        return entry;
     }
 }
