@@ -6,7 +6,7 @@ import { tick } from 'svelte';
 import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
 import EntityCard from "./EntityCard.svelte";
 import EntitySideIndex from "./EntitySideIndex.svelte";
-import {campaignStore, Load, PersistantCmpaign, Save} from "$lib/persistence/Saver.ts";
+import {campaignStore, Load, PersistantCmpaign, Reset, Save} from "$lib/persistence/Saver.ts";
 
 let mediator = new Mediator(PersistantCmpaign);
 
@@ -67,7 +67,7 @@ async function addEntity(id){
 
 function reset() {
     console.log("resetting");
-    $campaignStore.reset();
+    Reset();
     mediator = new Mediator($campaignStore);
     IDGenerator.getInstance().setId(0)
     Save();

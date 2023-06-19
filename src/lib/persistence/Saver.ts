@@ -47,3 +47,10 @@ export async function Load(){
     mediator = new Mediator(PersistantCmpaign);
     return mediator;
 }
+
+export async function Reset(){
+    console.log("reset campaign");
+    PersistantCmpaign = new Campaign();
+    campaignStore.set(PersistantCmpaign);
+    await Save();
+}

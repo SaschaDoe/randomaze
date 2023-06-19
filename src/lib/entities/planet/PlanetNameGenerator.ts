@@ -47,24 +47,7 @@ export class PlanetNameGenerator{
         let isDark = dice.roll(5) === 1;
 
         if(isDark){
-            const syllableCount = dice.rollInterval(1,2)
-
-            let name = "";
-
-            for (let i = 0; i < syllableCount; i++) {
-                const part = new PlanetDarkSyllablesTable().roll(dice).string;
-                name += part;
-            }
-
-            let hasPrefix = dice.roll(2) === 1;
-            if (hasPrefix) {
-                name = new PlanetDarkPrefixesTable().roll(dice).string + name;
-            } else {
-                name = name + new PlanetDarkSuffixesTable().roll(dice).string;
-            }
-
-            complexName = complexName.with(name, "-", "-");
-
+            complexName = this.generateDarkName(dice);
         }else{
             complexName = this.addPrefix(dice, complexName);
 
@@ -78,6 +61,40 @@ export class PlanetNameGenerator{
         }
         return complexName;
 
+    }
+
+    public static generateDarkName(dice?: Dice){
+        if(!dice){
+            dice = new Dice();
+        }
+        let complexName = new ComplexName();
+        const syllableCount = dice.rollInterval(1,2)
+
+        let name = "";
+
+        name = this.addSyllablesWithoutSame(syllableCount, dice, name);
+
+        let hasPrefix = dice.roll(2) === 1;
+        if (hasPrefix) {
+            name = new PlanetDarkPrefixesTable().roll(dice).string + name;
+        } else {
+            name = name + new PlanetDarkSuffixesTable().roll(dice).string;
+        }
+
+        return complexName.with(name, "-", "-");
+    }
+
+    private static addSyllablesWithoutSame(syllableCount, dice: Dice, name: string) {
+        let previousPart = "";
+        for (let i = 0; i < syllableCount; i++) {
+            let part;
+            do {
+                part = new PlanetDarkSyllablesTable().roll(dice).string;
+            } while (part === previousPart);
+            name += part;
+            previousPart = part;
+        }
+        return name;
     }
 
     private static addSuffix(dice: Dice, complexName: ComplexName) {
