@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import * as THREE from 'three';
+    import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise';
 
     let container;
     let selectedPlanet = 'desert'; // Default planet type
@@ -19,8 +20,26 @@
     let planet;
 
     function createPlanet() {
-        const geometry = new THREE.SphereGeometry(1, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ color: baseColors[selectedPlanet].r * 65536 + baseColors[selectedPlanet].g * 256 + baseColors[selectedPlanet].b });
+        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const noise = new ImprovedNoise();
+        const texture = new THREE.DataTexture(new Uint8Array(64 * 64 * 4), 64, 64, THREE.RGBAFormat);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+
+        for (let i = 0; i < 64; i++) {
+            for (let j = 0; j < 64; j++) {
+                const pixelIndex = (i + j * 64) * 4;
+                const noiseValue = noise.noise(i / 10, j / 10, 0) * 0.5 + 0.5;
+                const color = baseColors[selectedPlanet];
+                const smoothness = Math.pow(Math.sin(i * Math.PI / 64), 2) * Math.pow(Math.sin(j * Math.PI / 64), 2); // Smoothness factor
+                const brightness = 0.7 + 0.3 * smoothness; // Adjust the brightness factor to control the edge darkness
+                texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
+                texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
+                texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
+                texture.image.data[pixelIndex + 3] = 255;
+            }
+        }
+
+        texture.needsUpdate = true;
         planet = new THREE.Mesh(geometry, material);
         scene.add(planet);
     }
@@ -38,6 +57,7 @@
 
         const animate = function () {
             requestAnimationFrame(animate);
+            planet.rotation.y += 0.01; // Adjust the rotation speed as desired
             renderer.render(scene, camera);
         };
 
