@@ -21,4 +21,8 @@ export class ComplexName{
     getMeaning(){
         return `(${this.meanings.join(')(')})`;
     }
+
+    getFull(){
+        return `${this.getName()} (${this.getTransliteration()}) (${this.getMeaning()})`;
+    }
 }

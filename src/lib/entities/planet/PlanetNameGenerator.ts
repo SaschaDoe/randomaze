@@ -20,6 +20,10 @@ import {
 } from "../../tables/planet/PlanetSanskritAdjectivesTable";
 import {PlanetChineseAdjectives, PlanetChineseAdjectivesTable} from "../../tables/planet/PlanetChineseAdjectivesTable";
 import {ComplexName} from "../name/ComplexName";
+import {PlanetLatinAdjectives, PlanetLatinAdjectivesTable} from "../../tables/planet/PlanetLatinAdjectivesTable";
+import {PlanetDarkSyllablesTable} from "../../tables/planet/PlanetDarkSyllablesTable";
+import {PlanetDarkPrefixesTable} from "../../tables/planet/PlanetDarkPrefixesTable";
+import {PlanetDarkSuffixesTable} from "../../tables/planet/PlanetDarkSuffixesTable";
 
 export let CultureNameTable: any;
 CultureNameTable = {
@@ -27,7 +31,7 @@ CultureNameTable = {
     greek: [new PlanetGreekNounsTable(), PlanetGreekNouns],
     inuit: [new PlanetInuitNounsTable(), PlanetInuitNouns],
     japanese: [new PlanetJapaneseNounsTable(), PlanetJapaneseNouns, new PlanetJapaneseAdjectivesTable(), PlanetJapaneseAdjectives],
-    latin: [new PlanetLatinNounsTable(), PlanetLatinNouns],
+    latin: [new PlanetLatinNounsTable(), PlanetLatinNouns, new PlanetLatinAdjectivesTable(), PlanetLatinAdjectives],
     nordic: [new PlanetNorwegianNounsTable(), PlanetNorwegianNouns],
     sanskrit: [new PlanetSanskritNounsTable(), PlanetSanskritNouns, new PlanetSanskritAdjectivesTable(), PlanetSanskritAdjectives],
     chinese: [new PlanetChineseNounsTable(), PlanetChineseNouns, new PlanetChineseAdjectivesTable(), PlanetChineseAdjectives],
@@ -38,19 +42,40 @@ export class PlanetNameGenerator{
         if(!dice){
             dice = new Dice();
         }
-
         let complexName = new ComplexName();
 
-        complexName = this.addPrefix(dice, complexName);
+        let isDark = dice.roll(5) === 1;
 
-        complexName = this.addAdjective(dice, complexName);
-        console.log("with adjective: " +complexName.getTransliteration())
+        if(isDark){
+            const syllableCount = dice.rollInterval(1,2)
 
-        complexName = this.addNouns(dice, complexName);
-        console.log("with noun: " +complexName.getTransliteration())
+            let name = "";
 
-        complexName = this.addSuffix(dice, complexName);
+            for (let i = 0; i < syllableCount; i++) {
+                const part = new PlanetDarkSyllablesTable().roll(dice).string;
+                name += part;
+            }
 
+            let hasPrefix = dice.roll(2) === 1;
+            if (hasPrefix) {
+                name = new PlanetDarkPrefixesTable().roll(dice).string + name;
+            } else {
+                name = name + new PlanetDarkSuffixesTable().roll(dice).string;
+            }
+
+            complexName = complexName.with(name, "-", "-");
+
+        }else{
+            complexName = this.addPrefix(dice, complexName);
+
+            complexName = this.addAdjective(dice, complexName);
+            console.log("with adjective: " +complexName.getTransliteration())
+
+            complexName = this.addNouns(dice, complexName);
+            console.log("with noun: " +complexName.getTransliteration())
+
+            complexName = this.addSuffix(dice, complexName);
+        }
         return complexName;
 
     }

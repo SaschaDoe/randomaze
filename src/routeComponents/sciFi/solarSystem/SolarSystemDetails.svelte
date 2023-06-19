@@ -4,7 +4,8 @@
     let fields = [
         { name: "Size", value: entity.size },
         { name: "Age", value: entity.age + " million years"},
-        { name: "Stage", value: entity.stageDescription},
+        { name: "Stage", value: entity.stage},
+        { name: "", value: entity.stageDescription},
         { name: "Number of Planets", value: entity.planets.length },
 
     ];

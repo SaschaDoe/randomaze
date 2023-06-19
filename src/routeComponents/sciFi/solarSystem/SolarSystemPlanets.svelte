@@ -14,7 +14,13 @@
             {/if}
             {#each entity.planets as planet}
                 <li class="entity-field">
-                    <button class="field-name">{planet.id}: {planet.nameTranslation} {planet.nameMeaning}</button>
+                    <button class="field-name">
+                        <span><strong>{planet.id}: {planet.name}</strong></span>
+                        {#if planet.nameTranslation !== "-"}
+                            <span>{planet.nameTranslation} </span>
+                            <span>{planet.nameMeaning}</span>
+                        {/if}
+                    </button>
                 </li>
             {/each}
         </ul>
@@ -88,6 +94,10 @@
         color: gray;
         border-color: gray;
         cursor: not-allowed;
+    }
+
+    .field-name span {
+        display: block;
     }
 
 
