@@ -1,111 +1,75 @@
 <script>
-    import { tick } from 'svelte';
+    import { onMount } from 'svelte';
+    import * as THREE from 'three';
 
-    const numSquares = 30; // Width of the "planet"
-    const numLayers = 28; // Height of the "planet"
-    const radius = Math.min(numSquares, numLayers) / 2;
-    let activeSquare = -1;
-    let brightness = 1;
-    let activeBrightness = 1;
-    let baseColor = 'desert';
-    let planet = [];
+    let container;
+    let selectedPlanet = 'desert'; // Default planet type
 
-    function randomNoise() {
-        return 0.2 * (Math.random() - 0.5);
+    // Base colors for each planet type
+    const baseColors = {
+        desert: { r: 210, g: 180, b: 140 },
+        jungle: { r: 34, g: 139, b: 34 },
+        ice: { r: 240, g: 248, b: 255 },
+        water: { r: 0, g: 0, b: 255 }
+    };
+
+    let scene;
+    let camera;
+    let renderer;
+    let planet;
+
+    function createPlanet() {
+        const geometry = new THREE.SphereGeometry(1, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: baseColors[selectedPlanet].r * 65536 + baseColors[selectedPlanet].g * 256 + baseColors[selectedPlanet].b });
+        planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
     }
 
-    function calculateBrightness(i, j, active = false) {
-        const midLayer = numLayers / 2;
-        const midSquare = numSquares / 2;
-        const distLayer = Math.abs(j - midLayer) / radius;
-        const distSquare = Math.abs(i - midSquare) / radius;
-        const dist = Math.sqrt(distLayer * distLayer + distSquare * distSquare);
-        if (dist > 1) {
-            return 'black';
-        }
-        const brightnessScale = Math.sqrt(1 - dist * dist) + randomNoise();
-        return `rgba(${getBaseColorValue(baseColor, active)}, ${brightness * brightnessScale * (active ? activeBrightness : 1)})`;
-    }
+    onMount(() => {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
 
-    function getBaseColorValue(color, active = false) {
-        switch (color) {
-            case 'desert':
-                return active ? '255, 255, 255' : '210, 180, 140';
-            case 'jungle':
-                return active ? '255, 255, 255' : '34, 139, 34';
-            case 'ice':
-                return active ? '255, 255, 255' : '135, 206, 235';
-            case 'mars':
-                return active ? '255, 255, 255' : '244, 164, 96';
-            default:
-                return '128, 128, 128';
-        }
-    }
+        camera.position.z = 3;
 
-    // Update the colors of the squares
-    function updatePlanet() {
-        planet = Array.from({ length: numLayers }, (_, j) =>
-            Array.from({ length: numSquares }, (_, i) =>
-                calculateBrightness(i, j))
-        );
-    }
+        createPlanet();
 
-    // Animate the squares
-    async function animatePlanet() {
-        for (let i = 0; i < numSquares; i++) {
-            activeSquare = i;
-            await tick();
-            await new Promise(r => setTimeout(r, 500));
-        }
-        activeSquare = -1;
-    }
+        const animate = function () {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        };
 
-    // Initialize the planet
-    updatePlanet();
+        animate();
+    });
+
+    function handleChangePlanet(event) {
+        selectedPlanet = event.target.value;
+        scene.remove(planet);
+        createPlanet();
+    }
 </script>
 
-<button on:click={animatePlanet}>Start Animation</button>
-
-<label for="brightness">Planet Brightness:</label>
-<input type="range" id="brightness" min="0" max="1" step="0.1" bind:value={brightness} on:input={updatePlanet}>
-
-<label for="activeBrightness">Active Pixel Brightness:</label>
-<input type="range" id="activeBrightness" min="0" max="1" step="0.1" bind:value={activeBrightness}>
-
-<label for="baseColor">Base Color:</label>
-<select id="baseColor" bind:value={baseColor} on:change={updatePlanet}>
-    <option value="desert">Desert Planet</option>
-    <option value="jungle">Jungle Planet</option>
-    <option value="ice">Ice Planet</option>
-    <option value="mars">Mars-like Planet</option>
+<select bind:value={selectedPlanet} on:change={handleChangePlanet}>
+    <option value="desert">Desert</option>
+    <option value="jungle">Jungle</option>
+    <option value="ice">Ice</option>
+    <option value="water">Water</option>
 </select>
-
-<div class="planet">
-    {#each planet as layer, j (j)}
-        <div class="layer">
-            {#each layer as color, i (i)}
-                <div style="width: 10px; height: 10px; background-color: {j === Math.floor(numLayers / 2) && i === activeSquare ? calculateBrightness(i, j, true) : color};"></div>
-            {/each}
-        </div>
-    {/each}
-</div>
+<div id="container" bind:this={container}></div>
 
 <style>
-    .planet {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: black;
-        width: 300px;
-        height: 300px;
+    #container {
+        width: 400px;
+        height: 400px;
+        position: relative;
+        margin: 0 auto;
     }
-    .layer {
-        display: flex;
-        gap: 0px;
-    }
-    button, label, input, select {
-        display: block;
-        margin: 10px auto;
+
+    select {
+        position: absolute;
+        z-index: 2;
+        margin: 10px;
     }
 </style>

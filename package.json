@@ -28,6 +28,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"idb": "^7.1.1"
+		"idb": "^7.1.1",
+		"three": "^0.153.0"
 	}
 }
