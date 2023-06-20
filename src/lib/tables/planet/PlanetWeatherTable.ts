@@ -1,6 +1,6 @@
 import {Table} from "../Table";
 
-export const PlanetWeathers = ["moderate", "stormy", "foggy"];
+export const PlanetWeathers = ["none", "moderate", "stormy", "foggy"];
 
 export class PlanetWeatherTable extends Table{
     constructor() {

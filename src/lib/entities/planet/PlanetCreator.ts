@@ -32,7 +32,7 @@ export class PlanetCreator {
         planet.nameMeaning = planetName.getMeaning();
         planet.size = this.getSize(dice, planet.type);
         planet.atmosphere = new PlanetAtmosphereTable().roll(dice).string;
-        planet.weather = new PlanetWeatherTable().roll(dice).string;
+        planet.weather = this.getWeather(dice, planet.size, planet.atmosphere);
 
         planet.seed = dice.rollRandom();
         planet.resolution = 64;
@@ -42,6 +42,18 @@ export class PlanetCreator {
         solarSystem.planets.push(planet);
         Save();
         return planet;
+    }
+
+    private static getWeather(dice: Dice, size: string, atmosphere: string) {
+
+        if(size === "tiny" || atmosphere === "none"){
+            return "none";
+        }
+        if(size === "small" && atmosphere === "thin"){
+            return "none";
+        }
+
+        return new PlanetWeatherTable().roll(dice).string;
     }
 
     private static getSize(dice: Dice, type: string) {
