@@ -3,7 +3,7 @@
     import {onMount} from "svelte";
     import {selectedSystem} from "../galaxy/systemStore.ts";
     import Modal from "../../../routes/Modal.svelte";
-    import PlanetCard from "../planet/PlanetCard.svelte";
+    import PlanetCardWithAnimation from "../planet/PlanetCardWithAnimation.svelte";
 
     export let entity;
     let currentSelectedPlanet = {};
@@ -64,7 +64,7 @@
 
 {#if showPlanetModal}
     <Modal on:close={closePlanetModal}>
-        <PlanetCard planet={$selectedPlanet}/>
+        <PlanetCardWithAnimation planet={$selectedPlanet}/>
     </Modal>
 {/if}
 

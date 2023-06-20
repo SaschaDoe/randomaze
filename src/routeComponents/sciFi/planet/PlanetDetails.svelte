@@ -1,13 +1,23 @@
 <script>
     export let entity;
 
-    let fields = [
-        { name: "name", value: entity.name },
-        { name: "nameTranslation", value: entity.nameTranslation },
-        { name: "nameMeaning", value: entity.nameMeaning },
-        { name: "type", value: entity.type },
+    function getFields() {
+        if(entity.nameTranslation !== "-"){
+            return [
+                { name: "name", value: entity.name },
+                { name: "nameTranslation", value: entity.nameTranslation },
+                { name: "nameMeaning", value: entity.nameMeaning },
+                { name: "type", value: entity.type },
+            ];
+        }else{
+            return [
+                { name: "name", value: entity.name },
+                { name: "type", value: entity.type },
+            ];
+        }
+    }
 
-    ];
+    $: fields = getFields();
 </script>
 
 <div class="entity-details">

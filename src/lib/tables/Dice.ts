@@ -13,4 +13,8 @@ export class Dice{
     rollFloat(max: number) {
         return Math.random() * max;
     }
+
+    rollRandom(){
+        return Math.random();
+    }
 }

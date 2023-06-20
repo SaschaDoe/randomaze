@@ -1,7 +1,7 @@
 import {Table} from "../Table";
 
 export const PlanetTypes = [
-    "desert", "ice", "djungle", "earth like", "gas giant", "puffy", "lava", "ocean", "rocky", "volcanic",
+    "desert", "ice", "djungle", "earthlike", "gasgiant", "puffy", "lava", "ocean", "rocky",
 ];
 export class PlanetTypeTable extends Table{
     constructor() {
