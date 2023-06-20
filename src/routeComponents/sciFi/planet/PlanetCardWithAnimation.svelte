@@ -234,7 +234,7 @@
         {#if isError}
             <div>There was an error rendering the planet:</div>
             <div>T{errorMessage}</div>
-        {/if
+        {/if}
         <div id="container" bind:this={container}></div>
     </div>
 </SciFiCard>
