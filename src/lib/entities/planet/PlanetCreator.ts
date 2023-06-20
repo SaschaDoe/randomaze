@@ -6,7 +6,7 @@ import {PlanetNameGenerator} from "./PlanetNameGenerator";
 import {Save} from "../../persistence/Saver";
 
 export const PlanetBaseColors = {
-    desert: { r: 210, g: 180, b: 140 },
+    desert: { r: 255, g: 220, b: 0 },
     ice: { r: 187, g: 240, b: 255 },
     jungle: { r: 34, g: 139, b: 34 },
     earthlike: { r: 46, g: 139, b: 87 },
