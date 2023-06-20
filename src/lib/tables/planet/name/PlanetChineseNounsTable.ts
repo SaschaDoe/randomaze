@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export let PlanetChineseNouns = [
     { output: '星辰', transliteration: 'xīngchén', english: 'Star' },

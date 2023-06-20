@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export const Syllables = [
     "ul", "thra", "cer", "can", "cri", "bel", "pha", "ter", "nec", "pros",

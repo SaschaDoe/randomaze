@@ -5,6 +5,8 @@ import {PlanetTypeTable} from "../../tables/planet/PlanetTypeTable";
 import {PlanetNameGenerator} from "./PlanetNameGenerator";
 import {Save} from "../../persistence/Saver";
 import {SizeTable} from "../../tables/other/SizeTable";
+import {PlanetAtmosphereTable} from "../../tables/planet/PlanetAtmosphereTable";
+import {PlanetWeathers, PlanetWeatherTable} from "../../tables/planet/PlanetWeatherTable";
 
 export const PlanetBaseColors = {
     desert: { r: 255, g: 220, b: 0 },
@@ -29,6 +31,9 @@ export class PlanetCreator {
         planet.nameTranslation = planetName.getTransliteration();
         planet.nameMeaning = planetName.getMeaning();
         planet.size = this.getSize(dice, planet.type);
+        planet.atmosphere = new PlanetAtmosphereTable().roll(dice).string;
+        planet.weather = new PlanetWeatherTable().roll(dice).string;
+
         planet.seed = dice.rollRandom();
         planet.resolution = 64;
         planet.brightness = 0.5;

@@ -56,6 +56,89 @@
 
     let resolution = getResolution(planet.size);
 
+    function getAtmosphereColorAndTransparency() {
+        switch (currentPlanet.atmosphere) {
+            case "none":
+                return [{ r: 0, g: 0, b: 0 }, 0];
+            case "nitrogen-oxygen":
+                return [{ r: 135, g: 206, b: 235 }, 0.2];
+            case "carbon-dioxide":
+                return [{ r: 105, g: 105, b: 105 }, 0.5];
+            case "hydrogen-helium":
+                return [{ r: 240, g: 230, b: 140 }, 0.5];
+            case "methane":
+                return [{ r: 255, g: 140, b: 0 }, 0.5];
+            default:
+                return [{ r: 255, g: 255, b: 255 }, 0.5];
+        }
+    }
+
+    function calculatePixelColorAndAlpha(noiseValue, atmosphereColor, atmosphereTransparency) {
+        if (currentPlanet.atmosphere === "nitrogen-oxygen" && noiseValue > 0.7) {
+            return [255, 255, 255, 255];
+        }
+
+        return [
+            atmosphereColor.r * noiseValue,
+            atmosphereColor.g * noiseValue,
+            atmosphereColor.b * noiseValue,
+            255 * atmosphereTransparency * (currentPlanet.atmosphere === "nitrogen-oxygen" ? noiseValue : 1)
+        ];
+    }
+
+    function getAtmosphereColorAndTransparencyForWeather() {
+        if(currentPlanet.atmosphere === "nitrogen-oxygen") {
+            switch (currentPlanet.weather) {
+                case "foggy":
+                    return [{ r: 255, g: 255, b: 255 }, 0.9]; // Almost fully opaque white
+                case "stormy":
+                    return [{ r: 255, g: 255, b: 255 }, 1.0]; // Fully opaque white
+                default: // Default is moderate weather
+                    break;
+            }
+        }
+        return getAtmosphereColorAndTransparency();
+    }
+
+    function calculatePixelColorAndAlphaForWeather(noiseValue, atmosphereColor, atmosphereTransparency) {
+        if(currentPlanet.atmosphere === "nitrogen-oxygen") {
+            if (currentPlanet.weather === "foggy") {
+                return [255, 255, 255, 150 * atmosphereTransparency]; // Foggy: All white, transparency based on atmosphereTransparency
+            }
+            if (currentPlanet.weather === "stormy") {
+
+                //TODO should be cluster of white pixels and clusters of nearly transparent pixels
+            }
+        }
+        return calculatePixelColorAndAlpha(noiseValue, atmosphereColor, atmosphereTransparency); // Default (moderate)
+    }
+
+    function createAtmosphere() {
+        const atmosphereScale = scale * 1.05;
+        const atmosphereGeometry = new THREE.SphereGeometry(atmosphereScale, resolution, resolution);
+        const atmosphereNoise = new SeededNoise(currentPlanet.seed + 1);
+        const atmosphereTexture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
+
+        const [atmosphereColor, atmosphereTransparency] = getAtmosphereColorAndTransparencyForWeather();
+        const atmosphereMaterial = new THREE.MeshBasicMaterial({map: atmosphereTexture, transparent: true});
+
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const pixelIndex = (i + j * resolution) * 4;
+                const noiseValue = (atmosphereNoise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + atmosphereNoise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
+
+                const [r, g, b, a] = calculatePixelColorAndAlphaForWeather(noiseValue, atmosphereColor, atmosphereTransparency);
+
+                atmosphereTexture.image.data.set([r, g, b, a], pixelIndex);
+            }
+        }
+
+        atmosphereTexture.needsUpdate = true;
+        const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        scene.add(atmosphereMesh);
+        return atmosphereMesh;
+    }
+
     function createPlanet() {
         const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
         const noise = new SeededNoise(currentPlanet.seed);
@@ -77,12 +160,26 @@
         texture.needsUpdate = true;
         planetMesh = new THREE.Mesh(geometry, material);
         scene.add(planetMesh);
+
+        //Create cloudy atmosphere
+        const atmosphereMesh = createAtmosphere();
+
+        // Make sure to update the planetMesh variable to include the atmosphereMesh so that it gets removed in updatePlanetSize()
+        planetMesh = [planetMesh, atmosphereMesh];
+
     }
 
     function updatePlanetSize() {
         scale = getScale(currentPlanet.size);
         resolution = getResolution(currentPlanet.size);
-        scene.remove(planetMesh);
+
+        planetMesh.forEach(mesh => {
+            mesh.geometry.dispose(); // Dispose of geometry
+            mesh.material.dispose(); // Dispose of material
+            if (mesh.material.map) mesh.material.map.dispose(); // Dispose of texture map if exists
+            scene.remove(mesh);
+        });
+
         createPlanet();
     }
 
@@ -96,10 +193,15 @@
         camera.position.z = 3;
 
         createPlanet();
+        let planetRotationSpeed = 0.002;
+        let atmosphereRotationSpeed = planetRotationSpeed * 0.9; // 90% of the planet rotation speed
 
         const animate = function () {
             requestAnimationFrame(animate);
-            planetMesh.rotation.y += 0.002;
+
+            planetMesh[0].rotation.y += planetRotationSpeed; // Planet rotation
+            planetMesh[1].rotation.y += atmosphereRotationSpeed; // At
+
             renderer.render(scene, camera);
         };
         animate();

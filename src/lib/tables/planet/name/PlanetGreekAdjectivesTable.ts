@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export let PlanetGreekAdjectives = [
     { output: 'αρχαίος', transliteration: 'archai', english: 'Ancient' },

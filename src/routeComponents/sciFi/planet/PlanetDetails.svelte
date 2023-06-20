@@ -9,12 +9,16 @@
                 { name: "nameMeaning", value: entity.nameMeaning },
                 { name: "type", value: entity.type },
                 { name: "size", value: entity.size },
+                { name: "atmosphere", value: entity.atmosphere },
+                { name: "weather", value: entity.weather },
             ];
         } else if (entity) {
             return [
                 { name: "name", value: entity.name },
                 { name: "type", value: entity.type },
                 { name: "size", value: entity.size },
+                { name: "atmosphere", value: entity.atmosphere },
+                { name: "weather", value: entity.weather },
             ];
         }
         return [];

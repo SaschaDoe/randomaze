@@ -21,8 +21,8 @@ import {AgeTable} from "./other/AgeTable";
 import {SolarSystemNameTable} from "./solarSystem/SolarSystemNameTable";
 import {SolarSystemDescriptorsTable} from "./solarSystem/SolarSystemDescriptorsTable";
 import {SolarSystemStageTable} from "./solarSystem/SolarSystemStageTable";
-import {PlanetNameDarkTable} from "./planet/PlanetNameDarkTable";
-import {PlanetNameTable} from "./planet/PlanetNameTable";
+import {PlanetNameDarkTable} from "./planet/name/PlanetNameDarkTable";
+import {PlanetNameTable} from "./planet/name/PlanetNameTable";
 import {PlanetTypeTable} from "./planet/PlanetTypeTable";
 
 const characterTables = [new GenderTable(), new CultureNameTable()];

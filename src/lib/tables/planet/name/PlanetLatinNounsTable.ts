@@ -1,5 +1,5 @@
-import {Table} from "../Table";
-import {PlanetTypes} from "./PlanetTypeTable";
+import {Table} from "../../Table";
+import {PlanetTypes} from "../PlanetTypeTable";
 
 export let PlanetLatinNouns = [
     { output: 'Lux', english: 'Light' },

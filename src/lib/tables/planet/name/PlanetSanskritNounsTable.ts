@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export let PlanetSanskritNouns = [
     { output: 'प्रकाश', transliteration: 'Prakāśa', english: 'Light' },

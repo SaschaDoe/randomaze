@@ -12,4 +12,7 @@ export class Planet extends Entity {
     noiseScale: number;
     brightness: number;
     size: string;
+    atmosphere: string;
+
+    weather: string;
 }

@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export let PlanetChineseAdjectives = [
     { output: '宏伟的', transliteration: 'hóngwěi', english: 'Majestic' },

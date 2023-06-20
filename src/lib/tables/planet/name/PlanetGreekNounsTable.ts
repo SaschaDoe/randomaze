@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 export let PlanetGreekNouns = [
     { output: 'phōt', english: 'Light' },
     { output: 'eir', english: 'Peace' },

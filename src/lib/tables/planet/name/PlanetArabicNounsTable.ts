@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 export let PlanetArabicNouns = [
     { output: 'نور', transliteration: 'nur', english: 'Light' },
     { output: 'سلام', transliteration: 'salam', english: 'Peace' },

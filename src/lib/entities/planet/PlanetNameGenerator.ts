@@ -1,29 +1,29 @@
 import {Suffixes, SuffixesTable} from "../../tables/other/SuffixesTable";
 import {Dice} from "../../tables/Dice";
-import {PlanetArabicNouns, PlanetArabicNounsTable} from "../../tables/planet/PlanetArabicNounsTable";
-import {PlanetGreekNouns, PlanetGreekNounsTable} from "../../tables/planet/PlanetGreekNounsTable";
-import {PlanetInuitNouns, PlanetInuitNounsTable} from "../../tables/planet/PlanetInuitNounsTable";
-import {PlanetJapaneseNouns, PlanetJapaneseNounsTable} from "../../tables/planet/PlanetJapaneseNounsTable";
-import {PlanetLatinNouns, PlanetLatinNounsTable} from "../../tables/planet/PlanetLatinNounsTable";
-import {PlanetNorwegianNouns, PlanetNorwegianNounsTable} from "../../tables/planet/PlanetNordicNounsTable";
-import {PlanetSanskritNouns, PlanetSanskritNounsTable} from "../../tables/planet/PlanetSanskritNounsTable";
+import {PlanetArabicNouns, PlanetArabicNounsTable} from "../../tables/planet/name/PlanetArabicNounsTable";
+import {PlanetGreekNouns, PlanetGreekNounsTable} from "../../tables/planet/name/PlanetGreekNounsTable";
+import {PlanetInuitNouns, PlanetInuitNounsTable} from "../../tables/planet/name/PlanetInuitNounsTable";
+import {PlanetJapaneseNouns, PlanetJapaneseNounsTable} from "../../tables/planet/name/PlanetJapaneseNounsTable";
+import {PlanetLatinNouns, PlanetLatinNounsTable} from "../../tables/planet/name/PlanetLatinNounsTable";
+import {PlanetNorwegianNouns, PlanetNorwegianNounsTable} from "../../tables/planet/name/PlanetNordicNounsTable";
+import {PlanetSanskritNouns, PlanetSanskritNounsTable} from "../../tables/planet/name/PlanetSanskritNounsTable";
 import {Prefixes, PrefixTable} from "../../tables/other/PrefixTable";
-import {PlanetChineseNouns, PlanetChineseNounsTable} from "../../tables/planet/PlanetChineseNounsTable";
-import {PlanetArabicAdjectives, PlanetArabicAdjectivesTable} from "../../tables/planet/PlanetArabicAdjectivesTable";
+import {PlanetChineseNouns, PlanetChineseNounsTable} from "../../tables/planet/name/PlanetChineseNounsTable";
+import {PlanetArabicAdjectives, PlanetArabicAdjectivesTable} from "../../tables/planet/name/PlanetArabicAdjectivesTable";
 import {
     PlanetJapaneseAdjectives,
     PlanetJapaneseAdjectivesTable
-} from "../../tables/planet/PlanetJapaneseAdjectivesTable";
+} from "../../tables/planet/name/PlanetJapaneseAdjectivesTable";
 import {
     PlanetSanskritAdjectives,
     PlanetSanskritAdjectivesTable
-} from "../../tables/planet/PlanetSanskritAdjectivesTable";
-import {PlanetChineseAdjectives, PlanetChineseAdjectivesTable} from "../../tables/planet/PlanetChineseAdjectivesTable";
+} from "../../tables/planet/name/PlanetSanskritAdjectivesTable";
+import {PlanetChineseAdjectives, PlanetChineseAdjectivesTable} from "../../tables/planet/name/PlanetChineseAdjectivesTable";
 import {ComplexName} from "../name/ComplexName";
-import {PlanetLatinAdjectives, PlanetLatinAdjectivesTable} from "../../tables/planet/PlanetLatinAdjectivesTable";
-import {PlanetDarkSyllablesTable} from "../../tables/planet/PlanetDarkSyllablesTable";
-import {PlanetDarkPrefixesTable} from "../../tables/planet/PlanetDarkPrefixesTable";
-import {PlanetDarkSuffixesTable} from "../../tables/planet/PlanetDarkSuffixesTable";
+import {PlanetLatinAdjectives, PlanetLatinAdjectivesTable} from "../../tables/planet/name/PlanetLatinAdjectivesTable";
+import {PlanetDarkSyllablesTable} from "../../tables/planet/name/PlanetDarkSyllablesTable";
+import {PlanetDarkPrefixesTable} from "../../tables/planet/name/PlanetDarkPrefixesTable";
+import {PlanetDarkSuffixesTable} from "../../tables/planet/name/PlanetDarkSuffixesTable";
 
 export let CultureNameTable: any;
 CultureNameTable = {

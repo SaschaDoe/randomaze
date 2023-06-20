@@ -1,6 +1,6 @@
-import {Table} from "../Table";
-import {AddTableEntry} from "../AddTableEntry";
-import {PlanetNameGenerator} from "../../entities/planet/PlanetNameGenerator";
+import {Table} from "../../Table";
+import {AddTableEntry} from "../../AddTableEntry";
+import {PlanetNameGenerator} from "../../../entities/planet/PlanetNameGenerator";
 
 export function getPlanetName(): string{
     return PlanetNameGenerator.generate().getFull();

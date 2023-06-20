@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export let PlanetLatinAdjectives = [
     { output: 'magn', english: 'Large' },

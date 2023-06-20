@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export const DarkPrefixes = [
     "dark", "death", "dread", "gloom", "shadow", "ruin", "terror", "ghoul", "blight", "crypt", "phantom",

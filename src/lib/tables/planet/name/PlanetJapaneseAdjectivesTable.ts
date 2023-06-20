@@ -1,4 +1,4 @@
-import {Table} from "../Table";
+import {Table} from "../../Table";
 
 export let PlanetJapaneseAdjectives = [
     { output: '壮大な', transliteration: 'soudai', english: 'Grand' },
