@@ -7,6 +7,8 @@ import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
 import EntityCard from "./EntityCard.svelte";
 import EntitySideIndex from "./EntitySideIndex.svelte";
 import {campaignStore, Load, PersistantCmpaign, Reset, Save} from "$lib/persistence/Saver.ts";
+import {writable} from "svelte/store";
+import PlanetDetails from "../routeComponents/sciFi/planet/PlanetDetails.svelte";
 
 let mediator = new Mediator(PersistantCmpaign);
 
@@ -99,6 +101,28 @@ function openResetModal(e) {
     e.stopPropagation();
     showResetModal = true;
 }
+let solarSystems = new writable([]);
+
+$: {
+    $campaignStore.galaxies.forEach(galaxy => {
+        galaxy.solarSystems.forEach(solarSystem => {
+            $solarSystems.push(solarSystem);
+        });
+    });
+}
+
+let planets = new writable([]);
+
+$: {
+    $campaignStore.galaxies.forEach(galaxy => {
+        galaxy.solarSystems.forEach(solarSystem => {
+            solarSystem.planets.forEach(planet => {
+                $planets.push(planet);
+            });
+        });
+    });
+}
+
 
 </script>
 
@@ -160,6 +184,26 @@ function openResetModal(e) {
                     {#each $campaignStore.galaxies as galaxy}
                         <li id={galaxy.id}>
                             <EntityCard entity={galaxy} type="galaxy" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+            {#if $solarSystems.length > 0}
+                <h2 id="SolarSystems">Solar Systems</h2>
+                <ul>
+                    {#each $solarSystems as solarSystem}
+                        <li id={solarSystem.id}>
+                            <EntityCard entity={solarSystem} type="solarSystem" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+            {#if $planets.length > 0}
+                <h2 id="Planets">Planets</h2>
+                <ul>
+                    {#each $planets as planet}
+                        <li id={planet.id}>
+                            <EntityCard entity={planet} type="planet" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
                         </li>
                     {/each}
                 </ul>

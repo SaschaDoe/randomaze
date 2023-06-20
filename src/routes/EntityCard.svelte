@@ -5,6 +5,7 @@
     import ExtendedCharacterCard from "./ExtendedCharacterCard.svelte";
     import SolarSystemCard from "../routeComponents/sciFi/solarSystem/SolarSystemCard.svelte";
     import GalaxyCard from "../routeComponents/sciFi/galaxy/GalaxyCard.svelte";
+    import PlanetCardWithAnimation from "../routeComponents/sciFi/planet/PlanetCardWithAnimation.svelte";
 
     let showDeleteModal = false;
     let showDetailsModal = false;
@@ -59,6 +60,9 @@
             <p>{entity.gender}</p>
             <a on:click={scrollToCulture}>{entity.culture.id}: {entity.culture.name}</a>
         {/if}
+        {#if type === "planet"}
+            <p>{entity.nameTranslation}</p>
+        {/if}
         <!-- Add additional conditions for other types here -->
     </div>
     {#if showDeleteModal}
@@ -79,6 +83,9 @@
             {/if}
             {#if type === 'solarSystem'}
                 <SolarSystemCard solarSystem={entity}/>
+            {/if}
+            {#if type === 'planet'}
+                <PlanetCardWithAnimation planet={entity}/>
             {/if}
         </Modal>
     {/if}

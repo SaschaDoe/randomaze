@@ -9,6 +9,8 @@
 
     export let planet;
     let currentPlanet = planet;
+    let isError = false;
+    let errorMessage = "";
 
     let container;
     let planetMesh;
@@ -204,7 +206,13 @@
 
             renderer.render(scene, camera);
         };
-        animate();
+        try{
+            animate();
+        } catch (e) {
+            isError = true;
+            errorMessage = e;
+            console.log(e);
+        }
     });
 
     afterUpdate(() => {
@@ -223,6 +231,10 @@
 <SciFiCard entity={planet} components={components} defaultTab="details">
     <div slot="image">
         <div>{planet.id}: {planet.name}</div>
+        {#if isError}
+            <div>There was an error rendering the planet:</div>
+            <div>T{errorMessage}</div>
+        {/if
         <div id="container" bind:this={container}></div>
     </div>
 </SciFiCard>

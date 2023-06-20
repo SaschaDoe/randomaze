@@ -5,7 +5,6 @@ export let Prefixes = [
     { prefix: 'ب', transliteration: "b", meaning: 'with, by', language: 'Arabic' },
     { prefix: 'un', transliteration: "un", meaning: 'not', language: 'English' },
     { prefix: 're', transliteration: "re", meaning: 'again', language: 'English' },
-    { prefix: 'über', transliteration: "über", meaning: 'over, above', language: 'German' },
     { prefix: 'des', transliteration: "des", meaning: 'of, from', language: 'French' },
     { prefix: 'non', transliteration: "non", meaning: 'not', language: 'Latin' },
     { prefix: '反', transliteration: "fan", meaning: 'opposite, anti', language: 'Chinese' },
