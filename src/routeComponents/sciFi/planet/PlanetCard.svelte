@@ -19,19 +19,22 @@
     let renderer;
     let planet;
 
+    // Variables for controlling noise and brightness
+    let noiseScale = 2;
+    let brightness = 0.5;
+    let resolution = 64;
+
     function createPlanet() {
-        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const geometry = new THREE.SphereGeometry(1, resolution, resolution);
         const noise = new ImprovedNoise();
-        const texture = new THREE.DataTexture(new Uint8Array(64 * 64 * 4), 64, 64, THREE.RGBAFormat);
+        const texture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
         const material = new THREE.MeshBasicMaterial({ map: texture });
 
-        for (let i = 0; i < 64; i++) {
-            for (let j = 0; j < 64; j++) {
-                const pixelIndex = (i + j * 64) * 4;
-                const noiseValue = noise.noise(i / 10, j / 10, 0) * 0.5 + 0.5;
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const pixelIndex = (i + j * resolution) * 4;
+                const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2; // Wrap-around effect
                 const color = baseColors[selectedPlanet];
-                const smoothness = Math.pow(Math.sin(i * Math.PI / 64), 2) * Math.pow(Math.sin(j * Math.PI / 64), 2); // Smoothness factor
-                const brightness = 0.7 + 0.3 * smoothness; // Adjust the brightness factor to control the edge darkness
                 texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
                 texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
                 texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
@@ -69,6 +72,23 @@
         scene.remove(planet);
         createPlanet();
     }
+
+    function handleUpdate(event) {
+        const { name, value } = event.target;
+        switch(name) {
+            case 'noiseScale':
+                noiseScale = parseFloat(value);
+                break;
+            case 'brightness':
+                brightness = parseFloat(value);
+                break;
+            case 'resolution':
+                resolution = parseInt(value);
+                break;
+        }
+        scene.remove(planet);
+        createPlanet();
+    }
 </script>
 
 <select bind:value={selectedPlanet} on:change={handleChangePlanet}>
@@ -77,6 +97,20 @@
     <option value="ice">Ice</option>
     <option value="water">Water</option>
 </select>
+<div id="controls">
+    <label>
+        Noise Scale:
+        <input type="number" step="1" min="1" max="20" name="noiseScale" value={noiseScale} on:input={handleUpdate} />
+    </label>
+    <label>
+        Brightness:
+        <input type="number" step="0.1" min="0.1" max="1" name="brightness" value={brightness} on:input={handleUpdate} />
+    </label>
+    <label>
+        Resolution:
+        <input type="number" step="1" min="8" max="64" name="resolution" value={resolution} on:input={handleUpdate} />
+    </label>
+</div>
 <div id="container" bind:this={container}></div>
 
 <style>
@@ -87,9 +121,21 @@
         margin: 0 auto;
     }
 
-    select {
+    select, #controls {
         position: absolute;
         z-index: 2;
         margin: 10px;
+    }
+
+    #controls {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+    #controls label {
+        display: flex;
+        gap: 5px;
     }
 </style>
