@@ -55,10 +55,12 @@
         height: 25px;
         box-sizing: border-box;
         transform: translate(-50%, -50%);
+        z-index: 100;
     }
 
     .solar-system-bracket.selected {
         border-color: lawngreen; /* color for selected system */
+        z-index: 101;
     }
 
     .galaxy-image, .color-overlay {

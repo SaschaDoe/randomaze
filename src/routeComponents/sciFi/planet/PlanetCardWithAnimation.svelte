@@ -1,7 +1,7 @@
 <script>
-    import {onDestroy, onMount} from 'svelte';
+    import { onMount, afterUpdate } from 'svelte';
     import * as THREE from 'three';
-    import {SeededNoise} from "./SeededNoise.ts";
+    import { SeededNoise } from "./SeededNoise.ts";
     import SciFiCard from "../SciFiCard.svelte";
     import PlanetDetails from "./PlanetDetails.svelte";
     import PlanetContinents from "./PlanetContinents.svelte";
@@ -9,48 +9,85 @@
 
     export let planet;
     let currentPlanet = planet;
-    let unsubscribe;
 
     let container;
     let planetMesh;
-    let selectedPlanet = planet.type;
-
-    // Base colors for each planet type
 
     let scene;
     let camera;
     let renderer;
 
-    // Variables for controlling noise and brightness
     let noiseScale = 2;
     let brightness = 0.5;
-    let resolution = 64;
 
-        function createPlanet() {
-            const geometry = new THREE.SphereGeometry(1, resolution, resolution);
-            const noise = new SeededNoise(currentPlanet.seed);  // use currentPlanet here
-            const texture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
-            const material = new THREE.MeshBasicMaterial({ map: texture });
+    function getScale(size) {
+        let baseScale = 1;
+        if(size === 'tiny')
+            return baseScale * 0.5;
+        if(size === 'small')
+            return baseScale * 0.75;
+        if(size === 'medium')
+            return baseScale;
+        if(size === 'large')
+            return baseScale * 1.25;
+        if(size === 'gigantic')
+            return baseScale * 1.5;
 
-            for (let i = 0; i < resolution; i++) {
-                for (let j = 0; j < resolution; j++) {
-                    const pixelIndex = (i + j * resolution) * 4;
-                    const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2; // Wrap-around effect
-                    const color = currentPlanet.color;  // use currentPlanet here
-                    texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
-                    texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
-                    texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
-                    texture.image.data[pixelIndex + 3] = 255;
-                }
+        return baseScale;
+    }
+
+    let scale = getScale(planet.size);
+
+    function getResolution(size) {
+        let baseResolution = 32;
+        if(size === 'tiny')
+            return baseResolution / 2;
+        if(size === 'small')
+            return baseResolution;
+        if(size === 'medium')
+            return baseResolution * 2;
+        if(size === 'large')
+            return baseResolution * 4;
+        if(size === 'gigantic')
+            return baseResolution * 8;
+
+        return baseResolution;
+    }
+
+    let resolution = getResolution(planet.size);
+
+    function createPlanet() {
+        const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
+        const noise = new SeededNoise(currentPlanet.seed);
+        const texture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const pixelIndex = (i + j * resolution) * 4;
+                const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
+                const color = currentPlanet.color;
+                texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
+                texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
+                texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
+                texture.image.data[pixelIndex + 3] = 255;
             }
-
-            texture.needsUpdate = true;
-            planetMesh = new THREE.Mesh(geometry, material);  // update the new variable
-            scene.add(planetMesh);
         }
 
+        texture.needsUpdate = true;
+        planetMesh = new THREE.Mesh(geometry, material);
+        scene.add(planetMesh);
+    }
+
+    function updatePlanetSize() {
+        scale = getScale(currentPlanet.size);
+        resolution = getResolution(currentPlanet.size);
+        scene.remove(planetMesh);
+        createPlanet();
+    }
+
     onMount(() => {
-        currentPlanet = planet;  // You assign the prop to your local variable here
+        currentPlanet = planet;
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         renderer = new THREE.WebGLRenderer();
@@ -62,38 +99,16 @@
 
         const animate = function () {
             requestAnimationFrame(animate);
-            planetMesh.rotation.y += 0.01; // Adjust the rotation speed as desired
+            planetMesh.rotation.y += 0.002;
             renderer.render(scene, camera);
         };
         animate();
     });
 
-    onDestroy(() => {
-        if (unsubscribe) unsubscribe();
+    afterUpdate(() => {
+        currentPlanet = planet;
+        updatePlanetSize();
     });
-
-    function handleChangePlanet(event) {
-        selectedPlanet = event.target.value;
-        scene.remove(planetMesh);  // use the new variable
-        createPlanet();
-    }
-
-    function handleUpdate(event) {
-        const { name, value } = event.target;
-        switch(name) {
-            case 'noiseScale':
-                noiseScale = parseFloat(value);
-                break;
-            case 'brightness':
-                brightness = parseFloat(value);
-                break;
-            case 'resolution':
-                resolution = parseInt(value);
-                break;
-        }
-        scene.remove(planet);
-        createPlanet();
-    }
 
     let components = [
         { name: 'details', component: PlanetDetails },

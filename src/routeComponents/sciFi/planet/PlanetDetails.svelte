@@ -8,11 +8,13 @@
                 { name: "nameTranslation", value: entity.nameTranslation },
                 { name: "nameMeaning", value: entity.nameMeaning },
                 { name: "type", value: entity.type },
+                { name: "size", value: entity.size },
             ];
         } else if (entity) {
             return [
                 { name: "name", value: entity.name },
                 { name: "type", value: entity.type },
+                { name: "size", value: entity.size },
             ];
         }
         return [];

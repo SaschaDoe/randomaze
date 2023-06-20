@@ -4,6 +4,7 @@ import {SolarSystem} from "../solarSystem/SolarSystem";
 import {PlanetTypeTable} from "../../tables/planet/PlanetTypeTable";
 import {PlanetNameGenerator} from "./PlanetNameGenerator";
 import {Save} from "../../persistence/Saver";
+import {SizeTable} from "../../tables/other/SizeTable";
 
 export const PlanetBaseColors = {
     desert: { r: 255, g: 220, b: 0 },
@@ -27,15 +28,22 @@ export class PlanetCreator {
         planet.name = planetName.getName();
         planet.nameTranslation = planetName.getTransliteration();
         planet.nameMeaning = planetName.getMeaning();
+        planet.size = this.getSize(dice, planet.type);
         planet.seed = dice.rollRandom();
         planet.resolution = 64;
-        planet.noiseScale = 2;
         planet.brightness = 0.5;
+        planet.noiseScale = 2.0;
         planet.color = this.generateColorVariant(PlanetBaseColors[planet.type]); // Generate a color variant based on the planet type
-
         solarSystem.planets.push(planet);
         Save();
         return planet;
+    }
+
+    private static getSize(dice: Dice, type: string) {
+        if (type === "gasgiant") {
+            return "gigantic";
+        }
+        return new SizeTable().roll(dice).string;
     }
 
     static generateColorVariant(baseColor, variability = 0.3) {
@@ -50,4 +58,5 @@ export class PlanetCreator {
             b: randomVariation(baseColor.b)
         };
     }
+
 }

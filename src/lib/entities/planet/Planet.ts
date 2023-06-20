@@ -11,4 +11,5 @@ export class Planet extends Entity {
     resolution: number;
     noiseScale: number;
     brightness: number;
+    size: string;
 }
