@@ -18,16 +18,19 @@ export const PlanetBaseColors = {
 };
 export class PlanetCreator {
     static addTo(solarSystem: SolarSystem, dice?: Dice): Planet {
+        if (!dice) {
+            dice = new Dice();
+        }
         let planet = new Planet();
         planet.type = new PlanetTypeTable().roll(dice).string;
         let planetName = PlanetNameGenerator.generate(dice);
         planet.name = planetName.getName();
         planet.nameTranslation = planetName.getTransliteration();
         planet.nameMeaning = planetName.getMeaning();
-        planet.seed = Math.random(); // or some other function to generate a unique seed
-        planet.resolution = 64; // Default resolution
-        planet.noiseScale = 2; // Default noise scale
-        planet.brightness = 0.5; // Default brightness
+        planet.seed = dice.rollRandom();
+        planet.resolution = 64;
+        planet.noiseScale = 2;
+        planet.brightness = 0.5;
         planet.color = this.generateColorVariant(PlanetBaseColors[planet.type]); // Generate a color variant based on the planet type
 
         solarSystem.planets.push(planet);
@@ -35,7 +38,7 @@ export class PlanetCreator {
         return planet;
     }
 
-    static generateColorVariant(baseColor, variability = 0.2) {
+    static generateColorVariant(baseColor, variability = 0.3) {
         function randomVariation(value) {
             const adjustmentFactor = 1.0 + (Math.random() * 2 - 1) * variability;
             return Math.max(0, Math.min(255, Math.round(value * adjustmentFactor)));

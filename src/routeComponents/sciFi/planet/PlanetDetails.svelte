@@ -2,19 +2,20 @@
     export let entity;
 
     function getFields() {
-        if(entity.nameTranslation !== "-"){
+        if(entity && entity.nameTranslation !== "-"){
             return [
                 { name: "name", value: entity.name },
                 { name: "nameTranslation", value: entity.nameTranslation },
                 { name: "nameMeaning", value: entity.nameMeaning },
                 { name: "type", value: entity.type },
             ];
-        }else{
+        } else if (entity) {
             return [
                 { name: "name", value: entity.name },
                 { name: "type", value: entity.type },
             ];
         }
+        return [];
     }
 
     $: fields = getFields();
@@ -28,6 +29,8 @@
         </div>
     {/each}
 </div>
+
+<!-- the rest of your code -->
 
 <style>
     .entity-details {

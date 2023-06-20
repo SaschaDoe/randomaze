@@ -1,6 +1,6 @@
 <script>
     import {SolarSystemCreator} from "$lib/entities/solarSystem/SolarSystemCreator.ts";
-    import {createEventDispatcher, onMount} from "svelte";
+    import {onMount} from "svelte";
     import {selectedSystem} from "./systemStore.ts";
     import Modal from "../../../routes/Modal.svelte";
     import SolarSystemCard from "../solarSystem/SolarSystemCard.svelte";
@@ -8,9 +8,6 @@
     export let entity;
     $: noSystem = entity.solarSystems.length === 0 && entity.isAlreadyScannedForSystems;
     let selectedSolarSystem = null;
-
-
-    const dispatch = createEventDispatcher();
 
     function scan() {
         let solarSystem = SolarSystemCreator.addTo(entity);
