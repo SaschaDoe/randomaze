@@ -58,23 +58,6 @@
 
     let resolution = getResolution(planet.size);
 
-    function getAtmosphereColorAndTransparency() {
-        switch (currentPlanet.atmosphere) {
-            case "none":
-                return [{ r: 0, g: 0, b: 0 }, 0];
-            case "nitrogen-oxygen":
-                return [{ r: 135, g: 206, b: 235 }, 0.2];
-            case "carbon-dioxide":
-                return [{ r: 105, g: 105, b: 105 }, 0.5];
-            case "hydrogen-helium":
-                return [{ r: 240, g: 230, b: 140 }, 0.5];
-            case "methane":
-                return [{ r: 255, g: 140, b: 0 }, 0.5];
-            default:
-                return [{ r: 255, g: 255, b: 255 }, 0.5];
-        }
-    }
-
     function calculatePixelColorAndAlpha(noiseValue, atmosphereColor, atmosphereTransparency) {
         if (currentPlanet.atmosphere === "nitrogen-oxygen" && noiseValue > 0.7) {
             return [255, 255, 255, 255];
@@ -88,19 +71,6 @@
         ];
     }
 
-    function getAtmosphereColorAndTransparencyForWeather() {
-        if(currentPlanet.atmosphere === "nitrogen-oxygen") {
-            switch (currentPlanet.weather) {
-                case "foggy":
-                    return [{ r: 255, g: 255, b: 255 }, 0.9]; // Almost fully opaque white
-                case "stormy":
-                    return [{ r: 255, g: 255, b: 255 }, 1.0]; // Fully opaque white
-                default: // Default is moderate weather
-                    break;
-            }
-        }
-        return getAtmosphereColorAndTransparency();
-    }
 
     function calculatePixelColorAndAlphaForWeather(noiseValue, atmosphereColor, atmosphereTransparency) {
         if(currentPlanet.atmosphere === "nitrogen-oxygen") {
@@ -121,7 +91,7 @@
         const atmosphereNoise = new SeededNoise(currentPlanet.seed + 1);
         const atmosphereTexture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
 
-        const [atmosphereColor, atmosphereTransparency] = getAtmosphereColorAndTransparencyForWeather();
+        const [atmosphereColor, atmosphereTransparency] = planet.atmosphereColor;
         const atmosphereMaterial = new THREE.MeshBasicMaterial({map: atmosphereTexture, transparent: true});
 
         for (let i = 0; i < resolution; i++) {

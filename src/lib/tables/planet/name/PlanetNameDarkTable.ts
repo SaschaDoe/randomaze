@@ -1,4 +1,4 @@
-import {PlanetNameGenerator} from "../../../entities/planet/PlanetNameGenerator";
+import {PlanetNameGenerator} from "../../../entities/celestialBody/PlanetNameGenerator";
 import {Table} from "../../Table";
 import {AddTableEntry} from "../../AddTableEntry";
 

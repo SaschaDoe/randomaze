@@ -6,7 +6,7 @@ import {PlanetNameGenerator} from "./PlanetNameGenerator";
 import {Save} from "../../persistence/Saver";
 import {SizeTable} from "../../tables/other/SizeTable";
 import {PlanetAtmosphereTable} from "../../tables/planet/PlanetAtmosphereTable";
-import {PlanetWeathers, PlanetWeatherTable} from "../../tables/planet/PlanetWeatherTable";
+import {PlanetWeatherTable} from "../../tables/planet/PlanetWeatherTable";
 
 export const PlanetBaseColors = {
     desert: { r: 255, g: 220, b: 0 },
@@ -38,7 +38,8 @@ export class PlanetCreator {
         planet.resolution = 64;
         planet.brightness = 0.5;
         planet.noiseScale = 2.0;
-        planet.color = this.generateColorVariant(PlanetBaseColors[planet.type]); // Generate a color variant based on the planet type
+        planet.color = this.generateColorVariant(PlanetBaseColors[planet.type]);
+        planet.atmosphereColor = this.getAtmosphereColor(planet.atmosphere, planet.weather);
         solarSystem.planets.push(planet);
         Save();
         return planet;
@@ -76,4 +77,31 @@ export class PlanetCreator {
         };
     }
 
+    private static getAtmosphereColor(atmosphere: string, weather: string) {
+        if(atmosphere === "nitrogen-oxygen") {
+            switch (weather) {
+                case "foggy":
+                    return [{ r: 255, g: 255, b: 255 }, 0.9]; // Almost fully opaque white
+                case "stormy":
+                    return [{ r: 255, g: 255, b: 255 }, 1.0]; // Fully opaque white
+                default:
+                    break;
+            }
+        }
+
+            switch (atmosphere) {
+                case "none":
+                    return [{ r: 0, g: 0, b: 0 }, 0];
+                case "nitrogen-oxygen":
+                    return [{ r: 135, g: 206, b: 235 }, 0.2];
+                case "carbon-dioxide":
+                    return [{ r: 105, g: 105, b: 105 }, 0.5];
+                case "hydrogen-helium":
+                    return [{ r: 240, g: 230, b: 140 }, 0.5];
+                case "methane":
+                    return [{ r: 255, g: 140, b: 0 }, 0.5];
+                default:
+                    return [{ r: 255, g: 255, b: 255 }, 0.5];
+            }
+    }
 }

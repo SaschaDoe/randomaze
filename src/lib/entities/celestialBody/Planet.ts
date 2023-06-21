@@ -7,6 +7,7 @@ export class Planet extends Entity {
     nameMeaning: string;
 
     color: { r: number, g: number, b: number };
+    atmosphereColor: [{ r: number; b: number; g: number }, number];
     seed: number;
     resolution: number;
     noiseScale: number;

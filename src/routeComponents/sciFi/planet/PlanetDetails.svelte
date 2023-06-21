@@ -5,8 +5,8 @@
         if(entity && entity.nameTranslation !== "-"){
             return [
                 { name: "name", value: entity.name },
-                { name: "nameTranslation", value: entity.nameTranslation },
-                { name: "nameMeaning", value: entity.nameMeaning },
+                { name: "translation", value: entity.nameTranslation },
+                { name: "meaning", value: entity.nameMeaning },
                 { name: "type", value: entity.type },
                 { name: "size", value: entity.size },
                 { name: "atmosphere", value: entity.atmosphere },

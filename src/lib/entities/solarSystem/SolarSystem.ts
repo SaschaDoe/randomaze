@@ -1,9 +1,9 @@
 import {Entity} from "../Entity";
-import {Planet} from "../planet/Planet";
+import {Planet} from "../celestialBody/Planet";
+import {Star} from "../celestialBody/Star";
 
 export class SolarSystem extends Entity{
     name: string;
-    size: string;
     stage: string;
     stageDescription: string;
     age: number;
@@ -11,5 +11,6 @@ export class SolarSystem extends Entity{
     positionX: number;
     positionY: number;
     planets: Planet[];
+    stars: Star[];
 
 }

@@ -30,15 +30,6 @@ describe("SolarSystemCreator", () => {
         expect(solarSystem.name).toEqual("adalbald system 0");
     });
 
-    it("should create solar system with size ",  () => {
-
-        mediator.getHandler(HandlerType.GalaxyCreator).handle();
-        let fakeDice = new FakeDice().withRollResult(0);
-        let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
-
-        expect(solarSystem.size).toEqual("tiny");
-    });
-
     it("should create solar system with stage molecular cloud ",  () => {
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle();
@@ -54,7 +45,15 @@ describe("SolarSystemCreator", () => {
         let fakeDice = new FakeDice().withRollResult(1);
         let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
 
-        expect(solarSystem.planets.length).toEqual(1);
+        expect(solarSystem.planets.length).toEqual(6);
+    });
+
+    it("should create solar system with number of stars",  () => {
+        mediator.getHandler(HandlerType.GalaxyCreator).handle();
+        let fakeDice = new FakeDice().withRollResult(0);
+        let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
+
+        expect(solarSystem.stars.length).toEqual(1);
     });
 
 });
