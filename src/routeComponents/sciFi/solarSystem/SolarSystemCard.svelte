@@ -16,7 +16,7 @@
 
 <SciFiCard entity={solarSystem} components={components} defaultTab="details">
     <div slot="image">
-       <div>{solarSystem.id}: {solarSystem.name}</div><
+       <div>{solarSystem.id}: {solarSystem.name}</div>
         <!-- TODO: add animation of a solar system based on its planets -->
     </div>
 </SciFiCard>

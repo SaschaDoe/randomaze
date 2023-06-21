@@ -1,12 +1,22 @@
 <script>
     export let entity;
 
+    function getSizesString(){
+        let stars = entity.stars;
+        let sizesString = "";
+        for(let i = 0; i < stars.length; i++){
+            sizesString += (i+1)+ ": " + stars[i].size + "\n";
+        }
+        return sizesString;
+    }
+
     let fields = [
-        { name: "Size", value: entity.size },
-        { name: "Age", value: entity.age + " million years"},
-        { name: "Stage", value: entity.stage},
+        { name: "number of stars", value: entity.stars.length },
+        { name: "sizes", value: getSizesString() },
+        { name: "age", value: entity.age + " million years"},
+        { name: "stage", value: entity.stage},
         { name: "", value: entity.stageDescription},
-        { name: "Number of Planets", value: entity.planets.length },
+        { name: "number of planets", value: entity.planets.length },
 
     ];
 </script>

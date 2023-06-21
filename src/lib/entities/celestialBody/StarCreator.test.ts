@@ -42,4 +42,25 @@ describe("StarCreator", () => {
 
         expect(solarSystem.stars[0].mass).toEqual(0.08000000000000002);
     });
+
+    it("should create a star with surface temperature",  () => {
+        let stars = StarCreator.addTo(solarSystem, fakeDice);
+
+        expect(solarSystem.stars[0].surfaceTemperature).toEqual(10);
+    });
+
+    it("should create a star with color",  () => {
+        let stars = StarCreator.addTo(solarSystem, fakeDice);
+
+        let expectedColor = { r: +0, g: +0, b: 255 }
+        expect(solarSystem.stars[0].color).toEqual(expectedColor);
+    });
+
+    it("should create a star with stage as given",  () => {
+        let stage = "main sequence";
+        let stars = StarCreator.addTo(solarSystem, fakeDice, stage);
+
+        let expectedColor = { r: +0, g: +0, b: 255 }
+        expect(solarSystem.stars[0].color).toEqual(expectedColor);
+    });
 });

@@ -18,12 +18,13 @@ export class SolarSystemCreator{
         let solarSystem = new SolarSystem();
 
         solarSystem.name = new SolarSystemNameTable().roll(dice).string;
+        solarSystem.stage = new SolarSystemStageTable().roll(dice).string;
+
         let numberOfStars = this.getNumberOfStars(dice);
         for(let i = 0; i < numberOfStars; i++){
-            StarCreator.addTo(solarSystem, dice);
+            StarCreator.addTo(solarSystem, dice, solarSystem.stage);
         }
 
-        solarSystem.stage = solarSystem.stars[0].stage;
         let stageObject = SolarSystemStages.find(stage => stage.name === solarSystem.stage);
 
         solarSystem.stageDescription = stageObject.description;
