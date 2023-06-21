@@ -22,6 +22,47 @@ function closeModal() {
     isModalOpen = false;
 }
 
+
+import { derived } from 'svelte/store';
+
+let solarSystems = derived(campaignStore, $campaignStore => {
+    let systems = [];
+    $campaignStore.galaxies.forEach(galaxy => {
+        galaxy.solarSystems.forEach(solarSystem => {
+            systems.push(solarSystem);
+        });
+    });
+    return systems;
+});
+
+let stars = derived(campaignStore, $campaignStore => {
+    let stars = [];
+    $campaignStore.galaxies.forEach(galaxy => {
+        galaxy.solarSystems.forEach(solarSystem => {
+            solarSystem.stars.forEach(star => {
+                stars.push(star);
+            });
+        });
+    });
+    return stars;
+});
+
+let planets = derived(campaignStore, $campaignStore => {
+    let planets = [];
+    $campaignStore.galaxies.forEach(galaxy => {
+        galaxy.solarSystems.forEach(solarSystem => {
+            solarSystem.planets.forEach(planet => {
+                planets.push(planet);
+            });
+        });
+    });
+    return planets;
+});
+
+
+
+
+
 function scrollToNewMember(id) {
     tick().then(() => {
         const element = document.getElementById(id);
@@ -100,41 +141,6 @@ function openResetModal(e) {
     e.stopPropagation();
     showResetModal = true;
 }
-let solarSystems = new writable([]);
-
-$: {
-    $campaignStore.galaxies.forEach(galaxy => {
-        galaxy.solarSystems.forEach(solarSystem => {
-            $solarSystems.push(solarSystem);
-        });
-    });
-}
-
-let stars = new writable([]);
-
-$: {
-    $campaignStore.galaxies.forEach(galaxy => {
-        galaxy.solarSystems.forEach(solarSystem => {
-            solarSystem.stars.forEach(star => {
-                $stars.push(star);
-            });
-        });
-    });
-}
-
-let planets = new writable([]);
-
-$: {
-    $campaignStore.galaxies.forEach(galaxy => {
-        galaxy.solarSystems.forEach(solarSystem => {
-            solarSystem.planets.forEach(planet => {
-                $planets.push(planet);
-            });
-        });
-    });
-}
-
-
 
 
 </script>

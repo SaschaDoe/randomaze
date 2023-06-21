@@ -6,9 +6,9 @@
             { name: "name", value: entity.name },
             { name: "stage", value: entity.stage },
             { name: "size", value: entity.size },
-            { name: "luminosity", value: entity.luminosity + "L⊙" },
-            { name: "mass", value: entity.luminosity + "M☉" },
-            { name: "surface temp", value: entity.luminosity + "K" },
+            { name: "luminosity", value: entity.luminosity.toFixed(5) + " L⊙" },
+            { name: "mass", value: entity.luminosity.toFixed(5) + " M☉" },
+            { name: "surface temp", value: entity.luminosity.toFixed(5) + " K" },
     ];
     }
 

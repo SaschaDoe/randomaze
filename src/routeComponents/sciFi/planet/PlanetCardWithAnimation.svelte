@@ -203,7 +203,7 @@
         <div>{planet.id}: {planet.name}</div>
         {#if isError}
             <div>There was an error rendering the planet:</div>
-            <div>T{errorMessage}</div>
+            <div>{errorMessage}</div>
         {/if}
         <div id="container" bind:this={container}></div>
     </div>

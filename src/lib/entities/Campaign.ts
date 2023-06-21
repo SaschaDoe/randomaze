@@ -22,5 +22,6 @@ export class Campaign{
 }
 
 export function getEntityTypes(campaign: Campaign){
-    return Object.keys(campaign).filter(key => Array.isArray(campaign[key]));
+    return Object.keys(campaign)
+        .filter(key => Array.isArray(campaign[key]));
 }

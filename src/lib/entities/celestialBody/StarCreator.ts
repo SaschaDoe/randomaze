@@ -108,8 +108,8 @@ export class StarCreator{
 
         switch (stage) {
             case "molecular cloud":
-                r = 0;
-                g = 0;
+                r = 244;
+                g = 244;
                 b = 255;
                 break;
             case "protostar":
@@ -126,12 +126,12 @@ export class StarCreator{
                 if (surfaceTemperature >= 30000) {
                     r = 255;
                     g = 255;
-                    b = 255;
+                    b = 0;  // adjust blue value for yellow color
                 } else {
                     let temperaturePercent = (surfaceTemperature - 1000) / (30000 - 1000);
-                    r = Math.round(temperaturePercent * 255);
-                    g = Math.round(temperaturePercent * 255);
-                    b = 255;
+                    r = 255; // red is always 255 for both yellow and orange
+                    g = 255 - Math.round((255 - 165) * temperaturePercent); // green decreases from 255 (yellow) to 165 (orange)
+                    b = 0; // blue is always 0 for both yellow and orange
                 }
                 break;
             case "red giant":
@@ -145,14 +145,15 @@ export class StarCreator{
                 b = 255;
                 break;
             case "black dwarf":
-                r = 0;
-                g = 0;
-                b = 0;
+                r = 50;
+                g = 50;
+                b = 50;
                 break;
             default:
-                r = 0;
-                g = 0;
-                b = 0;
+                r = 70;
+                g = 70;
+                b = 70;
+                console.log("default star color case");
                 break;
         }
 

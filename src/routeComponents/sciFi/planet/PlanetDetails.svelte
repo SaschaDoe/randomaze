@@ -36,14 +36,13 @@
     {/each}
 </div>
 
-<!-- the rest of your code -->
-
 <style>
     .entity-details {
         display: grid;
         gap: 15px;
         color: lawngreen;
         margin-top: 10px;
+        overflow: hidden;
     }
 
     .entity-field {

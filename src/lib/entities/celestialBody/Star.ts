@@ -1,4 +1,6 @@
-export class Star{
+import {Entity} from "../Entity";
+
+export class Star extends Entity{
     size: string;
     stage: string;
     luminosity: number;

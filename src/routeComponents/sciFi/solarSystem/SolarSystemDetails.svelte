@@ -20,15 +20,17 @@
 
     ];
 </script>
-
-<div class="entity-details">
-    {#each fields as field (field.name)}
-        <div class="entity-field">
-            <div class="field-name">{field.name}</div>
-            <div class="field-value">{field.value}</div>
-        </div>
-    {/each}
+<div class="scrollable">
+    <div class="entity-details">
+        {#each fields as field (field.name)}
+            <div class="entity-field">
+                <div class="field-name">{field.name}</div>
+                <div class="field-value">{field.value}</div>
+            </div>
+        {/each}
+    </div>
 </div>
+
 
 <style>
     .entity-details {
@@ -53,5 +55,27 @@
 
     .field-name {
         font-weight: bold;
+    }
+
+    .scrollable{
+        overflow: auto;
+        height: 100vh;
+    }
+
+    .scrollable::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .scrollable::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .scrollable::-webkit-scrollbar-thumb {
+        background: lawngreen;
+        border-radius: 5px;
+    }
+
+    .scrollable::-webkit-scrollbar-thumb:hover {
+        background: darkgreen;
     }
 </style>
