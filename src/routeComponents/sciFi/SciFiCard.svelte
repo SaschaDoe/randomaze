@@ -1,4 +1,6 @@
 <script>
+    import { writable } from 'svelte/store'; // import writable store
+
     export let entity;
     export let components; // array of objects { name: '...', component: ... }
     export let defaultTab;
@@ -7,7 +9,7 @@
     let currentIndex = tabs.findIndex(t => t === defaultTab);
 
     let isMobile = window.innerWidth <= 700;
-    let showSection = isMobile ? 'info' : 'both'; // Default to 'info'
+    let showSection = writable(isMobile ? 'info' : 'both'); // use writable store
     let lastMobileSection = 'info'; // Remember last shown section on mobile
 
 
@@ -31,8 +33,6 @@
         currentIndex = components.findIndex(c => c.name === defaultTab);
     }
 
-
-
     function nextTab() {
         if (currentIndex < tabs.length - 1) {
             currentIndex += 1;
@@ -48,30 +48,28 @@
     }
 
     function toggleSection(section) {
-        showSection = section;
+        showSection.set(section); // use .set method to update the value of showSection
         if (isMobile) lastMobileSection = section; // Update last shown section on mobile
     }
 
     window.addEventListener('resize', () => {
         isMobile = window.innerWidth <= 700;
         if (!isMobile) {
-            showSection = 'both';
+            showSection.set('both'); // use .set method
         } else {
-            showSection = lastMobileSection; // Restore last shown section when resizing back to small
+            showSection.set(lastMobileSection); // use .set method and Restore last shown section when resizing back to small
         }
     });
 
-
 </script>
+<div class="scrollable">
 
 <div class="container">
-    {#if showSection === 'image' || showSection === 'both'}
+
         <div class="image-section">
             <slot name="image"></slot>
         </div>
-    {/if}
-
-    {#if showSection === 'info' || showSection === 'both'}
+    {#if $showSection === 'info' || $showSection === 'both'} <!-- use $showSection -->
         <div class="entity-information">
             <div class="navigation">
                 <button on:click={prevTab} disabled={currentIndex === 0} class="nav-button">◀</button>
@@ -89,11 +87,11 @@
 
     {#if isMobile}
         <div class="navigation-buttons">
-            {#if showSection === 'info'}
+            {#if $showSection === 'info'} <!-- use $showSection -->
                 <button on:click={() => toggleSection('image')} class="nav-button">&lt;&lt;</button>
                 <div></div> <!-- Placeholder for alignment -->
             {/if}
-            {#if showSection === 'image'}
+            {#if $showSection === 'image'} <!-- use $showSection -->
                 <div></div> <!-- Placeholder for alignment -->
                 <button on:click={() => toggleSection('info')} class="nav-button">&gt;&gt;</button>
 
@@ -102,7 +100,31 @@
     {/if}
 </div>
 
+</div>
+
 <style>
+    .scrollable{
+        overflow: auto;
+        height: 100vh;
+    }
+
+    .scrollable::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .scrollable::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .scrollable::-webkit-scrollbar-thumb {
+        background: lawngreen;
+        border-radius: 5px;
+    }
+
+    .scrollable::-webkit-scrollbar-thumb:hover {
+        background: darkgreen;
+    }
+
     .container {
         position: relative;
         padding: 10px;
@@ -112,7 +134,6 @@
         display: flex;
         justify-content: space-between;
         cursor: crosshair;
-        overflow: hidden;
     }
 
 
@@ -162,11 +183,18 @@
             width: 100%;
             margin-top: 10px;
         }
+
+
+
     }
 
     @media (min-width: 700px) {
         .navigation-buttons {
             display: none;
+        }
+
+        .scrollable{
+            height: 100%;
         }
     }
     .navigation-buttons {
@@ -175,4 +203,6 @@
         width: 100%;
         margin-top: 10px;
     }
+
+
 </style>

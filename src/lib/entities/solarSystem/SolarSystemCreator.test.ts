@@ -42,10 +42,10 @@ describe("SolarSystemCreator", () => {
     it("should create solar system with 1 planet",  () => {
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle();
-        let fakeDice = new FakeDice().withRollResult(1);
+        let fakeDice = new FakeDice().withRollResult(0);
         let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
 
-        expect(solarSystem.planets.length).toEqual(6);
+        expect(solarSystem.planets.length).toEqual(4);
     });
 
     it("should create solar system with number of stars",  () => {

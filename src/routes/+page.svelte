@@ -8,7 +8,6 @@ import EntityCard from "./EntityCard.svelte";
 import EntitySideIndex from "./EntitySideIndex.svelte";
 import {campaignStore, Load, PersistantCmpaign, Reset, Save} from "$lib/persistence/Saver.ts";
 import {writable} from "svelte/store";
-import PlanetDetails from "../routeComponents/sciFi/planet/PlanetDetails.svelte";
 
 let mediator = new Mediator(PersistantCmpaign);
 
@@ -111,6 +110,18 @@ $: {
     });
 }
 
+let stars = new writable([]);
+
+$: {
+    $campaignStore.galaxies.forEach(galaxy => {
+        galaxy.solarSystems.forEach(solarSystem => {
+            solarSystem.stars.forEach(star => {
+                $stars.push(star);
+            });
+        });
+    });
+}
+
 let planets = new writable([]);
 
 $: {
@@ -122,6 +133,8 @@ $: {
         });
     });
 }
+
+
 
 
 </script>
@@ -194,6 +207,16 @@ $: {
                     {#each $solarSystems as solarSystem}
                         <li id={solarSystem.id}>
                             <EntityCard entity={solarSystem} type="solarSystem" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+            {#if $stars.length > 0}
+                <h2 id="Stars">Stars</h2>
+                <ul>
+                    {#each $stars as star}
+                        <li id={star.id}>
+                            <EntityCard entity={star} type="star" on:deleteEntity={deleteEntity} on:scrollToEntity={scrollToEntity} />
                         </li>
                     {/each}
                 </ul>

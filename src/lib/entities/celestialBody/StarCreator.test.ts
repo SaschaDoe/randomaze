@@ -10,6 +10,8 @@ describe("StarCreator", () => {
 
     beforeEach(() => {
         solarSystem = new SolarSystem();
+        solarSystem.stars = [];
+        solarSystem.stage = "protostar";
         fakeDice = new FakeDice().withRollResult(0);
     });
 
@@ -28,7 +30,7 @@ describe("StarCreator", () => {
     it("should create a star with stage",  () => {
         let stars = StarCreator.addTo(solarSystem, fakeDice);
 
-        expect(solarSystem.stars[0].stage).toEqual("molecular cloud");
+        expect(solarSystem.stars[0].stage).toEqual("protostar");
     });
 
     it("should create a star with luminosity",  () => {
@@ -46,21 +48,20 @@ describe("StarCreator", () => {
     it("should create a star with surface temperature",  () => {
         let stars = StarCreator.addTo(solarSystem, fakeDice);
 
-        expect(solarSystem.stars[0].surfaceTemperature).toEqual(10);
+        expect(solarSystem.stars[0].surfaceTemperature).toEqual(282.8427124746191);
     });
 
     it("should create a star with color",  () => {
         let stars = StarCreator.addTo(solarSystem, fakeDice);
 
-        let expectedColor = { r: +0, g: +0, b: 255 }
+        let expectedColor =  { r: 255, g: 165, b: +0 }
         expect(solarSystem.stars[0].color).toEqual(expectedColor);
     });
 
     it("should create a star with stage as given",  () => {
-        let stage = "main sequence";
-        let stars = StarCreator.addTo(solarSystem, fakeDice, stage);
+        let stars = StarCreator.addTo(solarSystem, fakeDice);
 
-        let expectedColor = { r: +0, g: +0, b: 255 }
+        let expectedColor = { r: 255, g: 165, b: +0 }
         expect(solarSystem.stars[0].color).toEqual(expectedColor);
     });
 });

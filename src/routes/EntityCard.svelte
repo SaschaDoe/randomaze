@@ -6,6 +6,7 @@
     import SolarSystemCard from "../routeComponents/sciFi/solarSystem/SolarSystemCard.svelte";
     import GalaxyCard from "../routeComponents/sciFi/galaxy/GalaxyCard.svelte";
     import PlanetCardWithAnimation from "../routeComponents/sciFi/planet/PlanetCardWithAnimation.svelte";
+    import StarCardWithAnimation from "../routeComponents/sciFi/star/StarCardWithAnimation.svelte";
 
     let showDeleteModal = false;
     let showDetailsModal = false;
@@ -84,9 +85,13 @@
             {#if type === 'solarSystem'}
                 <SolarSystemCard solarSystem={entity}/>
             {/if}
+            {#if type === 'star'}
+                <StarCardWithAnimation star={entity}/>
+            {/if}
             {#if type === 'planet'}
                 <PlanetCardWithAnimation planet={entity}/>
             {/if}
+
         </Modal>
     {/if}
 </div>

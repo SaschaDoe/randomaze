@@ -2,32 +2,24 @@ import {SolarSystem} from "../solarSystem/SolarSystem";
 import {Star} from "./Star";
 import {Dice} from "../../tables/Dice";
 import {SizeTable} from "../../tables/other/SizeTable";
-import {SolarSystemStageTable} from "../../tables/solarSystem/SolarSystemStageTable";
-
 export class StarCreator{
 
-    static addTo(solarSystem: SolarSystem, dice?: Dice, stage?: string) {
+    static addTo(solarSystem: SolarSystem, dice?: Dice) {
         if(!dice){
             dice = new Dice();
         }
-        let stars = [];
         let star = new Star();
+        star.name = solarSystem.name + " " + solarSystem.stars.length + 1;
         star.size = new SizeTable().roll(dice).string;
-        if(stage){
-            star.stage = stage;
-        }else{
-            star.stage = new SolarSystemStageTable().roll(dice).string;
-        }
-
+        star.stage = solarSystem.stage;
         star.mass = this.getMassFrom(star.size, star.stage, dice);
         star.luminosity = this.getLuminosityFrom(star.mass, star.stage);
         star.surfaceTemperature = this.generateSurfaceTemperature(star.mass, star.stage);
         star.color = this.getStarColor(star.surfaceTemperature, star.stage);
 
-        stars.push(star);
-        solarSystem.stars = stars;
+        solarSystem.stars.push(star);
 
-        return stars;
+        return star;
     }
         static getLuminosityFrom(mass, stage) {
             let luminosity =  Math.pow(mass, 3.5);

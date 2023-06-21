@@ -19,10 +19,10 @@ export class SolarSystemCreator{
 
         solarSystem.name = new SolarSystemNameTable().roll(dice).string;
         solarSystem.stage = new SolarSystemStageTable().roll(dice).string;
-
+        solarSystem.stars = [];
         let numberOfStars = this.getNumberOfStars(dice);
         for(let i = 0; i < numberOfStars; i++){
-            StarCreator.addTo(solarSystem, dice, solarSystem.stage);
+            StarCreator.addTo(solarSystem, dice);
         }
 
         let stageObject = SolarSystemStages.find(stage => stage.name === solarSystem.stage);
@@ -81,10 +81,10 @@ export class SolarSystemCreator{
     }
 
     private static starSystemProbabilities = [
-        {type: "Single Star System", stars: 1, probability: 0.5},
-        {type: "Binary Star System", stars: 2, probability: 0.35},
-        {type: "Trinary Star System", stars: 3, probability: 0.1},
-        {type: "Systems with More Than Three Stars", stars: () => Math.floor(Math.random() * 4) + 4, probability: 0.05}
+        { stars: 1, probability: 0.5},
+        { stars: 2, probability: 0.35},
+        {stars: 3, probability: 0.1},
+        {stars: () => Math.floor(Math.random() * 4) + 4, probability: 0.05}
     ];
 
 
@@ -93,14 +93,26 @@ export class SolarSystemCreator{
 
         for (let i = 0; i < stars.length; i++) {
             let randomFactor = Math.floor(dice.rollRandom() * 4)-2;
+            let planetFactor = 8;
+
             if (stars[i].mass > 1) {
-                numberOfPlanets += 8 + randomFactor;
+                // More massive stars can have more planets,
+                planetFactor += 4;
+
             } else {
-                numberOfPlanets += 4 + randomFactor;
+                // Lower mass stars might have fewer planets,
+                planetFactor -= 2;
             }
+
+            if(stars[i].stage === "redGiant" || stars[i].stage === "whiteDwarf" || stars[i].stage === "blackDwarf"){
+                planetFactor -= 4;
+            }
+
+            numberOfPlanets += planetFactor + randomFactor;
         }
 
         return numberOfPlanets;
     }
+
 
 }

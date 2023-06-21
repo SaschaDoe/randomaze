@@ -5,4 +5,5 @@ export class Star{
     mass: number;
     surfaceTemperature: number;
     color: { r, g, b };
+    name: string;
 }
