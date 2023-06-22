@@ -41,8 +41,6 @@
 
 <div class="entity-details">
     <div class="systems-list">
-        <p>{entity.planets.length}</p>
-
         <ul>
             {#if noSystem}
                 <p>No systems found</p>

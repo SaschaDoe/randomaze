@@ -47,11 +47,6 @@
         }
     }
 
-    function toggleSection(section) {
-        showSection.set(section); // use .set method to update the value of showSection
-        if (isMobile) lastMobileSection = section; // Update last shown section on mobile
-    }
-
     window.addEventListener('resize', () => {
         isMobile = window.innerWidth <= 700;
         if (!isMobile) {
@@ -84,20 +79,6 @@
             {/each}
         </div>
     {/if}
-
-    {#if isMobile}
-        <div class="navigation-buttons">
-            {#if $showSection === 'info'} <!-- use $showSection -->
-                <button on:click={() => toggleSection('image')} class="nav-button">&lt;&lt;</button>
-                <div></div> <!-- Placeholder for alignment -->
-            {/if}
-            {#if $showSection === 'image'} <!-- use $showSection -->
-                <div></div> <!-- Placeholder for alignment -->
-                <button on:click={() => toggleSection('info')} class="nav-button">&gt;&gt;</button>
-
-            {/if}
-        </div>
-    {/if}
 </div>
 
 </div>
@@ -110,6 +91,7 @@
 
     .scrollable::-webkit-scrollbar {
         width: 10px;
+        background: black;
     }
 
     .scrollable::-webkit-scrollbar-track {
@@ -176,33 +158,13 @@
             flex-direction: column;
             align-items: center;
         }
-
-        .navigation-buttons {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-
-
     }
 
     @media (min-width: 700px) {
-        .navigation-buttons {
-            display: none;
-        }
 
         .scrollable{
             height: 100%;
         }
     }
-    .navigation-buttons {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 10px;
-    }
-
 
 </style>
