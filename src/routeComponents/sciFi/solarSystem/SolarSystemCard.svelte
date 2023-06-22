@@ -7,6 +7,7 @@
     import { onMount } from 'svelte';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
     import {SeededNoise} from "../planet/SeededNoise.ts";
+    import {selectedPlanet} from "./planetStore.ts";
 
     export let solarSystem;
 
@@ -16,9 +17,10 @@
         { name: 'anomalies', component: SolarSystemAnomalies },
     ];
 
-    let container;
+    let container, controls;
     let scene, camera, renderer;
     let star, planets = [];
+
 
     function getScale(size) {
         let baseScale = 0.2;
@@ -80,17 +82,22 @@
 
         return planetMesh;
     }
-
     onMount(() => {
         scene = new THREE.Scene();
+
+        const baseDistance = 15;
+        const distancePerPlanet = 2;
+        let maxDistance = baseDistance + distancePerPlanet * solarSystem.planets.length;
+
         camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, maxDistance, maxDistance);
+
         renderer = new THREE.WebGLRenderer();
 
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
 
-        let controls = new OrbitControls(camera, renderer.domElement);
-        camera.position.set(0, 20, 0);  // Set camera to look from above
+        controls = new OrbitControls(camera, renderer.domElement);
         controls.update();
 
         star = new THREE.Mesh(
@@ -99,15 +106,12 @@
         );
         scene.add(star);
 
-        const maxDistance = 15; // Maximale Entfernung von der Sonne
-
         for (let i = 0; i < solarSystem.planets.length; i++) {
             let planetData = solarSystem.planets[i];
             let planetMesh = createPlanet(planetData);
 
-            // Startposition und Geschwindigkeit
             let angle = Math.random() * Math.PI * 2;
-            let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1); // Gleichmäßige Entfernungen
+            let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
             planetMesh.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
 
             planetMesh.velocity = 0.02 / distance;
@@ -129,7 +133,6 @@
         }
 
 
-
         function animate() {
             requestAnimationFrame(animate);
 
@@ -143,18 +146,29 @@
                 planet.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
             }
 
+            if($selectedPlanet){
+
+                let planetIndex = solarSystem.planets.findIndex(planet => planet.name === $selectedPlanet.name);
+                let planet = planets[planetIndex];
+                if(planet){
+                    let cameraTarget = new THREE.Vector3(planet.position.x, planet.position.y, planet.position.z);
+                    camera.position.set(planet.position.x + 3, planet.position.y + 3, planet.position.z + 3);
+                    camera.lookAt(cameraTarget);
+                    controls.target = cameraTarget;
+                }
+            }
+
             // Update camera controls before rendering
             controls.update();
-
             // Render the scene
             renderer.render(scene, camera);
         }
-
         animate();
     });
 </script>
 
 <SciFiCard entity={solarSystem} components={components} defaultTab="details">
+
     <div slot="image">
         <div>{solarSystem.id}: {solarSystem.name}</div>
         <div id="container" bind:this={container}></div>
