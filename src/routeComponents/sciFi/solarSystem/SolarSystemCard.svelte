@@ -191,9 +191,7 @@
                 starMesh.position.set(positionX, 0, positionZ);
             }
 
-            let velocity = 0.007; // can adjust this for speed
-            let variance = 0.001;
-            velocity += (Math.random()) * variance;
+            let velocity = 0.007;
             starMesh.velocity = velocity;
 
             stars.push(starMesh);
