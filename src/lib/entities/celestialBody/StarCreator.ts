@@ -1,4 +1,4 @@
-import {SolarSystem} from "../solarSystem/SolarSystem";
+import type {SolarSystem} from "../solarSystem/SolarSystem";
 import {Star} from "./Star";
 import {Dice} from "../../tables/Dice";
 import {SizeTable} from "../../tables/other/SizeTable";

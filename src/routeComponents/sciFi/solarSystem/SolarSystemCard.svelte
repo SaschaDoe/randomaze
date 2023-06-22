@@ -4,16 +4,18 @@
     import SolarSystemAnomalies from "./SolarSystemAnomalies.svelte";
     import SciFiCard from "../SciFiCard.svelte";
     import * as THREE from 'three';
-    import {onDestroy, onMount} from 'svelte';
+    import {onMount} from 'svelte';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
     import {SeededNoise} from "../planet/SeededNoise.ts";
     import {selectedPlanet} from "./planetStore.ts";
+    import SolarSystemStars from "./SolarSystemStars.svelte";
 
     export let solarSystem;
 
     let components = [
         { name: 'details', component: SolarSystemDetails },
         { name: 'planets', component: SolarSystemPlanets },
+        { name: 'stars', component: SolarSystemStars },
         { name: 'anomalies', component: SolarSystemAnomalies },
     ];
 
@@ -175,12 +177,18 @@
             let angle = Math.random() * Math.PI * 2;
             let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
             let planetMesh = planetMeshArray[0];
-            planetMesh.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
+            let positionX = distance * Math.cos(angle);
+            let positionZ = distance * Math.sin(angle)
+            planetMesh.position.set(positionX, 0, positionZ);
 
-            planetMesh.velocity = 0.02 / distance;
+            let velocity = 0.007 / distance*2;
+            let variance = 0.001;
+            velocity += (Math.random()) * variance;
+            planetMesh.velocity = velocity;
+
             let atmosphereMesh = planetMeshArray[1];
-            atmosphereMesh.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
-            atmosphereMesh.velocity = 0.02 / distance;
+            atmosphereMesh.position.set(positionX, 0, positionZ);
+            atmosphereMesh.velocity = planetMesh.velocity;
             let planet = [planetMesh, atmosphereMesh];
             planets.push(planet);
 
@@ -221,16 +229,18 @@
 
             if($selectedPlanet){
                 let planetIndex = solarSystem.planets.findIndex(planet => planet.name === $selectedPlanet.name);
-                let planet = planets[planetIndex][0];
-                if(planet){
-                    let cameraTarget = new THREE.Vector3(planet.position.x, planet.position.y, planet.position.z);
-                    let cameraDistance = 2;
-                    camera.position.set(
-                        planet.position.x + cameraDistance,
-                        planet.position.y + cameraDistance,
-                        planet.position.z + cameraDistance);
-                    camera.lookAt(cameraTarget);
-                    controls.target = cameraTarget;
+                if(planetIndex !== -1) {
+                    let planet = planets[planetIndex][0];
+                    if (planet) {
+                        let cameraTarget = new THREE.Vector3(planet.position.x, planet.position.y, planet.position.z);
+                        let cameraDistance = 2;
+                        camera.position.set(
+                            planet.position.x + cameraDistance,
+                            planet.position.y + cameraDistance,
+                            planet.position.z + cameraDistance);
+                        camera.lookAt(cameraTarget);
+                        controls.target = cameraTarget;
+                    }
                 }
             }
 
@@ -251,7 +261,10 @@
 <SciFiCard entity={solarSystem} components={components} defaultTab="details">
 
     <div slot="image">
-        <div>{solarSystem.id}: {solarSystem.name}</div>
+        <span class="card-title">
+            <div class="card-id">{solarSystem.id}:</div>
+            <div class="card-name">{solarSystem.name}</div>
+        </span>
         <div id="container" bind:this={container}></div>
         <button on:click={() => {deselect()}}>Deselect</button>
     </div>
@@ -267,9 +280,15 @@
     button{
         background: none;
         color: lawngreen;
-        font-size: 1.5em;
+        font-size: 1em;
         cursor: pointer;
         border: 2px solid lawngreen;
         border-radius: 10px;
+    }
+    .card-title {
+        font-size: 1.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

@@ -3,56 +3,54 @@
     import {onMount} from "svelte";
     import {selectedSystem} from "../galaxy/systemStore.ts";
     import Modal from "../../../routes/Modal.svelte";
-    import PlanetCardWithAnimation from "../planet/PlanetCardWithAnimation.svelte";
+    import {selectedStar} from "./planetStore.ts";
+    import StarCardWithAnimation from "../star/StarCardWithAnimation.svelte";
 
     export let entity;
-    let currentSelectedPlanet = {};
-    $: noSystem = entity.planets.length < 1;
+    let currentSelectedStar = {};
+    $: noSystem = entity.stars.length < 1;
     let selectCounter = 0;
-    let showPlanetModal = false;
-    function selectSystem(planet) {
-        if($selectedPlanet === planet){
+    let showStarModal = false;
+    function select(star) {
+        console.log("select star", star);
+        console.log("current selected star", $selectedStar);
+        if($selectedStar === star){
             selectCounter++;
         }
 
         if(selectCounter === 1) {
             selectCounter = 0;
-            console.log("closeModal in GalaxyAddSystems");
-
-            showPlanetModal = true;
+            console.log("show star modal on second click");
+            showStarModal = true;
             return;
         }
-        currentSelectedPlanet = planet;
-        selectedPlanet.set(planet);
+        currentSelectedStar = star;
+        selectedStar.set(star);
 
     }
 
     onMount (() => {
-        currentSelectedPlanet = $selectedSystem;
+        currentSelectedStar = $selectedSystem;
     })
 
 
     function closePlanetModal() {
-        showPlanetModal = false;
+        showStarModal = false;
     }
 
-    
+
 </script>
 
 <div class="entity-details">
     <div class="systems-list">
         <ul>
             {#if noSystem}
-                <p>No planets found</p>
+                <p>No stars found</p>
             {/if}
-            {#each entity.planets as planet}
-                <li class="entity-field {($selectedPlanet === planet) ? 'selected' : ''}">
-                <button class="field-name" on:click={() => selectSystem(planet)}>
-                        <span><strong>{planet.id}: {planet.name}</strong></span>
-                        {#if planet.nameTranslation !== "-"}
-                            <span>{planet.nameTranslation} </span>
-                            <span>{planet.nameMeaning}</span>
-                        {/if}
+            {#each entity.stars as star}
+                <li class="entity-field {($selectedStar === star) ? 'selected' : ''}">
+                    <button class="field-name" on:click={() => select(star)}>
+                        <span><strong>{star.id}: {star.name}</strong></span>
                     </button>
                 </li>
             {/each}
@@ -60,9 +58,9 @@
     </div>
 </div>
 
-{#if showPlanetModal}
+{#if showStarModal}
     <Modal on:close={closePlanetModal}>
-        <PlanetCardWithAnimation planet={$selectedPlanet}/>
+        <StarCardWithAnimation star={$selectedStar}/>
     </Modal>
 {/if}
 
