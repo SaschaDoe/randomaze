@@ -9,6 +9,7 @@
     import {SeededNoise} from "../planet/SeededNoise.ts";
     import {selectedPlanet} from "./planetStore.ts";
     import SolarSystemStars from "./SolarSystemStars.svelte";
+    import {ImprovedNoise} from "three/addons/math/ImprovedNoise.js";
 
     export let solarSystem;
 
@@ -21,7 +22,8 @@
 
     let container, controls;
     let scene, camera, renderer;
-    let star, planets = [];
+    let stars = [];
+    let planets = [];
 
 
     function getScale(size) {
@@ -146,12 +148,66 @@
     }
 
     let maxDistance;
+    let noiseScale = 2;
+    let brightness = 1;
+    function createStar(starData) {
+        const scale = getScale(starData.size); // assuming starData has a size property
+        const resolution = getResolution(starData.size); // assuming starData has a size property
+        const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
+        const texture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const noise = new ImprovedNoise();
+
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const pixelIndex = (i + j * resolution) * 4;
+                const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
+                const color = starData.color;
+                texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
+                texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
+                texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
+                texture.image.data[pixelIndex + 3] = 255;
+            }
+        }
+
+        texture.needsUpdate = true;
+        let starMesh = new THREE.Mesh(geometry, material);
+        return starMesh;
+    }
+
+    let minDistance;
+    function createStars() {
+        for (let i = 0; i < solarSystem.stars.length; i++) {
+            let starData = solarSystem.stars[i];
+            let starMesh = createStar(starData);
+
+            if (solarSystem.stars.length === 1) { // if only one star
+                starMesh.position.set(0, 0, 0); // it stays in the middle
+            } else { // multiple stars
+                let angle = (i / solarSystem.stars.length) * Math.PI * 2;
+                let distance = minDistance / 2; // half of minDistance
+                let positionX = distance * Math.cos(angle);
+                let positionZ = distance * Math.sin(angle);
+                starMesh.position.set(positionX, 0, positionZ);
+            }
+
+            let velocity = 0.007; // can adjust this for speed
+            let variance = 0.001;
+            velocity += (Math.random()) * variance;
+            starMesh.velocity = velocity;
+
+            stars.push(starMesh);
+            scene.add(starMesh);
+        }
+    }
+
     onMount(() => {
         scene = new THREE.Scene();
 
         const baseDistance = 15;
         const distancePerPlanet = 2;
         maxDistance = baseDistance + distancePerPlanet * solarSystem.planets.length;
+        minDistance = maxDistance; // set minDistance to maxDistance initially
 
         camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         camera.position.set(0, maxDistance, maxDistance);
@@ -164,11 +220,14 @@
         controls = new OrbitControls(camera, renderer.domElement);
         controls.update();
 
-        star = new THREE.Mesh(
-            new THREE.SphereGeometry(1.2, 32, 32),
-            new THREE.MeshBasicMaterial({ color: 0xffff00 })
-        );
-        scene.add(star);
+        for (let i = 0; i < solarSystem.planets.length; i++) {
+            let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
+            if (distance < minDistance) {
+                minDistance = distance;
+            }
+        }
+
+        createStars();
 
         for (let i = 0; i < solarSystem.planets.length; i++) {
             let planetData = solarSystem.planets[i];
@@ -211,8 +270,16 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotation of the star
-            star.rotation.y += 0.01;
+            for (let star of stars) {
+                star.rotation.y += 0.01; // Add rotation to the star
+
+                // Only move the stars along the orbit if there's more than one
+                if (stars.length > 1) {
+                    let angle = Math.atan2(star.position.z, star.position.x) + star.velocity;
+                    let distance = star.position.length();
+                    star.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
+                }
+            }
 
             // Move each planet along its elliptic path
             for (let planetArray of planets) {
