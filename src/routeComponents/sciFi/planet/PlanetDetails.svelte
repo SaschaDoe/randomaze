@@ -2,31 +2,24 @@
     export let entity;
 
     function getFields() {
-        if(entity && entity.nameTranslation !== "-"){
-            return [
-                { name: "name", value: entity.name },
-                { name: "translation", value: entity.nameTranslation },
-                { name: "meaning", value: entity.nameMeaning },
-                { name: "type", value: entity.type },
-                { name: "size", value: entity.size },
-                { name: "atmosphere", value: entity.atmosphere },
-                { name: "weather", value: entity.weather },
-            ];
-        } else if (entity) {
-            return [
-                { name: "name", value: entity.name },
-                { name: "type", value: entity.type },
-                { name: "size", value: entity.size },
-                { name: "atmosphere", value: entity.atmosphere },
-                { name: "weather", value: entity.weather },
-            ];
+        let details = [{name: "name", value: entity.name}];
+        if (entity.nameTranslation !== "-") {
+            details.push({name: "translation", value: entity.nameTranslation});
+            details.push({name: "meaning", value: entity.nameMeaning},);
         }
-        return [];
+        details.push({name: "type", value: entity.type});
+        details.push({name: "size", value: entity.size});
+        details.push({name: "atmosphere", value: entity.atmosphere});
+        details.push({name: "weather", value: entity.weather});
+        details.push({name: "obliquity", value: entity.obliquity.toFixed(5) + "°"});
+
+        return details;
     }
 
     $: fields = getFields();
 </script>
 
+<div class="scrollable">
 <div class="entity-details">
     {#each fields as field (field.name)}
         <div class="entity-field">
@@ -35,6 +28,7 @@
         </div>
     {/each}
 </div>
+</div>
 
 <style>
     .entity-details {
@@ -42,7 +36,7 @@
         gap: 15px;
         color: lawngreen;
         margin-top: 10px;
-        overflow: hidden;
+        overflow: auto;
     }
 
     .entity-field {
@@ -60,5 +54,27 @@
 
     .field-name {
         font-weight: bold;
+    }
+
+    .scrollable{
+        overflow: auto;
+        height: 100vh;
+    }
+
+    .scrollable::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .scrollable::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .scrollable::-webkit-scrollbar-thumb {
+        background: lawngreen;
+        border-radius: 5px;
+    }
+
+    .scrollable::-webkit-scrollbar-thumb:hover {
+        background: darkgreen;
     }
 </style>

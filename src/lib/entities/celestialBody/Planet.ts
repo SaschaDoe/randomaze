@@ -16,4 +16,5 @@ export class Planet extends Entity {
     atmosphere: string;
 
     weather: string;
+    obliquity: number;
 }

@@ -1,8 +1,8 @@
 import {describe, it, expect, beforeEach} from "vitest";
 import {SolarSystemCreator} from "../solarSystem/SolarSystemCreator";
 import {PlanetCreator} from "./PlanetCreator";
-import {Planet} from "./Planet";
-import {SolarSystem} from "../solarSystem/SolarSystem";
+import type {Planet} from "./Planet";
+import type {SolarSystem} from "../solarSystem/SolarSystem";
 import {FakeDice} from "../../tables/FakeDice";
 
 describe("PlanetCreator", () => {
@@ -31,5 +31,10 @@ describe("PlanetCreator", () => {
         expect(planet.name).toEqual('نور');
         expect(planet.nameTranslation).toEqual("nur");
         expect(planet.nameMeaning).toEqual("(Light)");
+    })
+
+    it("should create a planet with obliquity",  () => {
+        planet = PlanetCreator.addTo(solarSystem, fakeDice);
+        expect(planet.obliquity).toEqual(0);
     })
 });

@@ -33,6 +33,7 @@ export class PlanetCreator {
         planet.size = this.getSize(dice, planet.type);
         planet.atmosphere = new PlanetAtmosphereTable().roll(dice).string;
         planet.weather = this.getWeather(dice, planet.size, planet.atmosphere);
+        planet.obliquity = this.getObliquity(dice);
 
         planet.seed = dice.rollRandom();
         planet.resolution = 64;
@@ -65,7 +66,7 @@ export class PlanetCreator {
     }
 
     static generateColorVariant(baseColor, variability = 0.3) {
-        function randomVariation(value) {
+        function randomVariation(value: number) {
             const adjustmentFactor = 1.0 + (Math.random() * 2 - 1) * variability;
             return Math.max(0, Math.min(255, Math.round(value * adjustmentFactor)));
         }
@@ -93,7 +94,7 @@ export class PlanetCreator {
                 case "none":
                     return [{ r: 0, g: 0, b: 0 }, 0];
                 case "nitrogen-oxygen":
-                    return [{ r: 135, g: 206, b: 235 }, 0.2];
+                    return [{ r: 70, g: 130, b: 180 }, 0.05];
                 case "carbon-dioxide":
                     return [{ r: 105, g: 105, b: 105 }, 0.5];
                 case "hydrogen-helium":
@@ -103,5 +104,14 @@ export class PlanetCreator {
                 default:
                     return [{ r: 255, g: 255, b: 255 }, 0.5];
             }
+    }
+
+    private static getObliquity(dice: Dice) {
+        let hasNormalObliquity = dice.rollRandom() > 0.1;
+        if (hasNormalObliquity) {
+            return dice.rollRandom() * 30;
+        }
+
+        return dice.rollInterval(31,360);
     }
 }

@@ -107,6 +107,7 @@
 
         atmosphereTexture.needsUpdate = true;
         const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        atmosphereMesh.rotation.x = THREE.MathUtils.degToRad(currentPlanet.obliquity);
         scene.add(atmosphereMesh);
         return atmosphereMesh;
     }
@@ -131,6 +132,8 @@
 
         texture.needsUpdate = true;
         planetMesh = new THREE.Mesh(geometry, material);
+        planetMesh.rotation.x = THREE.MathUtils.degToRad(currentPlanet.obliquity);
+        console.log("set planet rotation to: " + currentPlanet.obliquity + " degrees");
         scene.add(planetMesh);
 
         //Create cloudy atmosphere
