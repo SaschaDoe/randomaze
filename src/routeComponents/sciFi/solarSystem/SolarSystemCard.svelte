@@ -206,7 +206,7 @@
 
         const baseDistance = 15;
         const distancePerPlanet = 2;
-        maxDistance = baseDistance + distancePerPlanet * solarSystem.planets.length;
+        maxDistance = (baseDistance + distancePerPlanet * solarSystem.planets.length) * solarSystem.stars.length;
         minDistance = maxDistance; // set minDistance to maxDistance initially
 
         camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
