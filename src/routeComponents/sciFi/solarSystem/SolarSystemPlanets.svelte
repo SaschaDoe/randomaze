@@ -46,8 +46,8 @@
                 <p>No systems found</p>
             {/if}
             {#each entity.planets as planet}
-                <li class="entity-field">
-                    <button class="field-name" on:click={() => selectSystem(planet)}>
+                <li class="entity-field {($selectedPlanet === planet) ? 'selected' : ''}">
+                <button class="field-name" on:click={() => selectSystem(planet)}>
                         <span><strong>{planet.id}: {planet.name}</strong></span>
                         {#if planet.nameTranslation !== "-"}
                             <span>{planet.nameTranslation} </span>

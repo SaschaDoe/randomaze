@@ -4,7 +4,7 @@
     import SolarSystemAnomalies from "./SolarSystemAnomalies.svelte";
     import SciFiCard from "../SciFiCard.svelte";
     import * as THREE from 'three';
-    import { onMount } from 'svelte';
+    import {onDestroy, onMount} from 'svelte';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
     import {SeededNoise} from "../planet/SeededNoise.ts";
     import {selectedPlanet} from "./planetStore.ts";
@@ -23,8 +23,8 @@
 
 
     function getScale(size) {
-        let baseScale = 0.2;
-        let variance = 0.1;
+        let baseScale = 0.3;
+        let variance = 0.2;
         if(size === 'tiny')
             return baseScale;
         if(size === 'small')
@@ -56,6 +56,61 @@
         return baseResolution;
     }
 
+    function calculatePixelColorAndAlpha(planetData, noiseValue, atmosphereColor, atmosphereTransparency) {
+        if (planetData.atmosphere === "nitrogen-oxygen" && noiseValue > 0.7) {
+            return [255, 255, 255, 255];
+        }
+
+        return [
+            atmosphereColor.r * noiseValue,
+            atmosphereColor.g * noiseValue,
+            atmosphereColor.b * noiseValue,
+            255 * atmosphereTransparency * (planetData.atmosphere === "nitrogen-oxygen" ? noiseValue : 1)
+        ];
+    }
+
+
+    function calculatePixelColorAndAlphaForWeather(planetData, noiseValue, atmosphereColor, atmosphereTransparency) {
+        if(planetData.atmosphere === "nitrogen-oxygen") {
+            if (planetData.weather === "foggy") {
+                return [255, 255, 255, 150 * atmosphereTransparency]; // Foggy: All white, transparency based on atmosphereTransparency
+            }
+            if (planetData.weather === "stormy") {
+
+                //TODO should be cluster of white pixels and clusters of nearly transparent pixels
+            }
+        }
+        return calculatePixelColorAndAlpha(planetData, noiseValue, atmosphereColor, atmosphereTransparency); // Default (moderate)
+    }
+
+    function createAtmosphere(planetData) {
+        let noiseScale = 2;
+        const atmosphereScale = getScale(planetData.size) * 1.05;
+        let resolution = getResolution(planetData.size);
+        const atmosphereGeometry = new THREE.SphereGeometry(atmosphereScale, resolution, resolution);
+        const atmosphereNoise = new SeededNoise(planetData.seed + 1);
+        const atmosphereTexture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
+
+        const [atmosphereColor, atmosphereTransparency] = planetData.atmosphereColor;
+        const atmosphereMaterial = new THREE.MeshBasicMaterial({map: atmosphereTexture, transparent: true});
+
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const pixelIndex = (i + j * resolution) * 4;
+                const noiseValue = (atmosphereNoise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + atmosphereNoise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
+
+                const [r, g, b, a] = calculatePixelColorAndAlphaForWeather(planetData, noiseValue, atmosphereColor, atmosphereTransparency);
+
+                atmosphereTexture.image.data.set([r, g, b, a], pixelIndex);
+            }
+        }
+
+        atmosphereTexture.needsUpdate = true;
+        const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        scene.add(atmosphereMesh);
+        return atmosphereMesh;
+    }
+
     function createPlanet(planetData) {
         const scale = getScale(planetData.size);
         const resolution = getResolution(planetData.size);
@@ -80,14 +135,21 @@
         let planetMesh = new THREE.Mesh(geometry, material);
         scene.add(planetMesh);
 
+        const atmosphereMesh = createAtmosphere(planetData);
+
+        // Make sure to update the planetMesh variable to include the atmosphereMesh so that it gets removed in updatePlanetSize()
+        planetMesh = [planetMesh, atmosphereMesh];
+
         return planetMesh;
     }
+
+    let maxDistance;
     onMount(() => {
         scene = new THREE.Scene();
 
         const baseDistance = 15;
         const distancePerPlanet = 2;
-        let maxDistance = baseDistance + distancePerPlanet * solarSystem.planets.length;
+        maxDistance = baseDistance + distancePerPlanet * solarSystem.planets.length;
 
         camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         camera.position.set(0, maxDistance, maxDistance);
@@ -101,21 +163,26 @@
         controls.update();
 
         star = new THREE.Mesh(
-            new THREE.SphereGeometry(1, 32, 32),
+            new THREE.SphereGeometry(1.2, 32, 32),
             new THREE.MeshBasicMaterial({ color: 0xffff00 })
         );
         scene.add(star);
 
         for (let i = 0; i < solarSystem.planets.length; i++) {
             let planetData = solarSystem.planets[i];
-            let planetMesh = createPlanet(planetData);
+            let planetMeshArray = createPlanet(planetData);
 
             let angle = Math.random() * Math.PI * 2;
             let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
+            let planetMesh = planetMeshArray[0];
             planetMesh.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
 
             planetMesh.velocity = 0.02 / distance;
-            planets.push(planetMesh);
+            let atmosphereMesh = planetMeshArray[1];
+            atmosphereMesh.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
+            atmosphereMesh.velocity = 0.02 / distance;
+            let planet = [planetMesh, atmosphereMesh];
+            planets.push(planet);
 
             let geometry = new THREE.BufferGeometry();
             let vertices = [];
@@ -140,19 +207,28 @@
             star.rotation.y += 0.01;
 
             // Move each planet along its elliptic path
-            for (let planet of planets) {
+            for (let planetArray of planets) {
+                let planet = planetArray[0];
                 let angle = Math.atan2(planet.position.z, planet.position.x) + planet.velocity;
                 let distance = planet.position.length();
                 planet.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
+
+                let atmosphere = planetArray[1];
+                angle = Math.atan2(atmosphere.position.z, atmosphere.position.x) + atmosphere.velocity;
+                distance = atmosphere.position.length();
+                atmosphere.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
             }
 
             if($selectedPlanet){
-
                 let planetIndex = solarSystem.planets.findIndex(planet => planet.name === $selectedPlanet.name);
-                let planet = planets[planetIndex];
+                let planet = planets[planetIndex][0];
                 if(planet){
                     let cameraTarget = new THREE.Vector3(planet.position.x, planet.position.y, planet.position.z);
-                    camera.position.set(planet.position.x + 3, planet.position.y + 3, planet.position.z + 3);
+                    let cameraDistance = 2;
+                    camera.position.set(
+                        planet.position.x + cameraDistance,
+                        planet.position.y + cameraDistance,
+                        planet.position.z + cameraDistance);
                     camera.lookAt(cameraTarget);
                     controls.target = cameraTarget;
                 }
@@ -165,6 +241,11 @@
         }
         animate();
     });
+
+    function deselect() {
+        selectedPlanet.set(null);
+        camera.position.set(0, maxDistance, maxDistance);
+    }
 </script>
 
 <SciFiCard entity={solarSystem} components={components} defaultTab="details">
@@ -172,6 +253,7 @@
     <div slot="image">
         <div>{solarSystem.id}: {solarSystem.name}</div>
         <div id="container" bind:this={container}></div>
+        <button on:click={() => {deselect()}}>Deselect</button>
     </div>
 </SciFiCard>
 
@@ -181,5 +263,13 @@
         height: 400px;
         position: relative;
         margin: 0 auto;
+    }
+    button{
+        background: none;
+        color: lawngreen;
+        font-size: 1.5em;
+        cursor: pointer;
+        border: 2px solid lawngreen;
+        border-radius: 10px;
     }
 </style>
