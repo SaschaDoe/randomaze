@@ -112,6 +112,41 @@
         return atmosphereMesh;
     }
 
+    function createRing() {
+        if(currentPlanet.numberOfRings === 0){
+            return null;
+        }
+
+        let innerRadius = 1.4 * scale; // Adjust to your preference
+        let outerRadius = 2 * scale; // Adjust to your preference
+        let thetaSegments = 128; // Increase for higher resolution
+        const noise = new SeededNoise(currentPlanet.seed);
+        let ringGeometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments);
+        const texture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+
+        for (let i = 0; i < resolution; i++) {
+            for (let j = 0; j < resolution; j++) {
+                const pixelIndex = (i + j * resolution) * 4;
+                const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
+                const colorRGB = currentPlanet.ringColor;
+                texture.image.data[pixelIndex] = colorRGB.r * noiseValue;
+                texture.image.data[pixelIndex + 1] = colorRGB.g * noiseValue;
+                texture.image.data[pixelIndex + 2] = colorRGB.b * noiseValue;
+                texture.image.data[pixelIndex + 3] = 255 * colorRGB.a;
+            }
+        }
+
+        texture.needsUpdate = true;
+        let ringMesh = new THREE.Mesh(ringGeometry, material);
+
+        // Align with planet's obliquity
+        ringMesh.rotation.x = Math.PI / 2 - THREE.MathUtils.degToRad(currentPlanet.obliquity);
+
+        scene.add(ringMesh);
+        return ringMesh;
+    }
+
     function createPlanet() {
         const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
         const noise = new SeededNoise(currentPlanet.seed);
@@ -126,7 +161,7 @@
                 texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
                 texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
                 texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
-                texture.image.data[pixelIndex + 3] = 255;
+                texture.image.data[pixelIndex + 3] = 100;
             }
         }
 
@@ -138,10 +173,12 @@
 
         //Create cloudy atmosphere
         const atmosphereMesh = createAtmosphere();
-
-        // Make sure to update the planetMesh variable to include the atmosphereMesh so that it gets removed in updatePlanetSize()
-        planetMesh = [planetMesh, atmosphereMesh];
-
+        const ringMesh = createRing();
+        if(ringMesh){
+            planetMesh = [planetMesh, atmosphereMesh, ringMesh];
+        } else {
+            planetMesh = [planetMesh, atmosphereMesh];
+        }
     }
 
     function updatePlanetSize() {
@@ -174,8 +211,11 @@
         const animate = function () {
             requestAnimationFrame(animate);
 
-            planetMesh[0].rotation.y += planetRotationSpeed; // Planet rotation
-            planetMesh[1].rotation.y += atmosphereRotationSpeed; // At
+            planetMesh[0].rotation.y += planetRotationSpeed;
+            planetMesh[1].rotation.y += atmosphereRotationSpeed;
+            if(planetMesh[2]){
+                planetMesh[2].rotation.z -= planetRotationSpeed;
+            }
 
             renderer.render(scene, camera);
         };

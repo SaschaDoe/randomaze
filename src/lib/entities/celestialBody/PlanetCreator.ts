@@ -1,6 +1,6 @@
 import {Dice} from "../../tables/Dice";
 import {Planet} from "./Planet";
-import {SolarSystem} from "../solarSystem/SolarSystem";
+import type {SolarSystem} from "../solarSystem/SolarSystem";
 import {PlanetTypeTable} from "../../tables/planet/PlanetTypeTable";
 import {PlanetNameGenerator} from "./PlanetNameGenerator";
 import {Save} from "../../persistence/Saver";
@@ -19,6 +19,31 @@ export const PlanetBaseColors = {
     ocean: { r: 0, g: 73, b: 255 },
     rocky: { r: 128, g: 128, b: 128 },
 };
+
+export class Color {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+
+    constructor(r: number, g: number, b: number, a?: number) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a ?? 1;
+    }
+}
+
+export const PlanetRingColors: Color[] = [
+    new Color(0, 0, 0, 0),          // Transparent color, for no ring
+    new Color(240, 248, 255,0.5),     // Ice-white color, like Saturn's rings
+    new Color(169, 169, 169, 0.5),   // Grey color, for rock-dominant rings like Uranus
+    new Color(210, 105, 30, 0.4),     // Slightly reddish/brownish, indicating presence of iron
+    new Color(218, 165, 32, 0.4),    // Slightly yellowish, indicating dusty rings
+    new Color(160, 82, 45, 0.4),   // Dark brown color, indicating presence of organic compounds
+    new Color(204, 119, 34,0.5),    // Reddish-brown color, for rings containing tholins (organic molecules)
+];
+
 export class PlanetCreator {
     static addTo(solarSystem: SolarSystem, dice?: Dice): Planet {
         if (!dice) {
@@ -34,7 +59,8 @@ export class PlanetCreator {
         planet.atmosphere = new PlanetAtmosphereTable().roll(dice).string;
         planet.weather = this.getWeather(dice, planet.size, planet.atmosphere);
         planet.obliquity = this.getObliquity(dice);
-
+        planet.ringColor = this.getRingColor(dice);
+        planet.numberOfRings = this.getNumberOfRings(dice);
         planet.seed = dice.rollRandom();
         planet.resolution = 64;
         planet.brightness = 0.5;
@@ -113,5 +139,15 @@ export class PlanetCreator {
         }
 
         return dice.rollInterval(31,360);
+    }
+
+    private static getRingColor(dice: Dice) {
+        let ringColorIndex = dice.rollInterval(1,PlanetRingColors.length);
+        return PlanetRingColors[ringColorIndex];
+    }
+
+    private static getNumberOfRings(dice: Dice) {
+        let numberOfRings = dice.rollInterval(0, 3);
+        return numberOfRings;
     }
 }

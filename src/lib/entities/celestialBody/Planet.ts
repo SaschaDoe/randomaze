@@ -17,4 +17,6 @@ export class Planet extends Entity {
 
     weather: string;
     obliquity: number;
+    ringColor: [{ r: number; b: number; g: number }, number];
+    numberOfRings: number;
 }
