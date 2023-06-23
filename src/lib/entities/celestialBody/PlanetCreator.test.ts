@@ -37,4 +37,10 @@ describe("PlanetCreator", () => {
         planet = PlanetCreator.addTo(solarSystem, fakeDice);
         expect(planet.obliquity).toEqual(0);
     })
+
+    it("should create a planet ring",  () => {
+        fakeDice = new FakeDice().withRollResult(1);
+        planet = PlanetCreator.addTo(solarSystem, fakeDice);
+        expect(planet.rings[0].name).toEqual("ice");
+    })
 });

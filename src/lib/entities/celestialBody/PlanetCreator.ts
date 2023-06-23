@@ -7,6 +7,7 @@ import {Save} from "../../persistence/Saver";
 import {SizeTable} from "../../tables/other/SizeTable";
 import {PlanetAtmosphereTable} from "../../tables/planet/PlanetAtmosphereTable";
 import {PlanetWeatherTable} from "../../tables/planet/PlanetWeatherTable";
+import {Ring} from "./Ring";
 
 export const PlanetBaseColors = {
     desert: { r: 255, g: 220, b: 0 },
@@ -34,15 +35,18 @@ export class Color {
     }
 }
 
-export const PlanetRingColors: Color[] = [
-    new Color(0, 0, 0, 0),          // Transparent color, for no ring
-    new Color(240, 248, 255,0.5),     // Ice-white color, like Saturn's rings
-    new Color(169, 169, 169, 0.5),   // Grey color, for rock-dominant rings like Uranus
-    new Color(210, 105, 30, 0.4),     // Slightly reddish/brownish, indicating presence of iron
-    new Color(218, 165, 32, 0.4),    // Slightly yellowish, indicating dusty rings
-    new Color(160, 82, 45, 0.4),   // Dark brown color, indicating presence of organic compounds
-    new Color(204, 119, 34,0.5),    // Reddish-brown color, for rings containing tholins (organic molecules)
+export const PlanetRingColors = [
+    { none: new Color(0, 0, 0, 0) },            // Transparent color, for no ring
+    { ice: new Color(240, 248, 255, 0.5) },     // Ice-white color, like Saturn's rings
+    { grey: new Color(169, 169, 169, 0.5) },    // Grey color, for rock-dominant rings like Uranus
+    { iron: new Color(210, 105, 30, 0.4) },     // Slightly reddish/brownish, indicating presence of iron
+    { dusty: new Color(218, 165, 32, 0.4) },    // Slightly yellowish, indicating dusty rings
+    { organic: new Color(160, 82, 45, 0.4) },   // Dark brown color, indicating presence of organic compounds
+    { tholins: new Color(204, 119, 34, 0.5) }   // Reddish-brown color, for rings containing tholins (organic molecules)
 ];
+
+const PlanetRingColorNames = PlanetRingColors.map(item => Object.keys(item)[0]);
+const PlanetRingColorValues = PlanetRingColors.map(item => Object.values(item)[0]);
 
 export class PlanetCreator {
     static addTo(solarSystem: SolarSystem, dice?: Dice): Planet {
@@ -59,8 +63,10 @@ export class PlanetCreator {
         planet.atmosphere = new PlanetAtmosphereTable().roll(dice).string;
         planet.weather = this.getWeather(dice, planet.size, planet.atmosphere);
         planet.obliquity = this.getObliquity(dice);
-        planet.ringColor = this.getRingColor(dice);
-        planet.numberOfRings = this.getNumberOfRings(dice);
+        planet.rings = this.getRings(dice);
+        if(planet.rings.length > 0){
+            planet.ringColorName = planet.rings[0].name;
+        }
         planet.seed = dice.rollRandom();
         planet.resolution = 64;
         planet.brightness = 0.5;
@@ -142,12 +148,33 @@ export class PlanetCreator {
     }
 
     private static getRingColor(dice: Dice) {
-        let ringColorIndex = dice.rollInterval(1,PlanetRingColors.length);
-        return PlanetRingColors[ringColorIndex];
+        let ringColorIndex = dice.rollInterval(1,PlanetRingColors.length-1);
+        return PlanetRingColorValues[ringColorIndex];
     }
-
     private static getNumberOfRings(dice: Dice) {
         let numberOfRings = dice.rollInterval(0, 3);
         return numberOfRings;
+    }
+
+    private static getRings(dice: Dice) {
+        let numberOfRings = this.getNumberOfRings(dice);
+        if (numberOfRings > 0) {
+            let rings = [];
+            for (let i = 0; i < numberOfRings; i++) {
+                let color =  this.getRingColor(dice);
+                let name = this.getRingNameOf(color);
+                let innerRadius =  dice.rollInterval(0.1, 0.3);
+                let outerRadius =  dice.rollInterval(0.7, 1.0);
+                let ring = new Ring(name, color, innerRadius, outerRadius);
+                rings.push(ring);
+            }
+            return rings;
+        }
+        return [];
+    }
+
+    private static getRingNameOf(color: Color) {
+        let index = PlanetRingColorValues.indexOf(color);
+        return PlanetRingColorNames[index];
     }
 }

@@ -42,8 +42,6 @@
 
         return baseScale;
     }
-
-
     function getResolution(size) {
         let baseResolution = 32;
         if(size === 'tiny')

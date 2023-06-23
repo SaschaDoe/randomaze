@@ -1,4 +1,5 @@
 import {Entity} from "../Entity";
+import {Ring} from "./Ring";
 
 export class Planet extends Entity {
     name: string;
@@ -17,6 +18,6 @@ export class Planet extends Entity {
 
     weather: string;
     obliquity: number;
-    ringColor: [{ r: number; b: number; g: number }, number];
-    numberOfRings: number;
+    rings: Ring[];
+    ringColorName: string;
 }

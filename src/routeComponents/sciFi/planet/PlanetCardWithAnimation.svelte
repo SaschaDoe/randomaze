@@ -113,6 +113,33 @@
     }
 
     function createRings() {
+        let meshes = [];
+        if (currentPlanet.rings.length === 0) return meshes;
+
+        for (let i = 0; i < currentPlanet.rings.length; i++) {
+            let ring = currentPlanet.rings[i];
+            let innerRadius = scale + 0.9 + i * 0.5;  // Gap between planet and start of ring
+            let outerRadius = innerRadius + 0.5;  // Width of ring
+            let thetaSegments = 64;  // Number of segments, increase for more detail
+
+            let ringColor = ring.color;
+            let ringGeometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments);
+            let ringMaterial = new THREE.MeshBasicMaterial({
+                color: `rgb(${ringColor.r}, ${ringColor.g}, ${ringColor.b})`,
+                side: THREE.DoubleSide,
+                opacity: ringColor.a,
+                transparent: true
+            });
+            let ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+            ringMesh.rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(currentPlanet.obliquity);
+            meshes.push(ringMesh);
+        }
+
+        return meshes;
+    }
+
+/*
+    function createRings() {
         let ringMeshes = [];
 
         if(currentPlanet.numberOfRings === 0){
@@ -148,7 +175,7 @@
             let ringMesh = new THREE.Mesh(ringGeometry, material);
 
             // Align with planet's obliquity
-            ringMesh.rotation.x = Math.PI / 2 - THREE.MathUtils.degToRad(currentPlanet.obliquity);
+            ringMesh.rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(currentPlanet.obliquity);
 
             scene.add(ringMesh);
             ringMeshes.push(ringMesh);
@@ -157,7 +184,7 @@
         return ringMeshes;
     }
 
-
+*/
     function createPlanet() {
         const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
         const noise = new SeededNoise(currentPlanet.seed);
@@ -186,6 +213,11 @@
         const atmosphereMesh = createAtmosphere();
         const ringMeshes = createRings();
 
+        for(let i = 0; i < ringMeshes.length; i++){
+            ringMeshes[i].rotation.x = THREE.MathUtils.degToRad(currentPlanet.obliquity);
+            scene.add(ringMeshes[i]);
+        }
+
         planetMesh = [planetMesh, atmosphereMesh];
         if(ringMeshes){
             planetMesh.push(...ringMeshes);
@@ -205,6 +237,10 @@
         });
 
         createPlanet();
+
+        for(let i = 2; i < planetMesh.length; i++){
+            planetMesh[i].rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(currentPlanet.obliquity);
+        }
     }
 
     onMount(() => {
@@ -231,7 +267,7 @@
             for(let i = 2; i < planetMesh.length; i++){
                 const ringIndex = i - 2;
                 const ringRotationSpeed = ringRotationBaseSpeed - ringIndex * ringRotationSpeedDecreaseFactor;
-                planetMesh[i].rotation.z -= ringRotationSpeed;
+                planetMesh[i].rotation.z += ringRotationSpeed; // Rotate the rings around the y-axis
             }
 
             renderer.render(scene, camera);
