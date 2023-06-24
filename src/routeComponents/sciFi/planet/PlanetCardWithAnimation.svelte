@@ -116,20 +116,53 @@
         let meshes = [];
         if (currentPlanet.rings.length === 0) return meshes;
 
+        // Size of the texture (use smaller values for more pixelated look)
+        let textureSize = 64;
+
+        // Create a canvas to draw your texture
+        let canvas = document.createElement('canvas');
+        canvas.width = textureSize;
+        canvas.height = textureSize;
+        let context = canvas.getContext('2d');
+
+        // Generate a noisy texture
+        let imgData = context.createImageData(textureSize, textureSize);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            // Apply noise values (0-255) to each color channel
+            let noise = Math.random() * 255;
+            imgData.data[i] = noise;     // red
+            imgData.data[i + 1] = noise; // green
+            imgData.data[i + 2] = noise; // blue
+            imgData.data[i + 3] = 255;   // alpha (fully opaque)
+        }
+        context.putImageData(imgData, 0, 0);
+
+        // Create a texture from the canvas
+        let texture = new THREE.CanvasTexture(canvas);
+        texture.magFilter = THREE.NearestFilter; // Pixelated look
+
         for (let i = 0; i < currentPlanet.rings.length; i++) {
             let ring = currentPlanet.rings[i];
-            let innerRadius = scale + 0.9 + i * 0.5;  // Gap between planet and start of ring
-            let outerRadius = innerRadius + 0.5;  // Width of ring
+
+            const ringWidth = 0.3 * scale; // Define width of each ring
+            const baseInnerRadius = 1.4 * scale; // Define the innermost ring radius
+
+            let innerRadius = baseInnerRadius + i * ringWidth; // Offset for each ring
+            let outerRadius = innerRadius + ringWidth; // Outer radius is inner plus the width
+
+
             let thetaSegments = 64;  // Number of segments, increase for more detail
 
             let ringColor = ring.color;
             let ringGeometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments);
             let ringMaterial = new THREE.MeshBasicMaterial({
+                map: texture,  // Apply the noisy texture
                 color: `rgb(${ringColor.r}, ${ringColor.g}, ${ringColor.b})`,
                 side: THREE.DoubleSide,
                 opacity: ringColor.a,
                 transparent: true
             });
+
             let ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
             ringMesh.rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(currentPlanet.obliquity);
             meshes.push(ringMesh);
@@ -138,53 +171,6 @@
         return meshes;
     }
 
-/*
-    function createRings() {
-        let ringMeshes = [];
-
-        if(currentPlanet.numberOfRings === 0){
-            return ringMeshes;
-        }
-
-        const noise = new SeededNoise(currentPlanet.seed);
-        const ringWidth = 0.3 * scale; // Define width of each ring
-        const baseInnerRadius = 1.4 * scale; // Define the innermost ring radius
-        let thetaSegments = 128; // Increase for higher resolution
-
-        for(let r = 0; r < currentPlanet.numberOfRings; r++) {
-            let innerRadius = baseInnerRadius + r * ringWidth; // Offset for each ring
-            let outerRadius = innerRadius + ringWidth; // Outer radius is inner plus the width
-
-            let ringGeometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments);
-            const texture = new THREE.DataTexture(new Uint8Array(resolution * resolution * 4), resolution, resolution, THREE.RGBAFormat);
-            const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-
-            for (let i = 0; i < resolution; i++) {
-                for (let j = 0; j < resolution; j++) {
-                    const pixelIndex = (i + j * resolution) * 4;
-                    const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
-                    const colorRGB = currentPlanet.ringColor;
-                    texture.image.data[pixelIndex] = colorRGB.r * noiseValue;
-                    texture.image.data[pixelIndex + 1] = colorRGB.g * noiseValue;
-                    texture.image.data[pixelIndex + 2] = colorRGB.b * noiseValue;
-                    texture.image.data[pixelIndex + 3] = 255 * colorRGB.a;
-                }
-            }
-
-            texture.needsUpdate = true;
-            let ringMesh = new THREE.Mesh(ringGeometry, material);
-
-            // Align with planet's obliquity
-            ringMesh.rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(currentPlanet.obliquity);
-
-            scene.add(ringMesh);
-            ringMeshes.push(ringMesh);
-        }
-
-        return ringMeshes;
-    }
-
-*/
     function createPlanet() {
         const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
         const noise = new SeededNoise(currentPlanet.seed);
@@ -250,7 +236,7 @@
         renderer = new THREE.WebGLRenderer();
         renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(renderer.domElement);
-        camera.position.z = 3;
+        camera.position.z = 3.2;
 
         createPlanet();
         let planetRotationSpeed = 0.002;
@@ -267,7 +253,7 @@
             for(let i = 2; i < planetMesh.length; i++){
                 const ringIndex = i - 2;
                 const ringRotationSpeed = ringRotationBaseSpeed - ringIndex * ringRotationSpeedDecreaseFactor;
-                planetMesh[i].rotation.z += ringRotationSpeed; // Rotate the rings around the y-axis
+                planetMesh[i].rotation.z -= ringRotationSpeed; // Rotate the rings around the y-axis
             }
 
             renderer.render(scene, camera);

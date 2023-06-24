@@ -160,8 +160,9 @@ export class PlanetCreator {
         let numberOfRings = this.getNumberOfRings(dice);
         if (numberOfRings > 0) {
             let rings = [];
+            let color =  this.getRingColor(dice);
             for (let i = 0; i < numberOfRings; i++) {
-                let color =  this.getRingColor(dice);
+
                 let name = this.getRingNameOf(color);
                 let innerRadius =  dice.rollInterval(0.1, 0.3);
                 let outerRadius =  dice.rollInterval(0.7, 1.0);
