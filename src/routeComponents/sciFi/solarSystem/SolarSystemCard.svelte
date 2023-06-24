@@ -25,6 +25,24 @@
     let stars = [];
     let planets = [];
 
+    let selectedPlanetMesh;
+
+    // Subscribing to selectedPlanet store
+    selectedPlanet.subscribe(value => {
+        console.log('selectedPlanet', value);
+
+        if(value){
+            let index = solarSystem.planets.findIndex(planet => planet.name === value.name);
+
+            //Get planet mesh from planets array
+            selectedPlanetMesh = planets[index];
+            console.log('selectedPlanetMesh', selectedPlanetMesh);
+        }
+        //Get index of value (planet) in solarSystem.planets
+
+
+    });
+
 
     function getScale(size) {
         let baseScale = 0.3;
@@ -113,7 +131,67 @@
         return atmosphereMesh;
     }
 
+    function createRings(planetData) {
+        let meshes = [];
+        if(!planetData.rings || planetData.rings.length === 0) return meshes;
+
+        // Size of the texture (use smaller values for more pixelated look)
+        let textureSize = 64;
+
+        // Create a canvas to draw your texture
+        let canvas = document.createElement('canvas');
+        canvas.width = textureSize;
+        canvas.height = textureSize;
+        let context = canvas.getContext('2d');
+
+        // Generate a noisy texture
+        let imgData = context.createImageData(textureSize, textureSize);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+            // Apply noise values (0-255) to each color channel
+            let noise = Math.random() * 255;
+            imgData.data[i] = noise;     // red
+            imgData.data[i + 1] = noise; // green
+            imgData.data[i + 2] = noise; // blue
+            imgData.data[i + 3] = 255;   // alpha (fully opaque)
+        }
+        context.putImageData(imgData, 0, 0);
+
+        // Create a texture from the canvas
+        let texture = new THREE.CanvasTexture(canvas);
+        texture.magFilter = THREE.NearestFilter; // Pixelated look
+
+        for (let i = 0; i < planetData.rings.length; i++) {
+            let ring = planetData.rings[i];
+
+            const ringWidth = 0.3; // Define width of each ring
+            const baseInnerRadius = 1.4 ; // Define the innermost ring radius
+
+            let innerRadius = baseInnerRadius + i * ringWidth; // Offset for each ring
+            let outerRadius = innerRadius + ringWidth; // Outer radius is inner plus the width
+
+
+            let thetaSegments = 64;  // Number of segments, increase for more detail
+
+            let ringColor = ring.color;
+            let ringGeometry = new THREE.RingGeometry(innerRadius, outerRadius, thetaSegments);
+            let ringMaterial = new THREE.MeshBasicMaterial({
+                map: texture,  // Apply the noisy texture
+                color: `rgb(${ringColor.r}, ${ringColor.g}, ${ringColor.b})`,
+                side: THREE.DoubleSide,
+                opacity: ringColor.a,
+                transparent: true
+            });
+
+            let ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+            ringMesh.rotation.x = Math.PI / 2 + THREE.MathUtils.degToRad(planetData.obliquity);
+            meshes.push(ringMesh);
+        }
+
+        return meshes;
+    }
+
     function createPlanet(planetData) {
+        let planetMesh;
         const scale = getScale(planetData.size);
         const resolution = getResolution(planetData.size);
         const geometry = new THREE.SphereGeometry(scale, resolution, resolution);
@@ -124,24 +202,33 @@
         for (let i = 0; i < resolution; i++) {
             for (let j = 0; j < resolution; j++) {
                 const pixelIndex = (i + j * resolution) * 4;
-                const noiseValue = (noise.noise(i / resolution, j / resolution, 0) * 0.5 + 0.5);
+                const noiseValue = (noise.noise(i / noiseScale, j / noiseScale, 0) * 0.5 + 0.5 + noise.noise((i + 1) / noiseScale, (j + 1) / noiseScale, 0) * 0.5 + 0.5) / 2;
                 const color = planetData.color;
-                texture.image.data[pixelIndex] = color.r * noiseValue;
-                texture.image.data[pixelIndex + 1] = color.g * noiseValue;
-                texture.image.data[pixelIndex + 2] = color.b * noiseValue;
-                texture.image.data[pixelIndex + 3] = 255;
+                texture.image.data[pixelIndex] = color.r * noiseValue * brightness;
+                texture.image.data[pixelIndex + 1] = color.g * noiseValue * brightness;
+                texture.image.data[pixelIndex + 2] = color.b * noiseValue * brightness;
+                texture.image.data[pixelIndex + 3] = 100;
             }
         }
 
         texture.needsUpdate = true;
-        let planetMesh = new THREE.Mesh(geometry, material);
+        planetMesh = new THREE.Mesh(geometry, material);
+        planetMesh.rotation.x = THREE.MathUtils.degToRad(planetData.obliquity);
+        console.log("set planet rotation to: " + planetData.obliquity + " degrees");
         scene.add(planetMesh);
 
+        //Create cloudy atmosphere
         const atmosphereMesh = createAtmosphere(planetData);
+        const ringMeshes = createRings(planetData);
 
-        // Make sure to update the planetMesh variable to include the atmosphereMesh so that it gets removed in updatePlanetSize()
+        for(let i = 0; i < ringMeshes.length; i++){
+            ringMeshes[i].rotation.x = THREE.MathUtils.degToRad(planetData.obliquity);
+        }
+
         planetMesh = [planetMesh, atmosphereMesh];
-
+        if(ringMeshes){
+            planetMesh.push(...ringMeshes);
+        }
         return planetMesh;
     }
 
@@ -200,8 +287,8 @@
     onMount(() => {
         scene = new THREE.Scene();
 
-        const baseDistance = 15;
-        const distancePerPlanet = 2;
+        const baseDistance = 20;
+        const distancePerPlanet = 5;
         maxDistance = (baseDistance + distancePerPlanet * solarSystem.planets.length) * solarSystem.stars.length;
         minDistance = maxDistance; // set minDistance to maxDistance initially
 
@@ -244,7 +331,20 @@
             let atmosphereMesh = planetMeshArray[1];
             atmosphereMesh.position.set(positionX, 0, positionZ);
             atmosphereMesh.velocity = planetMesh.velocity;
-            let planet = [planetMesh, atmosphereMesh];
+
+
+            let ringMeshes = createRings(planetData);
+            for (let ringMesh of ringMeshes) {
+                ringMesh.position.set(positionX, 0, positionZ);
+                scene.add(ringMesh);
+            }
+
+            let planet = {
+                planetMesh: planetMeshArray[0],
+                atmosphereMesh: planetMeshArray[1],
+                ringMeshes: ringMeshes
+            };
+
             planets.push(planet);
 
             let geometry = new THREE.BufferGeometry();
@@ -278,33 +378,38 @@
             }
 
             // Move each planet along its elliptic path
-            for (let planetArray of planets) {
-                let planet = planetArray[0];
+            for (let planetData of planets) {
+                let planet = planetData.planetMesh;
+                let atmosphere = planetData.atmosphereMesh;
+                let rings = planetData.ringMeshes;
+
                 let angle = Math.atan2(planet.position.z, planet.position.x) + planet.velocity;
                 let distance = planet.position.length();
                 planet.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
 
-                let atmosphere = planetArray[1];
+                const ringRotationBaseSpeed = 0.002; // Base rotation speed for the rings
+                const ringRotationSpeedDecreaseFactor = 0.0005; // How much speed to decrease per ring
+
+                for(let i = 0; i < rings.length; i++){
+                    const ring = rings[i];
+                    ring.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
+
+                    const ringIndex = i;
+                    const ringRotationSpeed = ringRotationBaseSpeed - ringIndex * ringRotationSpeedDecreaseFactor;
+                    ring.rotation.z -= ringRotationSpeed; // Rotate the rings around the y-axis
+                }
+
                 angle = Math.atan2(atmosphere.position.z, atmosphere.position.x) + atmosphere.velocity;
                 distance = atmosphere.position.length();
                 atmosphere.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
             }
+            if (selectedPlanetMesh) {
+                console.log("planet selected and now animated")
+                let planetPosition = selectedPlanetMesh.planetMesh.position;
 
-            if($selectedPlanet){
-                let planetIndex = solarSystem.planets.findIndex(planet => planet.name === $selectedPlanet.name);
-                if(planetIndex !== -1) {
-                    let planet = planets[planetIndex][0];
-                    if (planet) {
-                        let cameraTarget = new THREE.Vector3(planet.position.x, planet.position.y, planet.position.z);
-                        let cameraDistance = 2;
-                        camera.position.set(
-                            planet.position.x + cameraDistance,
-                            planet.position.y + cameraDistance,
-                            planet.position.z + cameraDistance);
-                        camera.lookAt(cameraTarget);
-                        controls.target = cameraTarget;
-                    }
-                }
+                camera.position.set(planetPosition.x + 3, planetPosition.y + 3, planetPosition.z + 3);
+                camera.lookAt(planetPosition);
+                controls.target = planetPosition;
             }
 
             // Update camera controls before rendering
