@@ -18,7 +18,24 @@ export class MoonCreator{
         moon.nameTranslation = planetName.getTransliteration();
         moon.nameMeaning = planetName.getMeaning();
         moon.size = new SizeTable().roll(dice).string;
+        moon.distance = this.getDistance(dice, moon.size);
         return moon;
     }
 
+    private static getDistance(dice: Dice, size: string) {
+        let baseDistance = 200;
+        if(size === "small"){
+            baseDistance = 300;
+        }
+        if(size === "medium"){
+            baseDistance = 400;
+        }
+        if(size === "large"){
+            baseDistance = 700;
+        }
+        if(size === "gigantic"){
+            baseDistance = 1000;
+        }
+        return baseDistance * dice.roll(2);
+    }
 }

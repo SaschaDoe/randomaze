@@ -28,4 +28,10 @@ describe("MoonCreator", () => {
 
         expect(moon.size).toEqual("tiny");
     });
+
+    it("should create Moon with distance", () => {
+        let moon = MoonCreator.create(fakeDice);
+
+        expect(moon.distance).toEqual("tiny");
+    });
 });

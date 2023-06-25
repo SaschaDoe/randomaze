@@ -7,6 +7,7 @@ export class Moon extends Entity{
     public nameMeaning: string = "";
 
     public orbitRadius: number = 0;
+    distance: number = 0;
 
     constructor(){
         super();

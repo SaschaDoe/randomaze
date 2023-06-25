@@ -6,6 +6,7 @@
     import PlanetDetails from "./PlanetDetails.svelte";
     import PlanetContinents from "./PlanetContinents.svelte";
     import PlanetAnomalies from "./PlanetAnomalies.svelte";
+    import MoonsCard from "./MoonsCard.svelte";
 
     export let planet;
     let currentPlanet = planet;
@@ -271,12 +272,15 @@
         currentPlanet = planet;
         updatePlanetSize();
     });
-
     let components = [
-        { name: 'details', component: PlanetDetails },
-        { name: 'continents', component: PlanetContinents },
-        { name: 'anomalies', component: PlanetAnomalies },
+        {  name: 'details', component: PlanetDetails },
+    { name: 'continents', component: PlanetContinents },
+    { name: 'anomalies', component: PlanetAnomalies },
     ];
+    if(planet.moons.length > 0){
+        components.push({ name: 'moons', component: MoonsCard });
+    }
+
 </script>
 
 
