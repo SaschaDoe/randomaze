@@ -8,6 +8,7 @@ import {SizeTable} from "../../tables/other/SizeTable";
 import {PlanetAtmosphereTable} from "../../tables/planet/PlanetAtmosphereTable";
 import {PlanetWeatherTable} from "../../tables/planet/PlanetWeatherTable";
 import {Ring} from "./Ring";
+import {MoonCreator} from "./moon/MoonCreator";
 
 export const PlanetBaseColors = {
     desert: { r: 255, g: 220, b: 0 },
@@ -49,7 +50,7 @@ const PlanetRingColorNames = PlanetRingColors.map(item => Object.keys(item)[0]);
 const PlanetRingColorValues = PlanetRingColors.map(item => Object.values(item)[0]);
 
 export class PlanetCreator {
-    static addTo(solarSystem: SolarSystem, dice?: Dice): Planet {
+    static create(dice?: Dice){
         if (!dice) {
             dice = new Dice();
         }
@@ -73,6 +74,11 @@ export class PlanetCreator {
         planet.noiseScale = 2.0;
         planet.color = this.generateColorVariant(PlanetBaseColors[planet.type]);
         planet.atmosphereColor = this.getAtmosphereColor(planet.atmosphere, planet.weather);
+        planet.moons = this.getMoons(dice);
+        return planet;
+    }
+    static addTo(solarSystem: SolarSystem, dice?: Dice): Planet {
+        let planet = this.create(dice);
         solarSystem.planets.push(planet);
         Save();
         return planet;
@@ -177,5 +183,18 @@ export class PlanetCreator {
     private static getRingNameOf(color: Color) {
         let index = PlanetRingColorValues.indexOf(color);
         return PlanetRingColorNames[index];
+    }
+
+    private static getMoons(dice: Dice) {
+        let numberOfMoons = dice.rollInterval(0, 3);
+        if (numberOfMoons > 0) {
+            let moons = [];
+            for (let i = 0; i < numberOfMoons; i++) {
+                let moon = MoonCreator.create(dice);
+                moons.push(moon);
+            }
+            return moons;
+        }
+        return [];
     }
 }

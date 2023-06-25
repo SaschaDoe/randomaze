@@ -1,5 +1,6 @@
 import {Entity} from "../Entity";
-import {Ring} from "./Ring";
+import type {Ring} from "./Ring";
+import type {Moon} from "./moon/Moon";
 
 export class Planet extends Entity {
     name: string;
@@ -20,4 +21,5 @@ export class Planet extends Entity {
     obliquity: number;
     rings: Ring[];
     ringColorName: string;
+    moons: Moon[];
 }

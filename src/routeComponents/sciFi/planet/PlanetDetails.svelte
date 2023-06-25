@@ -12,6 +12,7 @@
         details.push({name: "atmosphere", value: entity.atmosphere});
         details.push({name: "weather", value: entity.weather});
         details.push({name: "obliquity", value: entity.obliquity.toFixed(5) + "°"});
+        details.push({name: "moons", value: entity.moons.length});
         if(entity.rings.length > 0){
             details.push({name: "ring", value: entity.ringColorName});
         }
