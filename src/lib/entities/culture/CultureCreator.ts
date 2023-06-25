@@ -1,9 +1,9 @@
 import {Culture} from "./Culture";
 import {CultureNameTable} from "../../tables/character/CultureNameTable";
-import {Dice} from "../../tables/Dice";
+import type {Dice} from "../../tables/Dice";
 import type {CampaignHandler} from "../CampaignHandler";
-import {Campaign} from "../Campaign";
-import {Mediator} from "../Mediator";
+import type {Campaign} from "../Campaign";
+import type {Mediator} from "../Mediator";
 
 export class CultureCreator implements CampaignHandler{
     private readonly campaign: Campaign;

@@ -1,22 +1,22 @@
 import {Entity} from "../Entity";
-import {SolarSystem} from "../solarSystem/SolarSystem";
+import type {SolarSystem} from "../solarSystem/SolarSystem";
 export class Galaxy extends Entity{
-    type: string;
-    name: string;
-    imagePath: string;
-    color: string;
-    rotationVelocity: number;
-    size: string;
-    sizeInLightyears: number;
-    mass: string;
-    massInSolarMasses: string;
-    hasActiveGalacticNucleus: boolean;
-    age: string;
-    ageInYears: number;
-    anomalies: string[];
+    type: string = "";
+    name: string = "";
+    imagePath: string = "";
+    color: string = "";
+    rotationVelocity: number = 0;
+    size: string = "";
+    sizeInLightyears: number = 0;
+    mass: string = "";
+    massInSolarMasses: string = "";
+    hasActiveGalacticNucleus: boolean = false;
+    age: string = "";
+    ageInYears: number = 0;
+    anomalies: string[] = [];
 
-    isAlreadyScannedForAnomalies: boolean;
+    isAlreadyScannedForAnomalies: boolean = false;
 
-    solarSystems: SolarSystem[];
+    solarSystems: SolarSystem[] = [];
 
 }

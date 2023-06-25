@@ -1,4 +1,4 @@
-import {Entry} from "./Entry";
+import type {Entry} from "./Entry";
 import {Dice} from "./Dice";
 import {RollResult} from "./RollResult";
 import {DisplayedTextEntry} from "./DisplayedTextEntry";
@@ -32,11 +32,33 @@ export class Table{
     }
 
     private getRoll(dice: Dice | undefined) {
+        let currentDice;
         if (dice == null) {
-            return this.dice.roll(this.entries.length);
+            currentDice = this.dice;
         } else {
-            return dice.roll(this.entries.length);
+            currentDice = dice;
         }
+        if (this.entries.length > 0) {
+            let firstEntry = this.entries[0];
+            if (firstEntry.probability > -1) {
+                // Sort the entries by their probabilities
+                let sortedEntries = this.entries.sort((a, b) => a.probability - b.probability);
+
+                // Generate a random number between 0 and 1
+                let randomNum = Math.random();
+
+                // Find where this random number falls in the cumulative probabilities
+                let cumulativeProbability = 0;
+                for (let i = 0; i < sortedEntries.length; i++) {
+                    cumulativeProbability += sortedEntries[i].probability;
+                    if (randomNum <= cumulativeProbability) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return currentDice.roll(this.entries.length);
+
     }
 
     private getResult(dice: Dice | undefined) {
@@ -47,8 +69,11 @@ export class Table{
         return rollResult;
     }
 
-    ArrayAsTableEntries(array: string[]) {
+    ArrayAsTableEntries(array: string[], probabilities?: number[]) {
         array.forEach(a => this.entries.push(new DisplayedTextEntry(a)));
+        if (probabilities) {
+            this.entries.forEach((entry, index) => entry.probability = probabilities[index]);
+        }
         return this;
     }
 }

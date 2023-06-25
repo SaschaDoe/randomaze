@@ -1,7 +1,7 @@
 import type {CampaignHandler} from "../CampaignHandler";
 import {Dice} from "../../tables/Dice";
-import {Mediator} from "../Mediator";
-import {Campaign} from "../Campaign";
+import type {Mediator} from "../Mediator";
+import type {Campaign} from "../Campaign";
 import {Galaxy} from "./Galaxy";
 import {GalaxyTypes, GalaxyTypeTable} from "../../tables/galaxy/GalaxyTypeTable";
 import {GalaxyNameTable} from "../../tables/galaxy/GalaxyNameTable";
@@ -18,7 +18,7 @@ import {Save} from "../../persistence/Saver";
 export class GalaxyCreator implements CampaignHandler{
     private mediator: Mediator;
     private campaign: Campaign;
-    private dice: Dice;
+    private dice: Dice = new Dice();
 
     constructor(campaign: Campaign, mediator: Mediator) {
         this.mediator = mediator;

@@ -21,6 +21,7 @@ export class SolarSystemCreator{
         solarSystem.stage = new SolarSystemStageTable().roll(dice).string;
         solarSystem.stars = [];
         let numberOfStars = this.getNumberOfStars(dice);
+
         for(let i = 0; i < numberOfStars; i++){
             StarCreator.addTo(solarSystem, dice);
         }

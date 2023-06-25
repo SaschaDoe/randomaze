@@ -1,5 +1,5 @@
 import {Dice} from "../../tables/Dice";
-import {Galaxy} from "./Galaxy";
+import type {Galaxy} from "./Galaxy";
 import {GalaxyAnomaliesTable} from "../../tables/galaxy/GalaxyAnomaliesTable";
 
 export class GalaxyAnomalieAdder{

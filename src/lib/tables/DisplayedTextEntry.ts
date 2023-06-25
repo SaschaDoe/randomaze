@@ -1,5 +1,5 @@
 import {Entry} from "./Entry";
-import {RollResult} from "./RollResult";
+import type {RollResult} from "./RollResult";
 export class DisplayedTextEntry extends Entry {
     constructor(displayedText: string) {
         super(displayedText);

@@ -21,7 +21,7 @@ export class StarCreator{
 
         return star;
     }
-        static getLuminosityFrom(mass, stage) {
+        static getLuminosityFrom(mass: number, stage: string) {
             let luminosity =  Math.pow(mass, 3.5);
 
              if (stage === 'red giant') {
@@ -103,7 +103,7 @@ export class StarCreator{
         return temperature;
     }
 
-    static getStarColor(surfaceTemperature, stage) {
+    static getStarColor(surfaceTemperature: number, stage: string) {
         let r, g, b;
 
         switch (stage) {

@@ -36,6 +36,6 @@ export class MoonCreator{
         if(size === "gigantic"){
             baseDistance = 1000;
         }
-        return baseDistance * dice.roll(2);
+        return baseDistance * dice.rollInterval(1,2);
     }
 }

@@ -12,8 +12,6 @@ export let PlanetLatinNouns = [
     { output: 'Terr', english: 'Earth' },
     { output: 'Silv', english: 'Forest' },
     { output: 'Mare', english: 'Sea' },
-    { output: 'Sol', english: 'Sun' },
-    { output: 'Lun', english: 'Moon' },
     { output: 'Stell', english: 'Star' },
     { output: 'Aur', english: 'Gold' },
     { output: 'Argent', english: 'Silver' },

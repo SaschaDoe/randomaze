@@ -1,13 +1,13 @@
 import {Entry} from "./Entry";
-import {RollResult} from "./RollResult";
-import {Table} from "./Table";
+import type {RollResult} from "./RollResult";
+import type {Table} from "./Table";
 import {SingleRoll} from "./SingleRoll";
-import {Dice} from "./Dice";
+import type {Dice} from "./Dice";
 
 class Addition{
-    string: string;
-    table: Table;
-    stringfunction: (input: string, dice?: Dice) => string;
+    string: string = "";
+    table: Table | undefined;
+    stringFunction: (input: string, dice?: Dice) => string = (input: string) => "";
     static ofString(input: string){
         let addition = new Addition();
         addition.string = input;
@@ -20,19 +20,9 @@ class Addition{
         return addition;
     }
 
-    getString(rollResult: RollResult){
-        if(this.string){
-            return this.string;
-        }else if(this.table){
-            return this.table.roll(rollResult.dice).string;
-        }else{
-            return this.stringfunction(rollResult.string);
-        }
-    }
-
     static ofStringFunction(func: (input: string) => string) {
         let addition = new Addition();
-        addition.stringfunction = func;
+        addition.stringFunction = func;
         return addition;
     }
 }
@@ -49,12 +39,13 @@ export class AddTableEntry extends Entry {
             if(addition.string){
                 additionString = addition.string;
             }else if(addition.table){
+                console.log("Rolling table" + addition.table.title);
                 let result = addition.table.roll(rollResult.dice);
                 let roll = new SingleRoll(addition.table,result.entries[0]);
                 rollResult.rolls.push(roll);
                 additionString = result.string;
             }else{
-                additionString = addition.stringfunction(rollResult.string, rollResult.dice);
+                additionString = addition.stringFunction(rollResult.string, rollResult.dice);
             }
 
             if(additionString){

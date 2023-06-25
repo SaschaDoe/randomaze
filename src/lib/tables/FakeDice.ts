@@ -1,9 +1,9 @@
 import {Dice} from "./Dice";
 
 export class FakeDice extends Dice{
-    private rollResult: number;
+    private rollResult: number = 0;
     public rolledNumbers: number[] = [];
-    private rollResults: number[];
+    private rollResults: number[] = [];
     withRollResult(rollResult: number): FakeDice {
         this.rollResult = rollResult;
         return this;
@@ -13,8 +13,10 @@ export class FakeDice extends Dice{
         if(this.rollResults){
             if(this.rollResults.length > 0) {
                 let nextNumber = this.rollResults.shift();
-                this.rolledNumbers.push(nextNumber);
-                return nextNumber;
+                if(nextNumber){
+                    this.rolledNumbers.push(nextNumber);
+                    return nextNumber;
+                }
             }
         }
         this.rolledNumbers.push(this.rollResult);
@@ -26,7 +28,7 @@ export class FakeDice extends Dice{
         return this;
     }
 
-    rollInterval(min, max): any {
+    rollInterval(min: number, max: number): any {
         return this.roll();
     }
 

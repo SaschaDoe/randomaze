@@ -1,12 +1,12 @@
-import {Entry} from "./Entry";
+import type {Entry} from "./Entry";
 import {Dice} from "./Dice";
-import {SingleRoll} from "./SingleRoll";
+import type {SingleRoll} from "./SingleRoll";
 
 
 export class RollResult {
     public entries: Entry[] = [];
     public string: string = "";
-    public dice: Dice;
+    public dice: Dice = new Dice();
     rolls: SingleRoll[] = [];
 
     processAllEntries() {
