@@ -158,7 +158,15 @@ export class PlanetCreator {
         return PlanetRingColorValues[ringColorIndex];
     }
     private static getNumberOfRings(dice: Dice) {
-        let numberOfRings = dice.rollInterval(0, 3);
+        let randomNumber = dice.roll(20);
+        let numberOfRings = 0;
+        if(randomNumber <= 2){
+            numberOfRings = 3;
+        } else if(randomNumber <= 4){
+            numberOfRings = 2;
+        } else if(randomNumber <= 8){
+            numberOfRings = 1;
+        }
         return numberOfRings;
     }
 

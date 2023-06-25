@@ -68,25 +68,17 @@ export class SolarSystemCreator{
     }
 
     private static getNumberOfStars(dice: Dice) {
-        let random = dice.rollRandom();
-        let cumulativeProbability = 0;
 
-        for (let i = 0; i < this.starSystemProbabilities.length; i++) {
-            cumulativeProbability += this.starSystemProbabilities[i].probability;
-            if (random <= cumulativeProbability) {
-                return typeof this.starSystemProbabilities[i].stars === 'function'
-                    ? (this.starSystemProbabilities[i].stars as () => number)()
-                    : this.starSystemProbabilities[i].stars;
-            }
+        let randomNumber = dice.roll(20);
+        let numberOfStars = 1;
+
+        if(randomNumber === 20){
+            numberOfStars = 3;
+        }else if(randomNumber >= 18){
+            numberOfStars = 2;
         }
+        return numberOfStars;
     }
-
-    private static starSystemProbabilities = [
-        { stars: 1, probability: 0.5},
-        { stars: 2, probability: 0.35},
-        {stars: 3, probability: 0.1},
-        {stars: () => Math.floor(Math.random() * 4) + 4, probability: 0.05}
-    ];
 
 
     private static getNumberOfPlanets(dice: Dice, stars: Star[]) {
