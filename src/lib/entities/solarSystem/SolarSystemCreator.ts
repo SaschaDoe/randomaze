@@ -1,12 +1,12 @@
 import {Dice} from "../../tables/Dice";
-import {Galaxy} from "../galaxy/Galaxy";
+import type {Galaxy} from "../galaxy/Galaxy";
 import {SolarSystem} from "./SolarSystem";
 import {SolarSystemNameTable} from "../../tables/solarSystem/SolarSystemNameTable";
 import {SolarSystemStages, SolarSystemStageTable} from "../../tables/solarSystem/SolarSystemStageTable";
 import {PlanetCreator} from "../celestialBody/PlanetCreator";
 import {Save} from "../../persistence/Saver";
 import {StarCreator} from "../celestialBody/StarCreator";
-import {Star} from "../celestialBody/Star";
+import type {Star} from "../celestialBody/Star";
 
 export class SolarSystemCreator{
 
@@ -23,11 +23,23 @@ export class SolarSystemCreator{
         let numberOfStars = this.getNumberOfStars(dice);
 
         for(let i = 0; i < numberOfStars; i++){
-            StarCreator.addTo(solarSystem, dice);
+            let star = StarCreator.addTo(solarSystem, dice);
+
+            // Compute the habitable zone based on the star type or luminosity
+            let { start, end } = this.computeHabitableZone(dice);
+            if(solarSystem.habitableZoneStart == 0 || start < solarSystem.habitableZoneStart){
+                solarSystem.habitableZoneStart = start;
+            }
+
+            if(solarSystem.habitableZoneEnd == 0 || end > solarSystem.habitableZoneEnd){
+                solarSystem.habitableZoneEnd = end;
+            }
         }
 
         let stageObject = SolarSystemStages.find(stage => stage.name === solarSystem.stage);
-
+        if(!stageObject){
+            throw new Error("stage not found");
+        }
         solarSystem.stageDescription = stageObject.description;
         solarSystem.age = this.getYearInBillionsFrom(stageObject, dice);
         solarSystem.isSelected = false;
@@ -46,7 +58,14 @@ export class SolarSystemCreator{
         return solarSystem;
     }
 
-    private static getYearInBillionsFrom(stage, dice: Dice) {
+    private static computeHabitableZone(dice: Dice): {start: number, end: number} {
+        let start = 0.5 + dice.roll(3);
+        let end = start + dice.roll(3);
+
+        return {start, end};
+    }
+
+    private static getYearInBillionsFrom(stage: any, dice: Dice) {
         let minDuration = parseInt(stage.minDuration);
         let maxDuration = parseInt(stage.maxDuration);
 
@@ -106,6 +125,8 @@ export class SolarSystemCreator{
 
         return numberOfPlanets;
     }
+
+
 
 
 }

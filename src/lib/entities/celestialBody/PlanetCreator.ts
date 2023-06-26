@@ -9,6 +9,8 @@ import {PlanetAtmosphereTable} from "../../tables/planet/PlanetAtmosphereTable";
 import {PlanetWeatherTable} from "../../tables/planet/PlanetWeatherTable";
 import {Ring} from "./Ring";
 import {MoonCreator} from "./moon/MoonCreator";
+import {PlanetTypeLivableTable} from "../../tables/planet/PlanetTypeLivableTable";
+import {PlanetTypeNonLivableTable} from "../../tables/planet/PlanetTypeNonLivableTable";
 
 export const PlanetBaseColors = {
     desert: { r: 255, g: 220, b: 0 },
@@ -20,6 +22,8 @@ export const PlanetBaseColors = {
     lava: { r: 207, g: 16, b: 32 },
     ocean: { r: 0, g: 73, b: 255 },
     rocky: { r: 128, g: 128, b: 128 },
+    lethalice: { r: 187, g: 240, b: 255 },
+    lethalrocky: { r: 128, g: 128, b: 128 },
 };
 
 export class Color {
@@ -50,12 +54,20 @@ const PlanetRingColorNames = PlanetRingColors.map(item => Object.keys(item)[0]);
 const PlanetRingColorValues = PlanetRingColors.map(item => Object.values(item)[0]);
 
 export class PlanetCreator {
-    static create(dice?: Dice){
-        if (!dice) {
-            dice = new Dice();
-        }
+    static create(dice: Dice, inHabitableZone: boolean, distanceFromStar: number): Planet {
+
         let planet = new Planet();
-        planet.type = new PlanetTypeTable().roll(dice).string;
+        planet.distanceFromStar = distanceFromStar;
+
+        let randomNumber = dice.rollRandom();
+        if (inHabitableZone && randomNumber < 0.8) {
+           planet.type = new PlanetTypeLivableTable().roll(dice).string;
+        }else if(inHabitableZone){
+            planet.type = new PlanetTypeTable().roll(dice).string;
+        }else{
+            planet.type = new PlanetTypeNonLivableTable().roll(dice).string;
+        }
+
         let planetName = PlanetNameGenerator.generate(dice);
         planet.name = planetName.getName();
         planet.nameTranslation = planetName.getTransliteration();
@@ -78,7 +90,17 @@ export class PlanetCreator {
         return planet;
     }
     static addTo(solarSystem: SolarSystem, dice?: Dice): Planet {
-        let planet = this.create(dice);
+        if (!dice) {
+            dice = new Dice();
+        }
+        let distanceFromStar = solarSystem.lastDistanceFromStar + dice.rollInterval(0.3, 0.7);
+        solarSystem.lastDistanceFromStar = distanceFromStar;  // Save the last distance for the next planet
+
+        let inHabitableZone = distanceFromStar >= solarSystem.habitableZoneStart &&
+            distanceFromStar <= solarSystem.habitableZoneEnd;
+
+        let planet = this.create(dice, inHabitableZone, distanceFromStar);
+
         solarSystem.planets.push(planet);
         Save();
         return planet;

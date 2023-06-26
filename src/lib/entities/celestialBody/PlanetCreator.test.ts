@@ -12,7 +12,23 @@ describe("PlanetCreator", () => {
 
     beforeEach(() => {
         solarSystem = SolarSystemCreator.create();
+        solarSystem.habitableZoneStart = 100;  // Replace with your actual values
+        solarSystem.habitableZoneEnd = 300;  // Replace with your actual values
         fakeDice = new FakeDice().withRollResult(0);
+    });
+
+    // ... Your existing tests
+
+    it("should create an earthlike planet in the habitable zone given roll less than 0.3", () => {
+        fakeDice.withRollRandomResult(0.2);  // Roll random result less than 0.3
+        planet = PlanetCreator.addTo(solarSystem, fakeDice);
+        expect(planet.type).toEqual("lethalice");
+    });
+
+    it("should create a non-earthlike planet in the habitable zone given roll equal or more than 0.3", () => {
+        fakeDice.withRollRandomResult(0.3);  // Roll random result equal to 0.3
+        planet = PlanetCreator.addTo(solarSystem, fakeDice);
+        expect(planet.type).not.toEqual("earthlike");
     });
 
     it("should create a planet",  () => {
@@ -22,7 +38,7 @@ describe("PlanetCreator", () => {
 
     it("should create a planet with type desert given roll 0",  () => {
         planet = PlanetCreator.addTo(solarSystem, fakeDice);
-        expect(planet.type).toEqual("desert");
+        expect(planet.type).toEqual("lethalice");
     })
 
     it("should create a planet with name nur nur given roll 0",  () => {

@@ -4,6 +4,7 @@ export class FakeDice extends Dice{
     private rollResult: number = 0;
     public rolledNumbers: number[] = [];
     private rollResults: number[] = [];
+    private _rollRandomResult: number = 0;
     withRollResult(rollResult: number): FakeDice {
         this.rollResult = rollResult;
         return this;
@@ -32,7 +33,12 @@ export class FakeDice extends Dice{
         return this.roll();
     }
 
+    withRollRandomResult(result: number): this {
+        this._rollRandomResult = result;
+        return this;
+    }
+
     rollRandom(): number {
-        return this.roll();
+        return this._rollRandomResult;
     }
 }

@@ -1,7 +1,12 @@
 import {Table} from "../Table";
+import {PlanetLivableTypes} from "./PlanetTypeLivableTable";
+import {PlanetTNonLivableTypes} from "./PlanetTypeNonLivableTable";
 
-export const PlanetTypes = [
-    "desert", "ice", "jungle", "earthlike", "gasgiant", "puffy", "lava", "ocean", "rocky",
+const PlanetTypes = [
+    ...new Set([
+        ...PlanetLivableTypes,
+        ...PlanetTNonLivableTypes,
+    ]),
 ];
 
 export class PlanetTypeTable extends Table{

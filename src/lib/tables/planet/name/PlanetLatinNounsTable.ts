@@ -1,5 +1,4 @@
 import {Table} from "../../Table";
-import {PlanetTypes} from "../PlanetTypeTable";
 
 export let PlanetLatinNouns = [
     { output: 'Lux', english: 'Light' },
@@ -29,8 +28,6 @@ export let PlanetLatinNouns = [
     { output: 'Virt', english: 'Virtue' },
     { output: 'Sapient', english: 'Wisdom' },
     { output: 'Audaci', english: 'Courage' },
-
-
 ];
 
 export class PlanetLatinNounsTable extends Table{

@@ -17,6 +17,7 @@
         { name: "stage", value: entity.stage},
         { name: "", value: entity.stageDescription},
         { name: "number of planets", value: entity.planets.length },
+        { name: "habitual zone", value: `${entity.habitableZoneStart} - ${entity.habitableZoneEnd}` },
 
     ];
 </script>

@@ -66,8 +66,6 @@ export class StarCreator{
             mass *= randomFactor;
 
             return mass;
-
-
     }
 
     static generateSurfaceTemperature(mass, stage) {

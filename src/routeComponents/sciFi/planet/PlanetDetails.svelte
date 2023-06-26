@@ -9,6 +9,7 @@
         }
         details.push({name: "type", value: entity.type});
         details.push({name: "size", value: entity.size});
+        details.push({name: "distance", value: entity.distanceFromStar});
         details.push({name: "atmosphere", value: entity.atmosphere});
         details.push({name: "weather", value: entity.weather});
         details.push({name: "obliquity", value: entity.obliquity.toFixed(5) + "°"});

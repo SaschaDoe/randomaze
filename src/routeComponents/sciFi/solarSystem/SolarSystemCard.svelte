@@ -27,6 +27,8 @@
 
     let selectedPlanetMesh;
 
+    let ringScale = 50;
+
     // Subscribing to selectedPlanet store
     selectedPlanet.subscribe(value => {
         console.log('selectedPlanet', value);
@@ -214,6 +216,11 @@
         texture.needsUpdate = true;
         planetMesh = new THREE.Mesh(geometry, material);
         planetMesh.rotation.x = THREE.MathUtils.degToRad(planetData.obliquity);
+        // Convert distance from AU to your 3D space units if necessary
+        let distance = planetData.distanceFromStar //I added this but nothing changed...
+
+        // Assuming the planets are aligned along the x axis:
+        planetMesh.position.set(distance, 0, 0);
         console.log("set planet rotation to: " + planetData.obliquity + " degrees");
         scene.add(planetMesh);
 
@@ -262,6 +269,35 @@
 
     let minDistance;
     function createStars() {
+        // Create habitable zone material
+        let habitableZoneMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.2
+        });
+
+        let habitableZoneGeometry = new THREE.RingGeometry(
+            solarSystem.habitableZoneStart*ringScale, // Inner radius
+            solarSystem.habitableZoneEnd*ringScale, // Outer radius
+            64, // Theta segments
+            1, // Phi segments
+            0, // Theta start
+            2 * Math.PI // Theta length
+        );
+
+        let habitableZoneMesh = new THREE.Mesh(habitableZoneGeometry, habitableZoneMaterial);
+
+        // Position the habitable zone at the center of the solar system
+        habitableZoneMesh.position.set(0, 0, 0);
+
+        // Set the rotation of the habitable zone to lie flat
+        habitableZoneMesh.lookAt(new THREE.Vector3(0, 1, 0));
+
+        // Add the habitable zone to the scene
+        scene.add(habitableZoneMesh);
+
+        // Create and position the stars
         for (let i = 0; i < solarSystem.stars.length; i++) {
             let starData = solarSystem.stars[i];
             let starMesh = createStar(starData);
@@ -284,6 +320,8 @@
         }
     }
 
+
+
     onMount(() => {
         scene = new THREE.Scene();
 
@@ -304,7 +342,8 @@
         controls.update();
 
         for (let i = 0; i < solarSystem.planets.length; i++) {
-            let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
+            //let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
+            let distance = solarSystem.planets[i].distanceFromStar;
             if (distance < minDistance) {
                 minDistance = distance;
             }
@@ -317,7 +356,8 @@
             let planetMeshArray = createPlanet(planetData);
 
             let angle = Math.random() * Math.PI * 2;
-            let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1);
+            //let distance = (i + 1) * maxDistance / (solarSystem.planets.length + 1); //TODO this is the distance
+            let distance = planetData.distanceFromStar * ringScale;
             let planetMesh = planetMeshArray[0];
             let positionX = distance * Math.cos(angle);
             let positionZ = distance * Math.sin(angle)
@@ -342,7 +382,8 @@
             let planet = {
                 planetMesh: planetMeshArray[0],
                 atmosphereMesh: planetMeshArray[1],
-                ringMeshes: ringMeshes
+                ringMeshes: ringMeshes,
+                distance: distance
             };
 
             planets.push(planet);
@@ -384,7 +425,7 @@
                 let rings = planetData.ringMeshes;
 
                 let angle = Math.atan2(planet.position.z, planet.position.x) + planet.velocity;
-                let distance = planet.position.length();
+                let distance = planetData.distance; //TODO this is new
                 planet.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
 
                 const ringRotationBaseSpeed = 0.002; // Base rotation speed for the rings
@@ -404,7 +445,6 @@
                 atmosphere.position.set(distance * Math.cos(angle), 0, distance * Math.sin(angle));
             }
             if (selectedPlanetMesh) {
-                console.log("planet selected and now animated")
                 let planetPosition = selectedPlanetMesh.planetMesh.position;
 
                 camera.position.set(planetPosition.x + 3, planetPosition.y + 3, planetPosition.z + 3);
