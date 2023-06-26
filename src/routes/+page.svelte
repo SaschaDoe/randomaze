@@ -7,7 +7,8 @@ import {HandlerType, Mediator} from "$lib/entities/Mediator.ts";
 import EntityCard from "./EntityCard.svelte";
 import EntitySideIndex from "./EntitySideIndex.svelte";
 import {campaignStore, Load, PersistantCmpaign, Reset, Save} from "$lib/persistence/Saver.ts";
-import {writable} from "svelte/store";
+import { derived } from 'svelte/store';
+import {SolarSystemCreator} from "$lib/entities/solarSystem/SolarSystemCreator.ts";
 
 let mediator = new Mediator(PersistantCmpaign);
 
@@ -23,7 +24,6 @@ function closeModal() {
 }
 
 
-import { derived } from 'svelte/store';
 
 let solarSystems = derived(campaignStore, $campaignStore => {
     let systems = [];
@@ -87,16 +87,25 @@ function addPartyMember() {
     let partyMemberId = mediator.getHandler(HandlerType.CharacterCreator).handle();
     addEntity(partyMemberId);
 }
-
+/*
 function addCulture() {
     let cultureId = mediator.getHandler(HandlerType.CultureCreator).handle();
     addEntity(cultureId);
 }
-
+*/
 function addGalaxy() {
     let galaxyId = mediator.getHandler(HandlerType.GalaxyCreator).handle();
     console.log("generated new galaxy with id "+galaxyId)
     addEntity(galaxyId);
+}
+
+function addPlanet() {
+    if($campaignStore.galaxies.length == 0){
+        addGalaxy();
+    }
+    let planetId = SolarSystemCreator.addWithEarthlike($campaignStore.galaxies[0]).id;
+
+    addEntity(planetId);
 }
 
 async function addEntity(id){
@@ -143,6 +152,8 @@ function openResetModal(e) {
 }
 
 
+
+
 </script>
 
 <svelte:head>
@@ -168,9 +179,10 @@ function openResetModal(e) {
     <div class="entities-container">
         {#if isModalOpen}
             <Modal on:close={closeModal}>
-                <button on:click={addPartyMember}>Add Party Member</button>
-                <button on:click={addCulture}>Add Culture</button>
-                <button on:click={addGalaxy}>Add Galaxy</button>
+                <h2>Add</h2>
+                <button on:click={addPartyMember}>Party Member</button>
+                <button on:click={addGalaxy}>Galaxy</button>
+                <button on:click={addPlanet}>Planet</button>
             </Modal>
         {/if}
 

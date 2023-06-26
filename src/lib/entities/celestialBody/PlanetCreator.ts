@@ -227,4 +227,13 @@ export class PlanetCreator {
         }
         return [];
     }
+
+    static createEarthlike(dice: Dice, distanceFromStar: number) {
+        let planet = this.create(dice, true, distanceFromStar);
+        planet.type = "earthlike";
+        planet.size = "medium";
+        planet.atmosphere = "nitrogen-oxygen";
+        planet.weather = this.getWeather(dice, planet.size, planet.atmosphere);
+        return planet;
+    }
 }

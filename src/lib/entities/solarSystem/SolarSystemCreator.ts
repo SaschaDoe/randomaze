@@ -5,12 +5,13 @@ import {SolarSystemNameTable} from "../../tables/solarSystem/SolarSystemNameTabl
 import {SolarSystemStages, SolarSystemStageTable} from "../../tables/solarSystem/SolarSystemStageTable";
 import {PlanetCreator} from "../celestialBody/PlanetCreator";
 import {Save} from "../../persistence/Saver";
-import {StarCreator} from "../celestialBody/StarCreator";
 import type {Star} from "../celestialBody/Star";
+import type {Planet} from "../celestialBody/Planet";
+import {StarCreator} from "../celestialBody/StarCreator";
 
 export class SolarSystemCreator{
 
-    static addTo(galaxy: Galaxy, dice?: Dice): SolarSystem{
+    static addTo(galaxy: Galaxy, dice?: Dice, isEarthlike?: boolean): SolarSystem{
         if(!dice){
             dice = new Dice();
         }
@@ -18,30 +19,34 @@ export class SolarSystemCreator{
         let solarSystem = new SolarSystem();
 
         solarSystem.name = new SolarSystemNameTable().roll(dice).string;
-        solarSystem.stage = new SolarSystemStageTable().roll(dice).string;
+
         solarSystem.stars = [];
-        let numberOfStars = this.getNumberOfStars(dice);
+        let numberOfStars = 0;
+        if(isEarthlike){
+            this.setStage(solarSystem, dice, "stable phase");
+            numberOfStars = 1;
+        }else{
+            this.setStage(solarSystem, dice);
+            numberOfStars = this.getNumberOfStars(dice);
+        }
+
 
         for(let i = 0; i < numberOfStars; i++){
             let star = StarCreator.addTo(solarSystem, dice);
-
-            // Compute the habitable zone based on the star type or luminosity
-            let { start, end } = this.computeHabitableZone(dice);
-            if(solarSystem.habitableZoneStart == 0 || start < solarSystem.habitableZoneStart){
-                solarSystem.habitableZoneStart = start;
-            }
-
-            if(solarSystem.habitableZoneEnd == 0 || end > solarSystem.habitableZoneEnd){
-                solarSystem.habitableZoneEnd = end;
-            }
+            solarSystem.stars.push(star);
         }
 
-        let stageObject = SolarSystemStages.find(stage => stage.name === solarSystem.stage);
-        if(!stageObject){
-            throw new Error("stage not found");
+        let { start, end } = this.computeHabitableZone(dice);
+
+        if(solarSystem.habitableZoneStart == 0 || start < solarSystem.habitableZoneStart){
+            solarSystem.habitableZoneStart = start;
         }
-        solarSystem.stageDescription = stageObject.description;
-        solarSystem.age = this.getYearInBillionsFrom(stageObject, dice);
+
+        if(solarSystem.habitableZoneEnd == 0 || end > solarSystem.habitableZoneEnd){
+            solarSystem.habitableZoneEnd = end;
+        }
+
+
         solarSystem.isSelected = false;
         solarSystem.positionX = dice.rollInterval(20,330);
         solarSystem.positionY = dice.rollInterval(20,330);
@@ -51,11 +56,65 @@ export class SolarSystemCreator{
         for(let i = 0; i < numberOfPlanets; i++){
             PlanetCreator.addTo(solarSystem, dice);
         }
+        if(isEarthlike){
+            solarSystem.habitableZoneStart  = 3;
+            solarSystem.habitableZoneEnd  = 5;
 
+            let distance = dice.rollInterval(solarSystem.habitableZoneStart, solarSystem.habitableZoneEnd);
+            let planetsInsideTheZone =  solarSystem.planets.filter(planet => { return this.isInsideHabitualZone(planet, solarSystem)});
+            if(planetsInsideTheZone.length === 0){
+                let planet = PlanetCreator.createEarthlike(dice, distance);
+                solarSystem.planets.push(planet);
+
+            }else{
+                let planet = planetsInsideTheZone[0];
+                let planetIndex = solarSystem.planets.indexOf(planet);
+                solarSystem.planets[planetIndex] = PlanetCreator.createEarthlike(dice, distance);
+                //change the distance of the neighbor planets if to close
+                if(planetIndex > 0
+                    && solarSystem.planets[planetIndex - 1].distanceFromStar > distance - 0.5){
+
+                    solarSystem.planets[planetIndex - 1].distanceFromStar = distance - 0.5;
+                }
+
+                if(planetIndex <= solarSystem.planets.length - 2
+                    && solarSystem.planets[planetIndex + 1].distanceFromStar < distance - 0.5){
+
+                    solarSystem.planets[planetIndex + 1].distanceFromStar = distance + 0.5;
+                }
+            }
+            for(let i = 0; i < solarSystem.planets.length; i++){
+                let planet = solarSystem.planets[i];
+                this.isInsideHabitualZone(planet, solarSystem);
+            }
+        }
 
         galaxy.solarSystems.push(solarSystem);
         Save().then(r => {console.log("saved: "); console.log(r)});
         return solarSystem;
+    }
+
+    private static setStage(solarSystem: SolarSystem, dice: Dice, stage?: string) {
+        if (!stage) {
+            solarSystem.stage = new SolarSystemStageTable().roll(dice).string;
+        }else{
+            solarSystem.stage = stage;
+        }
+
+        let stageObject = SolarSystemStages.find(stage => stage.name === solarSystem.stage);
+        if (!stageObject) {
+            throw new Error("stage not found");
+        }
+        solarSystem.stageDescription = stageObject.description;
+        solarSystem.age = this.getYearInBillionsFrom(stageObject, dice);
+    }
+
+    private static isInsideHabitualZone(planet: Planet, solarSystem: SolarSystem) {
+        if (planet.distanceFromStar >= solarSystem.habitableZoneStart && planet.distanceFromStar <= solarSystem.habitableZoneEnd) {
+            return true;
+        }
+
+        return false;
     }
 
     private static computeHabitableZone(dice: Dice): {start: number, end: number} {
@@ -127,6 +186,16 @@ export class SolarSystemCreator{
     }
 
 
+    static addWithEarthlike(galaxy: Galaxy, dice?: Dice) {
+        if(!dice){
+            dice = new Dice();
+        }
 
-
+        let solarSystem = this.addTo(galaxy, dice, true);
+        let earthLikePlanet = solarSystem.planets.find(planet => planet.type === "earthlike");
+        if(!earthLikePlanet){
+            throw new Error("earthlike planet not found");
+        }
+        return earthLikePlanet;
+    }
 }

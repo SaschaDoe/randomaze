@@ -306,7 +306,7 @@
                 starMesh.position.set(0, 0, 0); // it stays in the middle
             } else { // multiple stars
                 let angle = (i / solarSystem.stars.length) * Math.PI * 2;
-                let distance = minDistance / 2; // half of minDistance
+                let distance = minDistance / 2 * ringScale; // half of minDistance
                 let positionX = distance * Math.cos(angle);
                 let positionZ = distance * Math.sin(angle);
                 starMesh.position.set(positionX, 0, positionZ);
