@@ -1,6 +1,7 @@
 import {Entity} from "../Entity";
 import type {Ring} from "./Ring";
 import type {Moon} from "./moon/Moon";
+import {WorldMap} from "../worldmap/WorldMap";
 
 export class Planet extends Entity {
     name: string = "";
@@ -23,4 +24,5 @@ export class Planet extends Entity {
     rings: Ring[] = [];
     ringColorName: string = "";
     moons: Moon[] = [];
+    worldMap: WorldMap = new WorldMap();
 }

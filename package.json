@@ -29,6 +29,8 @@
 	"type": "module",
 	"dependencies": {
 		"idb": "^7.1.1",
+		"open-simplex-noise": "^2.5.0",
+		"simplex-noise": "^4.0.1",
 		"three": "^0.153.0"
 	}
 }
