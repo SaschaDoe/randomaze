@@ -45,7 +45,7 @@ describe("SolarSystemCreator", () => {
         let fakeDice = new FakeDice().withRollResult(0);
         let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
 
-        expect(solarSystem.planets.length).toEqual(4);
+        expect(solarSystem.planets.length).toEqual(8);
     });
 
     it("should create solar system with number of stars",  () => {
@@ -53,15 +53,7 @@ describe("SolarSystemCreator", () => {
         let fakeDice = new FakeDice().withRollResult(0);
         let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
 
-        expect(solarSystem.stars.length).toEqual(1);
-    });
-
-    it("should create solar system with stage related like given",  () => {
-        mediator.getHandler(HandlerType.GalaxyCreator).handle();
-        let fakeDice = new FakeDice().withRollResult(0);
-        let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0],  fakeDice);
-
-        expect(solarSystem.stars.length).toEqual(1);
+        expect(solarSystem.stars.length).toEqual(2);
     });
 
 });
