@@ -158,13 +158,13 @@ function openResetModal(e) {
 
 <svelte:head>
     <title>Home</title>
-    <meta name="description" content="Svelte demo app" />
+    <meta name="description" content="random rpg content generator" />
 </svelte:head>
 
 <div class="main-container">
     <EntitySideIndex campaign={$campaignStore}></EntitySideIndex>
     <div class="home-header">
-
+        <a href="/map">map</a>
         <button class="reset-button" on:click={openResetModal}>Reset</button>
         {#if showResetModal}
             <Modal on:close={closeResetModal}>

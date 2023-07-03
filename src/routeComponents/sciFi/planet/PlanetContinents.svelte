@@ -2,7 +2,7 @@
     export let entity;
 </script>
 
-<a href={"/hexmap/"} class="scan-button">Scan surface</a>
+<a href={"/map/"} class="scan-button">Scan surface</a>
 
 <style>
     .scan-button {

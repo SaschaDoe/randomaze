@@ -28,6 +28,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"d3": "^7.8.5",
+		"d3-array": "^3.2.4",
+		"d3-hexbin": "^0.2.2",
 		"idb": "^7.1.1",
 		"open-simplex-noise": "^2.5.0",
 		"simplex-noise": "^4.0.1",
