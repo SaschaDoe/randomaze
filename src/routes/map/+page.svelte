@@ -1,8 +1,9 @@
 <script>
     import {onMount} from 'svelte';
-    import {createNoise2D} from "simplex-noise";
     import {hexbin as d3Hexbin} from 'd3-hexbin';
-    import {format as d3Format, line as d3line, scaleLinear as d3scaleLinear, select, zoom as d3Zoom} from 'd3';
+    import {format as d3Format, select, zoom as d3Zoom} from 'd3';
+    import {MapCreator} from "./mapCreator.ts";
+    import {TerrainType} from "./terrainType.ts";
 
 
     let radius = 5;
@@ -10,44 +11,19 @@
     let width = 1300;
     let continentalFrequency = 300;
     let baseLevel = 0.25;
-    let baseEdgeStrength = 10.0;
-    let edgeStrength = 5.0;
     let islandWeight = 2;
     let randomIslandWeight = 0.008;
 
-    $: { radius; width; height; continentalFrequency; edgeStrength; baseLevel;
-        baseEdgeStrength; islandWeight; randomIslandWeight; renderTerrain(); }
+    $: { radius; width; height; continentalFrequency;  baseLevel;
+       islandWeight; randomIslandWeight; renderTerrain(); }
+
+    let mapCreator = new MapCreator();
 
     function generateTerrain(width, height) {
-        let continentalSimplex = createNoise2D();
-        let islandSimplex = createNoise2D();
+        let terrainHexes = mapCreator.generateTerrain(width, height);
 
-        let terrain = [];
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                let h = 0;
-                let continentalHeight = continentalSimplex(x / continentalFrequency, y / continentalFrequency) + baseLevel;
-
-                let randomMinusOrPlusOne = Math.random() < 0.5 ? -1 : 1;
-                let islandHeight = islandWeight * randomMinusOrPlusOne * islandSimplex(x / 10, y / 10) * 0.1 + 0.1;
-
-                let randomAltered = Math.random() < randomIslandWeight ? true : false;
-
-                let edge = edgeFunction(x);
-
-
-                h = edge * continentalHeight +  islandHeight;
-
-                if(randomAltered && h < 0.1){
-                    //random number between 0.4 and 0.7
-                    let randomAlteration = Math.random() * 0.3 + 0.6;
-                    h += randomAlteration;
-                }
-
-                terrain.push([x, y, h]);
-            }
-        }
-        return terrain;
+        // convert HexField instances to format expected by d3-hexbin
+        return terrainHexes.map(hex => [hex.x, hex.y, hex.h]);
     }
 
 
@@ -62,18 +38,21 @@
     }
 
     function getColor(height) {
-        if (height < 0.4) {
-            return 'blue';
-        } else if (height < 0.75) {
-            return 'green';
-        } else if (height < 0.9) {
-            return 'brown';
-        } else if (height < 1) {
-            return 'grey';
-        } else {
-            return 'white';
+        let type = mapCreator.getTerrainType(height);
+        switch (type) {
+            case TerrainType.Water:
+                return 'blue';
+            case TerrainType.Grass:
+                return 'green';
+            case TerrainType.Plain:
+                return 'brown';
+            case TerrainType.Mountain:
+                return 'grey';
+            default:
+                return 'white';
         }
     }
+
 
     let svgElement, gElement;
 
@@ -122,12 +101,7 @@
         renderTerrain();
     }
 
-    // Run on mount and every time one of the inputs changes
     onMount(renderTerrain);
-    $: { radius; width; height; continentalFrequency; edgeStrength; renderTerrain(); } // Including edgeStrength in reactivity statement
-
-    let plotSvgElement, plotGElement;
-
 </script>
 
 <div class="regler">
