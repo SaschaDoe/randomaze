@@ -57,13 +57,19 @@ describe("MapCreator", () => {
         // Checking left border
         for(let y = 0; y < height; y++) {
             let field = terrain[y * width]; // accessing left border element
-            expect(field.terrainType).toBe(TerrainType.Water);
+            if (y >= 0 && y < 3 || y >= height - 1 && y < height - 3) {
+                expect(field.terrainType).toBe(TerrainType.Grass);
+            }
+
         }
 
         // Checking right border
         for(let y = 0; y < height; y++) {
             let field = terrain[(y + 1) * width - 1]; // accessing right border element
-            expect(field.terrainType).toBe(TerrainType.Water);
+            if (y >= 0 && y < 3 || y >= height - 1 && y < height - 3) {
+                expect(field.terrainType).toBe(TerrainType.Grass);
+            }
+
         }
     });
 
@@ -71,4 +77,54 @@ describe("MapCreator", () => {
         let val = mapCreator.edgeFunction(500); // middle of the range
         expect(val).toBeCloseTo(1);
     });
+
+    test("generateTerrain ensures top and bottom poleSize rows have increased height", () => {
+        let terrain = mapCreator.generateTerrain(width, height, fakeDice);
+        let poleSize = 3;
+        let minimumHeight = 0.4;
+
+        // Checking top poleSize rows
+        for(let y = 0; y < poleSize; y++) {
+            for(let x = 0; x < width; x++) {
+                let field = terrain[y * width + x]; // accessing element at (x, y)
+                expect(field.h).toBeGreaterThanOrEqual(minimumHeight);
+            }
+        }
+
+        // Checking bottom poleSize rows
+        for(let y = height - poleSize; y < height; y++) {
+            for(let x = 0; x < width; x++) {
+                let field = terrain[y * width + x]; // accessing element at (x, y)
+                expect(field.h).toBeGreaterThanOrEqual(minimumHeight);
+            }
+        }
+    });
+
 });
+
+describe('MapCreator', () => {
+    let mapCreator: MapCreator;
+
+    beforeEach(() => {
+        mapCreator = new MapCreator().WithTemperatureVariance(0);
+    });
+
+    describe('getTemperature', () => {
+
+        test('returns -10 at the top pole', () => {
+
+            const height = 600;
+            const y = 0; // top pole
+            const temperature = mapCreator.getTemperature(y, height);
+            expect(temperature).lessThan(-7);
+        });
+
+        test('returns -10 at the bottom pole', () => {
+            const height = 600;
+            const y = height; // bottom pole
+            const temperature = mapCreator.getTemperature(y, height);
+            expect(temperature).lessThan(-7);
+        });
+    });
+});
+

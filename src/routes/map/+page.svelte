@@ -5,7 +5,6 @@
     import {MapCreator} from "./mapCreator.ts";
     import {TerrainType} from "./terrainType.ts";
 
-
     let radius = 5;
     let height = 600;
     let width = 1300;
@@ -13,38 +12,51 @@
     let baseLevel = 0.25;
     let islandWeight = 2;
     let randomIslandWeight = 0.008;
+    let baseTemperature = 2;
+    let temperatureVariance = 5;
 
     $: { radius; width; height; continentalFrequency;  baseLevel;
-       islandWeight; randomIslandWeight; renderTerrain(); }
+       islandWeight; randomIslandWeight; baseTemperature; temperatureVariance; generateTerrain(width,height); renderTerrain(); }
 
-    let mapCreator = new MapCreator();
+    let mapCreator = new MapCreator()
+        .WithContinentalFrequency(continentalFrequency)
+        .WithBaseLevel(baseLevel)
+        .WithIslandWeight(islandWeight)
+        .WithRandomIslandWeight(randomIslandWeight)
+        .WithBaseTemperature(baseTemperature)
+        .WithTemperatureVariance(temperatureVariance);
+
 
     function generateTerrain(width, height) {
+        mapCreator = new MapCreator()
+            .WithContinentalFrequency(continentalFrequency)
+            .WithBaseLevel(baseLevel)
+            .WithIslandWeight(islandWeight)
+            .WithRandomIslandWeight(randomIslandWeight)
+            .WithBaseTemperature(baseTemperature)
+            .WithTemperatureVariance(temperatureVariance);
+
         let terrainHexes = mapCreator.generateTerrain(width, height);
-
+        console.log("generate terrain with baseTemperature: " + baseTemperature);
         // convert HexField instances to format expected by d3-hexbin
-        return terrainHexes.map(hex => [hex.x, hex.y, hex.h]);
+        return terrainHexes.map(hex => [hex.x, hex.y, hex.h, hex.temperature]);
     }
 
-
-
-    // This function should be 0 on the edges (x=0 and x=width) and 1 in the middle
-    // At the edges, the steepness should be high, and in the middle, it should be flat
-    // The function should be symmetric around the middle
-
-    function edgeFunction(x) {
-        let result = Math.sin(Math.PI * x / 1000);
-        return result;
-    }
-
-    function getColor(height) {
+    function getColor(height, temperature) {
         let type = mapCreator.getTerrainType(height);
+
         switch (type) {
             case TerrainType.Water:
                 return 'blue';
             case TerrainType.Grass:
+                if (temperature < -8) {
+                    return 'white'
+                }
                 return 'green';
             case TerrainType.Plain:
+                if (temperature < -8) {
+                    return '#CDB37F'; // Lighter brown representing snow-covered plain
+                }
                 return 'brown';
             case TerrainType.Mountain:
                 return 'grey';
@@ -52,6 +64,7 @@
                 return 'white';
         }
     }
+
 
 
     let svgElement, gElement;
@@ -64,7 +77,7 @@
         let terrain = generateTerrain(width, height);
         let hexbin = d3Hexbin().radius(radius);
         let hexData = hexbin(terrain);
-        const format = d3Format(".2f");  // Display 2 decimal places
+        const format = d3Format(".1f");  // Display 2 decimal places
 
         select(gElement)
             .selectAll(".hexagon")
@@ -73,20 +86,24 @@
             .attr("class", "hexagon")
             .attr("d", hexbin.hexagon())
             .attr("transform", d => `translate(${d.x}, ${d.y})`)
-            .style("fill", d => getColor(d[0][2]))
+            .style("fill", d => getColor(d[0][2], d[0][3]))
             .style("stroke", "black");
-/*
+
         select(gElement)
-            .selectAll(".hexText")
+            .selectAll(".hexagon")
             .data(hexData)
-            .join('text')
-            .attr("class", "hexText")
+            .join('path')
+            .attr("class", "hexagon")
+            .attr("d", hexbin.hexagon())
             .attr("transform", d => `translate(${d.x}, ${d.y})`)
-            .style("text-anchor", "middle")
-            .style("font-size", "8px") // Adjust font size to fit in the hexagon
-            .style("fill", "black")
-            .text(d => format(d[0][2]));
-*/
+            .style("fill", d => getColor(d[0][2], d[0][3]))
+            .style("stroke", "black")
+            .on("mouseover", function(event, d) {
+                select(this)
+                    .append("title")
+                    .text(`Temperature: ${format(d[0][3])}`);
+            });
+
         let zoom = d3Zoom()
             .scaleExtent([0.5, 5])
             .on('zoom', (event) => {
@@ -124,6 +141,16 @@
         <label htmlFor="randomIslandWeight">Random Island Weight: </label>
         <input id="randomIslandWeight" type="range" bind:value={randomIslandWeight} min="0.0" max="0.09" step="0.001"/>
         <span>{randomIslandWeight}</span>
+    </div>
+    <div class="control">
+        <label htmlFor="baseTemperature">Base temperature: </label>
+        <input id="baseTemperature" type="range" bind:value={baseTemperature} min="-35" max="30" step="1"/>
+        <span>{baseTemperature}</span>
+    </div>
+    <div class="control">
+        <label htmlFor="temperatureVariance">Temperature variance: </label>
+        <input id="temperatureVariance" type="range" bind:value={temperatureVariance} min="0" max="20" step="1"/>
+        <span>{temperatureVariance}</span>
     </div>
     <button on:click={rerender}>Re-render</button>
 </div>

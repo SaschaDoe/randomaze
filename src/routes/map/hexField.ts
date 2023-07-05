@@ -5,10 +5,12 @@ export class HexField {
     public y: number;
     public h: number;
     public terrainType: TerrainType;
-    constructor(x: number, y: number, h: number, terrainType: TerrainType) {
+    public temperature: number;
+    constructor(x: number, y: number, h: number, terrainType: TerrainType, temperature: number) {
         this.x = x;
         this.y = y;
         this.h = h;
+        this.temperature = temperature;
         this.terrainType = terrainType;
     }
 }
