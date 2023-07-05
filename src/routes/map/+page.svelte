@@ -5,6 +5,7 @@
     import {MapCreator} from "./mapCreator.ts";
     import {TerrainType} from "./terrainType.ts";
 
+    let terrain;
     let radius = 5;
     let height = 600;
     let width = 1300;
@@ -28,7 +29,6 @@
         .WithBaseTemperature(baseTemperature)
         .WithTemperatureVariance(temperatureVariance);
 
-
     function generateTerrain(width, height) {
         mapCreator = new MapCreator()
             .WithContinentalFrequency(continentalFrequency)
@@ -44,7 +44,38 @@
         return terrainHexes.map(hex => [hex.x, hex.y, hex.h, hex.temperature, hex.terrainType]);
     }
 
-    function getColor(terrainType) {
+    let colorPalette = 'earthy';  // 'earthy' or 'custom'
+
+    function getEarthyColor(terrainType) {
+            switch (terrainType) {
+                case TerrainType.Water:
+                    return '#0000cd';  // Medium blue
+                case TerrainType.Grass:
+                    return 'green';
+                case TerrainType.Hills:
+                    //dark gray
+                    return '#a9a9a9';
+                case TerrainType.Mountain:
+                    //lighter gray
+                    return '#d3d3d3';
+                case TerrainType.Snow:
+                    return '#fffafa';  // Snow white
+                case TerrainType.Desert:
+                    return '#ffd700';  // Gold
+                case TerrainType.Tundra:
+                    return '#696969';  // Dark gray
+                case TerrainType.Djungle:
+                    return '#228b22';  // Forest green
+                case TerrainType.Plains:
+                    return '#deb887';  // Burlywood, a color of dry grass
+                case TerrainType.GrassHills:
+                    return '#2e8b57';  // Sea green, indicating a mix of grass and hill
+                default:
+                    return '#ffffff';
+            }
+    }
+
+    function getCustomColor(terrainType) {
         switch (terrainType) {
             case TerrainType.Water:
                 return '#0000ff';  // More deep blue
@@ -71,31 +102,31 @@
         }
     }
 
+    function getColor(terrainType) {
+        if (colorPalette === 'earthy') {
+            return getEarthyColor(terrainType);
+        } else {
+            return getCustomColor(terrainType);
+        }
+    }
 
-
+    function switchColorPalette() {
+        colorPalette = colorPalette === 'earthy' ? 'custom' : 'earthy';
+        renderTerrain();
+    }
 
     let svgElement, gElement;
 
     function renderTerrain() {
+        if (!terrain) terrain = generateTerrain(width, height);
         // clear the previous terrain
         select(gElement).selectAll(".hexagon").remove();
         select(gElement).selectAll(".hexText").remove();
 
-        let terrain = generateTerrain(width, height);
         let hexbin = d3Hexbin().radius(radius);
         let hexData = hexbin(terrain);
         const format = d3Format(".1f");  // Display 2 decimal places
-/*
-        select(gElement)
-            .selectAll(".hexagon")
-            .data(hexData)
-            .join('path')
-            .attr("class", "hexagon")
-            .attr("d", hexbin.hexagon())
-            .attr("transform", d => `translate(${d.x}, ${d.y})`)
-            .style("fill", d => getColor(d[0][4]))
-            .style("stroke", "black");
-*/
+
         select(gElement)
             .selectAll(".hexagon")
             .data(hexData)
@@ -120,8 +151,8 @@
         select(svgElement).call(zoom);
     }
 
-
     function rerender() {
+        terrain = null;  // reset the terrain
         renderTerrain();
     }
 
@@ -164,7 +195,10 @@
         <input id="desertFrequency" type="range" bind:value={desertFrequency} min="50" max="400" step="50"/>
         <span>{desertFrequency}</span>
     </div>
-    <button on:click={rerender}>Re-render</button>
+    <div class="button-container">
+        <button on:click={rerender}>Re-render</button>
+        <button on:click={switchColorPalette}>Switch color current: {colorPalette}</button>
+    </div>
 </div>
 
 
@@ -176,6 +210,10 @@
 </div>
 
 <style>
+    .button-container{
+        display: flex;
+        justify-content: space-around;
+    }
     .container {
         width: 100%;
         height: 1000px;
