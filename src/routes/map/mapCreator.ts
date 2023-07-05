@@ -13,6 +13,7 @@ export class MapCreator {
     baseTemperature = 0;
     private dice: Dice = new Dice();
     private temperatureVariance: number = 1;
+    private desertFrequency: number = 200;
 
     generateTerrain(width: number = 1300, height: number = 600, dice?: Dice){
         if(dice){
@@ -21,6 +22,7 @@ export class MapCreator {
 
         let continentalSimplex = createNoise2D();
         let islandSimplex = createNoise2D();
+        let desertSimplex = createNoise2D();
 
         let terrain = [];
         for (let y = 0; y < height; y++) {
@@ -53,12 +55,14 @@ export class MapCreator {
 
                 let poleSize = 3;
                 h = this.addPoles(y, height, poleSize, h);
+                let temperature = this.getTemperature(y, height);
+                let desertHeight = this.getDesertProbability(h, temperature, desertSimplex, x, y);
 
-                let terrainType = this.getTerrainType(h);
+                let terrainType = this.getTerrainType(h, desertHeight, temperature);
 
                 // Temperature decreases as you move away from the center of the map.
                 // On the poles it should be -10 in the middle should be 30
-                let temperature = this.getTemperature(y, height)
+
 
                 let hexField = new HexField(x, y, h, terrainType, temperature);
                 terrain.push(hexField);
@@ -67,6 +71,16 @@ export class MapCreator {
         return terrain;
     }
 
+
+    private getDesertProbability(h: number, temperature: number, desertSimplex: (x: number, y: number) => number, x: number, y: number) {
+        let desertHeight = 0;
+        if (h > 0.4 && h < 0.75 && temperature > 0) {
+            // should be around 0.5 and 2 depending on temperature
+            let temperatureModifier = 1 + (temperature - 25) / 50;
+            desertHeight = desertSimplex(x / (this.desertFrequency * temperatureModifier), y / (this.desertFrequency * temperatureModifier));
+        }
+        return desertHeight;
+    }
 
     public getTemperature(y: number, height: number) {
         let middleTemperature = 25;
@@ -106,13 +120,19 @@ export class MapCreator {
         return Math.sin(Math.PI * x / 1000);
     }
 
-    getTerrainType(h: number): TerrainType {
+    getTerrainType(h: number, desertHeight: number, temperature: number): TerrainType {
         if (h < 0.4) {
             return TerrainType.Water;
         } else if (h < 0.75) {
-            return TerrainType.Grass;
+            if(temperature < -8){
+                return TerrainType.Snow;
+            }
+            return desertHeight > 0.5 ? TerrainType.Desert : TerrainType.Grass;
         } else if (h < 0.9) {
-            return TerrainType.Plain;
+            if(temperature < -8){
+                return TerrainType.Snow;
+            }
+            return desertHeight > 0.5 ? TerrainType.Desert : TerrainType.Plain;
         } else {
             return TerrainType.Mountain;
         }
@@ -145,6 +165,11 @@ export class MapCreator {
 
     WithRandomIslandWeight(randomIslandWeight: number) {
         this.randomIslandWeight = randomIslandWeight;
+        return this;
+    }
+
+    WithDesertFrequency(desertFrequency: number) {
+        this.desertFrequency = desertFrequency;
         return this;
     }
 }
