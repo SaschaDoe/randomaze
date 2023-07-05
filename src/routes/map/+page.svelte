@@ -47,27 +47,30 @@
     function getColor(terrainType) {
         switch (terrainType) {
             case TerrainType.Water:
-                return 'blue';
+                return '#0000ff';  // More deep blue
             case TerrainType.Grass:
                 return 'green';
             case TerrainType.Hills:
-                return 'brown';
+                return '#8b4513';  // Darker brown to distinguish from mountains
             case TerrainType.Mountain:
-                return 'grey';
+                return '#a9a9a9';  // A bit darker grey
             case TerrainType.Snow:
-                return 'white';
+                return '#ffffff';
             case TerrainType.Desert:
                 return 'yellow';
             case TerrainType.Tundra:
-                return 'lightgrey';
+                return '#d3d3d3';  // Lighter grey, to distinguish from snow
             case TerrainType.Djungle:
-                return 'darkgreen';
+                return '#006400';  // Dark green
             case TerrainType.Plains:
-                return '#a0a237';
+                return '#a0a237'
+            case TerrainType.GrassHills:
+                return '#556b2f';  // Keep this color
             default:
-                return 'white';
+                return '#ffffff';
         }
     }
+
 
 
 

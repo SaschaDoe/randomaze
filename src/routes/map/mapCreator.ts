@@ -44,7 +44,7 @@ export class MapCreator {
                 h = edge * continentalHeight +  islandHeight;
 
                 if(randomAltered && h < 0.1){
-                    let randomAlteration = 0.3 * this.dice.rollRandom() + 0.6;
+                    let randomAlteration = 0.3 * this.dice.rollRandom() + 0.4;
                     h += randomAlteration;
                 }
 
@@ -59,10 +59,6 @@ export class MapCreator {
                 let desertHeight = this.getDesertProbability(h, temperature, desertSimplex, x, y);
 
                 let terrainType = this.getTerrainType(h, desertHeight, temperature);
-
-                // Temperature decreases as you move away from the center of the map.
-                // On the poles it should be -10 in the middle should be 30
-
 
                 let hexField = new HexField(x, y, h, terrainType, temperature);
                 terrain.push(hexField);
@@ -144,6 +140,9 @@ export class MapCreator {
         } else if (h < 0.9) {
             if(temperature < -8){
                 return TerrainType.Snow;
+            }
+            if(temperature < 4 && dryness < 0.5){
+                return TerrainType.GrassHills;
             }
             return dryness > 0.5 ? TerrainType.Desert : TerrainType.Hills;
         } else {

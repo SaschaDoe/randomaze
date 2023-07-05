@@ -7,5 +7,6 @@ export enum TerrainType {
     Snow = 5,
     Tundra = 7,
     Djungle = 8,
-    Plains = 9
+    Plains = 9,
+    GrassHills = 10,
 }
