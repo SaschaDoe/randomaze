@@ -50,7 +50,7 @@
                 return 'blue';
             case TerrainType.Grass:
                 return 'green';
-            case TerrainType.Plain:
+            case TerrainType.Hills:
                 return 'brown';
             case TerrainType.Mountain:
                 return 'grey';
@@ -58,6 +58,12 @@
                 return 'white';
             case TerrainType.Desert:
                 return 'yellow';
+            case TerrainType.Tundra:
+                return 'lightgrey';
+            case TerrainType.Djungle:
+                return 'darkgreen';
+            case TerrainType.Plains:
+                return '#a0a237';
             default:
                 return 'white';
         }

@@ -120,19 +120,32 @@ export class MapCreator {
         return Math.sin(Math.PI * x / 1000);
     }
 
-    getTerrainType(h: number, desertHeight: number, temperature: number): TerrainType {
+    getTerrainType(h: number, dryness: number, temperature: number): TerrainType {
         if (h < 0.4) {
             return TerrainType.Water;
         } else if (h < 0.75) {
             if(temperature < -8){
                 return TerrainType.Snow;
             }
-            return desertHeight > 0.5 ? TerrainType.Desert : TerrainType.Grass;
+            if(temperature < -5){
+                return TerrainType.Tundra;
+            }
+            if(temperature > 10 && dryness < -0.4){
+                return TerrainType.Djungle;
+            }
+            if(temperature > 10 && dryness > 0.5){
+                return TerrainType.Desert;
+            }
+            if(temperature > 10){
+                return TerrainType.Plains;
+            }else{
+                return TerrainType.Grass;
+            }
         } else if (h < 0.9) {
             if(temperature < -8){
                 return TerrainType.Snow;
             }
-            return desertHeight > 0.5 ? TerrainType.Desert : TerrainType.Plain;
+            return dryness > 0.5 ? TerrainType.Desert : TerrainType.Hills;
         } else {
             return TerrainType.Mountain;
         }

@@ -44,7 +44,7 @@ describe("MapCreator", () => {
             } else if (field.h < 0.75) {
                 expect(field.terrainType).toBe(TerrainType.Grass);
             } else if (field.h < 0.9) {
-                expect(field.terrainType).toBe(TerrainType.Plain);
+                expect(field.terrainType).toBe(TerrainType.Hills);
             } else {
                 expect(field.terrainType).toBe(TerrainType.Mountain);
             }
