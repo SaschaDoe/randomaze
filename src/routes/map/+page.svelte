@@ -4,6 +4,15 @@
     import {format as d3Format, select, zoom as d3Zoom} from 'd3';
     import {MapCreator} from "./mapCreator.ts";
     import {TerrainType} from "./terrainType.ts";
+    import {
+        DesertPlanet,
+        EarthLikePlanet,
+        IcePlanet,
+        JunglePlanet,
+        LavaPlanet,
+        OceanPlanet,
+        RockyPlanet
+    } from "./Planet.ts";
 
     let terrain;
     let radius = 5;
@@ -18,6 +27,7 @@
     let desertFrequency = 200;
     let waterLevel = 0.4;
     let baseDryness = 0;
+    let variance = 0;
     $: currentPlanetType = 'earthlike';
 
     $: { radius; width; height; continentalFrequency;  baseLevel; waterLevel;
@@ -144,97 +154,104 @@
         }
     }
 
-
     function generateOceanPlanet() {
-        baseDryness = -1;
-        waterLevel = 0.4;
-        baseLevel = -0.3;
-        baseTemperature = 20;
-        desertFrequency = 800;
-        continentalFrequency = 0;
-        islandWeight = 5;
-        randomIslandWeight = 0.05;
-        currentPlanetType = 'ocean';
+        let oceanPlanet = new OceanPlanet(variance);
+        baseDryness = oceanPlanet.baseDryness;
+        waterLevel = oceanPlanet.waterLevel;
+        baseLevel = oceanPlanet.baseLevel;
+        baseTemperature = oceanPlanet.baseTemperature;
+        desertFrequency = oceanPlanet.desertFrequency;
+        continentalFrequency = oceanPlanet.continentalFrequency;
+        islandWeight = oceanPlanet.islandWeight;
+        randomIslandWeight = oceanPlanet.randomIslandWeight;
+        currentPlanetType = oceanPlanet.currentPlanetType;
         rerender();
     }
 
     function generateEarthLikePlanet() {
-        baseDryness = 0;
-        waterLevel = 0.4;
-        baseLevel = 0.25;  // Moderate land/water ratio
-        baseTemperature = 0;  // Moderate temperature
-        desertFrequency = 200;  // Moderate desert frequency
-        continentalFrequency = 300;  // Standard frequency of continents
-        islandWeight = 2;  // Normal chance of islands
-        randomIslandWeight = 0.008;  // Standard chance of random islands
-        currentPlanetType = 'earthlike';
+        let earthlikePlanet = new EarthLikePlanet(variance);
+        baseDryness = earthlikePlanet.baseDryness;
+        waterLevel = earthlikePlanet.waterLevel;
+        baseLevel = earthlikePlanet.baseLevel;
+        baseTemperature = earthlikePlanet.baseTemperature;
+        desertFrequency = earthlikePlanet.desertFrequency;
+        continentalFrequency = earthlikePlanet.continentalFrequency;
+        islandWeight = earthlikePlanet.islandWeight;
+        randomIslandWeight = earthlikePlanet.randomIslandWeight;
+        currentPlanetType = earthlikePlanet.currentPlanetType;
         rerender();
     }
 
     function generateDesertPlanet() {
-        baseDryness = 0.9;
-        waterLevel = 0.0;
-        baseLevel = 0.4;
-        baseTemperature = 30;  // High temperature
-        desertFrequency = 500;  // High desert frequency
-        continentalFrequency = 300;  // Standard frequency of continents
-        islandWeight = 1.5;  // Lower chance of islands
-        randomIslandWeight = 0.005;  // Lower chance of random islands
-        currentPlanetType = 'desert';
+        let desertPlanet = new DesertPlanet(variance);
+        baseDryness = desertPlanet.baseDryness;
+        waterLevel = desertPlanet.waterLevel;
+        baseLevel = desertPlanet.baseLevel;
+        baseTemperature = desertPlanet.baseTemperature;
+        desertFrequency = desertPlanet.desertFrequency;
+        continentalFrequency = desertPlanet.continentalFrequency;
+        islandWeight = desertPlanet.islandWeight;
+        randomIslandWeight = desertPlanet.randomIslandWeight;
+        currentPlanetType = desertPlanet.currentPlanetType;
         rerender();
     }
 
     function generateIcePlanet() {
-        baseDryness = 0;
-        waterLevel = 0.1;
-        baseLevel = 0.25;
-        baseTemperature = -25;  // Very low temperature
-        desertFrequency = 600;  // Low desert frequency, low desert occurrence in cold conditions
-        continentalFrequency = 200;  // Higher frequency of continents
-        islandWeight = 2;  // Normal chance of islands
-        randomIslandWeight = 0.008;  // Standard chance of random islands
-        currentPlanetType = 'ice';
+        let icePlanet = new IcePlanet(variance);
+        baseDryness = icePlanet.baseDryness;
+        waterLevel = icePlanet.waterLevel;
+        baseLevel = icePlanet.baseLevel;
+        baseTemperature = icePlanet.baseTemperature;
+        desertFrequency = icePlanet.desertFrequency;
+        continentalFrequency = icePlanet.continentalFrequency;
+        islandWeight = icePlanet.islandWeight;
+        randomIslandWeight = icePlanet.randomIslandWeight;
+        currentPlanetType = icePlanet.currentPlanetType;
         rerender();
     }
 
     function generateJunglePlanet() {
-        baseDryness = -1;
-        waterLevel = 0.4;
-        baseLevel = 0.25;  // High land level for more islands
-        baseTemperature = 40;  // High temperature
-        desertFrequency = 300;  // Low desert frequency
-        continentalFrequency = 300;  // Standard frequency of continents
-        islandWeight = 3;  // Higher chance of islands
-        randomIslandWeight = 0.015;  // Increased chance of random islands
-        currentPlanetType = 'jungle';
+        let junglePlanet = new JunglePlanet(variance);
+        baseDryness = junglePlanet.baseDryness;
+        waterLevel = junglePlanet.waterLevel;
+        baseLevel = junglePlanet.baseLevel;
+        baseTemperature = junglePlanet.baseTemperature;
+        desertFrequency = junglePlanet.desertFrequency;
+        continentalFrequency = junglePlanet.continentalFrequency;
+        islandWeight = junglePlanet.islandWeight;
+        randomIslandWeight = junglePlanet.randomIslandWeight;
+        currentPlanetType = junglePlanet.currentPlanetType;
         rerender();
     }
 
     function generateLavaPlanet() {
-        baseDryness = 1;
-        waterLevel = -0.1;
-        baseLevel = 0.25;  // High land level for more islands
-        baseTemperature = 100;  // High temperature
-        desertFrequency = 300;  // Low desert frequency
-        continentalFrequency = 300;  // Standard frequency of continents
-        islandWeight = 3;  // Higher chance of islands
-        randomIslandWeight = 0.015;  // Increased chance of random islands
-        currentPlanetType = 'lava';
+        let lavaPlanet = new LavaPlanet(variance);
+        baseDryness = lavaPlanet.baseDryness;
+        waterLevel = lavaPlanet.waterLevel;
+        baseLevel = lavaPlanet.baseLevel;
+        baseTemperature = lavaPlanet.baseTemperature;
+        desertFrequency = lavaPlanet.desertFrequency;
+        continentalFrequency = lavaPlanet.continentalFrequency;
+        islandWeight = lavaPlanet.islandWeight;
+        randomIslandWeight = lavaPlanet.randomIslandWeight;
+        currentPlanetType = lavaPlanet.currentPlanetType;
         rerender();
     }
 
     function generateRockyPlanet() {
-        baseDryness = 1;
-        waterLevel = -0.1;
-        baseLevel = 0.6;  // High land level for more islands
-        baseTemperature = 90;  // High temperature
-        desertFrequency = 0;  // Low desert frequency
-        continentalFrequency = 300;  // Standard frequency of continents
-        islandWeight = 3;  // Higher chance of islands
-        randomIslandWeight = 0.015;  // Increased chance of random islands
-        currentPlanetType = 'rocky';
+        let rockyPlanet = new RockyPlanet(variance);
+        baseDryness = rockyPlanet.baseDryness;
+        waterLevel = rockyPlanet.waterLevel;
+        baseLevel = rockyPlanet.baseLevel;
+        baseTemperature = rockyPlanet.baseTemperature;
+        desertFrequency = rockyPlanet.desertFrequency;
+        continentalFrequency = rockyPlanet.continentalFrequency;
+        islandWeight = rockyPlanet.islandWeight;
+        randomIslandWeight = rockyPlanet.randomIslandWeight;
+        currentPlanetType = rockyPlanet.currentPlanetType;
         rerender();
     }
+
 
     function getColor(terrainType) {
         if (colorPalette === 'earthy') {
@@ -359,6 +376,11 @@
     <div class="button-container">
         <button on:click={rerender}>Re-render {currentPlanetType}</button>
         <button on:click={switchColorPalette}>Switch color current: {colorPalette}</button>
+        <div class="control">
+            <label htmlFor="variance">Variance: </label>
+            <input id="variance" type="range" bind:value={variance} min="-1" max="50" step="1"/>
+            <span>{variance}</span>
+        </div>
     </div>
     <div class="button-container">
         <button on:click={generateEarthLikePlanet}>Earth-like Planet</button>

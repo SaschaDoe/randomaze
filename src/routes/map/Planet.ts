@@ -1,4 +1,4 @@
-abstract class Planet {
+export abstract class Planet {
     baseDryness = 0;
     waterLevel = 0.4;
     baseLevel = 0.25;
@@ -15,7 +15,7 @@ abstract class Planet {
         this.applyVariance(variance);
     }
 
-    private applyVariance(variance: number) {
+    protected applyVariance(variance: number) {
         for (let key of Object.keys(this)) {
             if (typeof this[key] === "number") {
                 let min = this[key] - (this[key] * (variance/100));
@@ -26,7 +26,7 @@ abstract class Planet {
     }
 }
 
- export class OceanPlanet extends Planet {
+export class OceanPlanet extends Planet {
     constructor(variance: number) {
         super(variance);
         this.baseDryness = -1;
@@ -38,6 +38,7 @@ abstract class Planet {
         this.islandWeight = 5;
         this.randomIslandWeight = 0.05;
         this.currentPlanetType = 'ocean';
+        this.applyVariance(variance);
     }
 }
 
@@ -45,7 +46,7 @@ export class EarthLikePlanet extends Planet {
     constructor(variance: number) {
         super(variance);
         this.baseDryness = 0;
-        this.waterLevel = 0.4;
+        this.waterLevel = 0.5;
         this.baseLevel = 0.25;
         this.baseTemperature = 0;
         this.desertFrequency = 200;
@@ -53,6 +54,7 @@ export class EarthLikePlanet extends Planet {
         this.islandWeight = 2;
         this.randomIslandWeight = 0.008;
         this.currentPlanetType = 'earthlike';
+        this.applyVariance(variance);
     }
 }
 
@@ -60,7 +62,7 @@ export class DesertPlanet extends Planet {
     constructor(variance: number) {
         super(variance);
         this.baseDryness = 0.9;
-        this.waterLevel = 0.0;
+        this.waterLevel = -0.2;
         this.baseLevel = 0.4;
         this.baseTemperature = 30;
         this.desertFrequency = 500;
@@ -68,6 +70,7 @@ export class DesertPlanet extends Planet {
         this.islandWeight = 1.5;
         this.randomIslandWeight = 0.005;
         this.currentPlanetType = 'desert';
+        this.applyVariance(variance);
     }
 }
 
@@ -83,6 +86,7 @@ export class IcePlanet extends Planet {
         this.islandWeight = 2;
         this.randomIslandWeight = 0.008;
         this.currentPlanetType = 'ice';
+        this.applyVariance(variance);
     }
 }
 
@@ -98,6 +102,7 @@ export class JunglePlanet extends Planet {
         this.islandWeight = 3;
         this.randomIslandWeight = 0.015;
         this.currentPlanetType = 'jungle';
+        this.applyVariance(variance);
     }
 }
 
@@ -113,13 +118,14 @@ export class LavaPlanet extends Planet {
         this.islandWeight = 3;
         this.randomIslandWeight = 0.015;
         this.currentPlanetType = 'lava';
+        this.applyVariance(variance);
     }
 }
 export class RockyPlanet extends Planet {
     constructor(variance: number) {
         super(variance);
         this.baseDryness = 1;
-        this.waterLevel = -0.1;
+        this.waterLevel = -1;
         this.baseLevel = 0.6;
         this.baseTemperature = 90;
         this.desertFrequency = 0;
@@ -127,5 +133,7 @@ export class RockyPlanet extends Planet {
         this.islandWeight = 3;
         this.randomIslandWeight = 0.015;
         this.currentPlanetType = 'rocky';
+        this.applyVariance(variance);
     }
 }
+
