@@ -314,6 +314,34 @@
     function toggleAdvancedOptions() {
         showAdvanced = !showAdvanced;
     }
+
+    function generatePlanet(event) {
+        switch(event.target.value) {
+            case "EarthLikePlanet":
+                generateEarthLikePlanet();
+                break;
+            case "OceanPlanet":
+                generateOceanPlanet();
+                break;
+            case "DesertPlanet":
+                generateDesertPlanet();
+                break;
+            case "IcePlanet":
+                generateIcePlanet();
+                break;
+            case "JunglePlanet":
+                generateJunglePlanet();
+                break;
+            case "LavaPlanet":
+                generateLavaPlanet();
+                break;
+            case "RockyPlanet":
+                generateRockyPlanet();
+                break;
+            default:
+                console.log("Please select a planet type.");
+        }
+    }
 </script>
 
 
@@ -382,15 +410,18 @@
             <span>{variance}</span>
         </div>
     </div>
-    <div class="button-container">
-        <button on:click={generateEarthLikePlanet}>Earth-like Planet</button>
-        <button on:click={generateOceanPlanet}>Ocean Planet</button>
-        <button on:click={generateDesertPlanet}>Desert Planet</button>
-        <button on:click={generateIcePlanet}>Ice Planet</button>
-        <button on:click={generateJunglePlanet}>Jungle Planet</button>
-        <button on:click={generateLavaPlanet}>Lava Planet</button>
-        <button on:click={generateRockyPlanet}>Rocky Planet</button>
-    </div>
+<div class="dropdown">
+    <select id="planet-types" on:change={generatePlanet}>
+        <option value="">-- select a planet type --</option>
+        <option value="EarthLikePlanet">Earth-like Planet</option>
+        <option value="OceanPlanet">Ocean Planet</option>
+        <option value="DesertPlanet">Desert Planet</option>
+        <option value="IcePlanet">Ice Planet</option>
+        <option value="JunglePlanet">Jungle Planet</option>
+        <option value="LavaPlanet">Lava Planet</option>
+        <option value="RockyPlanet">Rocky Planet</option>
+    </select>
+</div>
 
 
 
@@ -402,6 +433,14 @@
 </div>
 
 <style>
+    .dropdown{
+        margin-top: 5px;
+        margin-bottom: 7px;
+    }
+
+    select{
+        height: 25px;
+    }
     .button-container{
         display: flex;
     }
