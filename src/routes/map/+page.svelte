@@ -74,7 +74,7 @@
                 case TerrainType.Tundra:
                     return '#696969';  // Dark gray
                 case TerrainType.Djungle:
-                    return '#228b22';  // Forest green
+                    return '#115411';  // Forest green
                 case TerrainType.Plains:
                     return '#deb887';  // Burlywood, a color of dry grass
                 case TerrainType.GrassHills:
@@ -89,6 +89,12 @@
                     return '#d3d3d3';
                 case TerrainType.SnowMountain:
                     return 'white';
+                case TerrainType.Lava:
+                    return '#c11313FF'
+                case TerrainType.AshPlains:
+                    return '#282626';
+                case TerrainType.AshHills:
+                    return '#383838';
                 default:
                     return '#ffffff';
             }
@@ -111,7 +117,7 @@
             case TerrainType.Tundra:
                 return '#d3d3d3';  // Lighter grey, to distinguish from snow
             case TerrainType.Djungle:
-                return '#006400';  // Dark green
+                return '#015b01';  // Dark green
             case TerrainType.Plains:
                 return '#a0a237'
             case TerrainType.GrassHills:
@@ -127,6 +133,12 @@
                 return '#a9a9a9';
             case TerrainType.SnowMountain:
                 return 'white';
+            case TerrainType.Lava:
+                return '#ff0000';
+            case TerrainType.AshPlains:
+                return '#131313';
+            case TerrainType.AshHills:
+                return '#383838';
             default:
                 return '#ffffff';
         }
@@ -134,6 +146,7 @@
 
 
     function generateOceanPlanet() {
+        baseDryness = -1;
         waterLevel = 0.4;
         baseLevel = -0.3;
         baseTemperature = 20;
@@ -146,9 +159,10 @@
     }
 
     function generateEarthLikePlanet() {
+        baseDryness = 0;
         waterLevel = 0.4;
         baseLevel = 0.25;  // Moderate land/water ratio
-        baseTemperature = 15;  // Moderate temperature
+        baseTemperature = 0;  // Moderate temperature
         desertFrequency = 200;  // Moderate desert frequency
         continentalFrequency = 300;  // Standard frequency of continents
         islandWeight = 2;  // Normal chance of islands
@@ -171,6 +185,7 @@
     }
 
     function generateIcePlanet() {
+        baseDryness = 0;
         waterLevel = 0.1;
         baseLevel = 0.25;
         baseTemperature = -25;  // Very low temperature
@@ -192,6 +207,19 @@
         islandWeight = 3;  // Higher chance of islands
         randomIslandWeight = 0.015;  // Increased chance of random islands
         currentPlanetType = 'jungle';
+        rerender();
+    }
+
+    function generateLavaPlanet() {
+        baseDryness = 1;
+        waterLevel = -0.1;
+        baseLevel = 0.25;  // High land level for more islands
+        baseTemperature = 100;  // High temperature
+        desertFrequency = 300;  // Low desert frequency
+        continentalFrequency = 300;  // Standard frequency of continents
+        islandWeight = 3;  // Higher chance of islands
+        randomIslandWeight = 0.015;  // Increased chance of random islands
+        currentPlanetType = 'lava';
         rerender();
     }
 
@@ -325,6 +353,7 @@
         <button on:click={generateDesertPlanet}>Desert Planet</button>
         <button on:click={generateIcePlanet}>Ice Planet</button>
         <button on:click={generateJunglePlanet}>Jungle Planet</button>
+        <button on:click={generateLavaPlanet}>Lava Planet</button>
     </div>
 
 

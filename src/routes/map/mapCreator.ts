@@ -128,6 +128,9 @@ export class MapCreator {
             if(temperature < -7){
                 return TerrainType.IceFloe;
             }
+            if(temperature > 70){
+                return TerrainType.Lava;
+            }
             return TerrainType.Water;
         } else if (h < 0.75) {
             if(temperature < -8){
@@ -139,15 +142,18 @@ export class MapCreator {
             if(temperature > 10 && dryness < -0.4){
                 return TerrainType.Djungle;
             }
-            if(temperature > 10 && dryness > 0.5){
+            if(temperature > 10 && temperature < 70 && dryness > 0.5){
                 return TerrainType.Desert;
             }
-            if(temperature > 10){
+            if(temperature > 12 && temperature < 70){
                 return TerrainType.Plains;
-            }else{
+            }else if(temperature > 70) {
+                return TerrainType.AshPlains;
+            }
+            else{
                 return TerrainType.Grass;
             }
-        } else if (h < 0.9) {
+        }else if (h < 0.9) {
             if(temperature < -8){
                 return TerrainType.Snow;
             }
@@ -156,6 +162,9 @@ export class MapCreator {
             }
             if(temperature < 4 && dryness < 0.5){
                 return TerrainType.GrassHills;
+            }
+            if(temperature > 70){
+                return TerrainType.AshHills;
             }
             return dryness > 0.5 ? TerrainType.Desert : TerrainType.Hills;
         } else if (h < 1.1){

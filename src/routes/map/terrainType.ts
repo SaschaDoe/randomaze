@@ -14,4 +14,7 @@ export enum TerrainType {
     DjungleHills = 13,
     HighMountain = 14,
     SnowMountain = 15,
+    Lava = 16,
+    AshPlains = 17,
+    AshHills = 18,
 }
