@@ -1,18 +1,22 @@
 import {Table} from "../Table";
 import {PlanetLivableTypes} from "./PlanetTypeLivableTable";
-import {PlanetTNonLivableTypes} from "./PlanetTypeNonLivableTable";
+import {PlanetNonLivableTypes} from "./PlanetTypeNonLivableTable";
+
+// function to get enum values as an array
+function enumValues(e: any) {
+    return Object.values(e);
+}
 
 const PlanetTypes = [
     ...new Set([
-        ...PlanetLivableTypes,
-        ...PlanetTNonLivableTypes,
+        ...enumValues(PlanetLivableTypes),
+        ...enumValues(PlanetNonLivableTypes),
     ]),
 ];
 
-export class PlanetTypeTable extends Table{
+export class PlanetTypeTable extends Table {
     constructor() {
         super("Planet Types");
-        this.ArrayAsTableEntries(PlanetTypes);
+        this.EnumAsTableEntries(PlanetTypes);
     }
-
 }

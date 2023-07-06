@@ -19,6 +19,17 @@ export class Table{
 
     }
 
+    EnumAsTableEntries(enumObj: any) {
+        for(let enumMember in enumObj) {
+            if(Object.prototype.hasOwnProperty.call(enumObj, enumMember)) {
+                let isValueProperty = !isNaN(Number(enumMember));
+                if(!isValueProperty) {
+                    this.entries.push(new DisplayedTextEntry(enumObj[enumMember]));
+                }
+            }
+        }
+    }
+
     roll(dice?: Dice) {
         let rollResult = this.getResult(dice);
         let roll = this.getRoll(dice);

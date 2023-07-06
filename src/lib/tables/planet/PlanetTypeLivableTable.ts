@@ -1,13 +1,18 @@
+
 import {Table} from "../Table";
 
-export const PlanetLivableTypes = [
-    "desert", "ice", "jungle", "earthlike", "ocean", "rocky",
-];
+export enum PlanetLivableTypes {
+    DESERT = "desert",
+    ICE = "ice",
+    JUNGLE = "jungle",
+    EARTHLIKE = "earthlike",
+    OCEAN = "ocean",
+    ROCKY = "rocky",
+}
 
-export class PlanetTypeLivableTable extends Table{
+export class PlanetTypeLivableTable extends Table {
     constructor() {
         super("Livable Planet Types");
-        this.ArrayAsTableEntries(PlanetLivableTypes);
+        this.EnumAsTableEntries(PlanetLivableTypes);
     }
-
 }

@@ -9,4 +9,9 @@ export enum TerrainType {
     Djungle = 8,
     Plains = 9,
     GrassHills = 10,
+    SaltLake = 11,
+    IceFloe = 12,
+    DjungleHills = 13,
+    HighMountain = 14,
+    SnowMountain = 15,
 }
