@@ -223,6 +223,19 @@
         rerender();
     }
 
+    function generateRockyPlanet() {
+        baseDryness = 1;
+        waterLevel = -0.1;
+        baseLevel = 0.6;  // High land level for more islands
+        baseTemperature = 90;  // High temperature
+        desertFrequency = 0;  // Low desert frequency
+        continentalFrequency = 300;  // Standard frequency of continents
+        islandWeight = 3;  // Higher chance of islands
+        randomIslandWeight = 0.015;  // Increased chance of random islands
+        currentPlanetType = 'rocky';
+        rerender();
+    }
+
     function getColor(terrainType) {
         if (colorPalette === 'earthy') {
             return getEarthyColor(terrainType);
@@ -354,6 +367,7 @@
         <button on:click={generateIcePlanet}>Ice Planet</button>
         <button on:click={generateJunglePlanet}>Jungle Planet</button>
         <button on:click={generateLavaPlanet}>Lava Planet</button>
+        <button on:click={generateRockyPlanet}>Rocky Planet</button>
     </div>
 
 
