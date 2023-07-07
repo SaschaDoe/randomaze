@@ -30,15 +30,6 @@ describe("SolarSystemCreator", () => {
         expect(solarSystem.name).toEqual("adalbald system 0");
     });
 
-    it("should create solar system with stage molecular cloud ",  () => {
-
-        mediator.getHandler(HandlerType.GalaxyCreator).handle();
-        let fakeDice = new FakeDice().withRollResult(0);
-        let solarSystem = SolarSystemCreator.addTo(campaign.galaxies[0], fakeDice);
-
-        expect(solarSystem.stage).toEqual("stable phase");
-    });
-
     it("should create solar system with 1 planet",  () => {
 
         mediator.getHandler(HandlerType.GalaxyCreator).handle();

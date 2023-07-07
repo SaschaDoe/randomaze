@@ -54,7 +54,6 @@ export class MapCreator {
                     h = Math.random() * 0.39;
                 }
 
-
                 if(this.baseLevel > 0){
                     let poleSize = 3;
                     h = this.addPoles(y, height, poleSize, h);

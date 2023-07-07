@@ -1,7 +1,7 @@
 <script>
     import {onMount} from 'svelte';
     import {hexbin as d3Hexbin} from 'd3-hexbin';
-    import {format as d3Format, select, zoom as d3Zoom} from 'd3';
+    import {format as d3Format, select, zoomIdentity, zoom } from 'd3';
     import {MapCreator} from "./mapCreator.ts";
     import {TerrainType} from "./terrainType.ts";
     import {
@@ -13,11 +13,15 @@
         OceanPlanet,
         RockyPlanet
     } from "./Planet.ts";
+    import {getColor} from "./ColorPalettes.ts";
+    import * as d3Array from "d3-array";
+    import {TerrainCompressor} from "./TerrainCompressor.ts";
 
     let terrain;
-    let radius = 5;
-    let height = 600;
-    let width = 1300;
+    let radius = 4;
+    //let height = 1500;
+    //let width = 2700;
+
     let continentalFrequency = 300;
     let baseLevel = 0.25;
     let islandWeight = 2;
@@ -28,131 +32,16 @@
     let waterLevel = 0.4;
     let baseDryness = 0;
     let variance = 0;
+    let colorPalette = 'earthy';  // 'earthy' or 'custom'
     $: currentPlanetType = 'earthlike';
 
     $: { radius; width; height; continentalFrequency;  baseLevel; waterLevel;
        islandWeight; randomIslandWeight; baseTemperature; temperatureVariance;
        desertFrequency; baseDryness; generateTerrain(width,height); renderTerrain(); }
 
-    let mapCreator = new MapCreator()
-        .WithContinentalFrequency(continentalFrequency)
-        .WithBaseLevel(baseLevel)
-        .WithIslandWeight(islandWeight)
-        .WithRandomIslandWeight(randomIslandWeight)
-        .WithBaseTemperature(baseTemperature)
-        .WithTemperatureVariance(temperatureVariance)
-        .WithWaterLevel(waterLevel)
-        .WithDesertFrequency(desertFrequency)
-        .WithBaseDryness(baseDryness);
+    let mapCreator = new MapCreator();
 
-    function generateTerrain(width, height) {
-         mapCreator = new MapCreator()
-            .WithContinentalFrequency(continentalFrequency)
-            .WithBaseLevel(baseLevel)
-            .WithIslandWeight(islandWeight)
-            .WithRandomIslandWeight(randomIslandWeight)
-            .WithBaseTemperature(baseTemperature)
-            .WithTemperatureVariance(temperatureVariance)
-            .WithWaterLevel(waterLevel)
-             .WithDesertFrequency(desertFrequency)
-             .WithBaseDryness(baseDryness);
 
-        let terrainHexes = mapCreator.generateTerrain(width, height);
-        console.log("generate terrain with baseTemperature: " + baseTemperature);
-        // convert HexField instances to format expected by d3-hexbin
-        return terrainHexes.map(hex => [hex.x, hex.y, hex.h, hex.temperature, hex.terrainType, hex.dryness]);
-    }
-
-    let colorPalette = 'earthy';  // 'earthy' or 'custom'
-
-    function getEarthyColor(terrainType) {
-            switch (terrainType) {
-                case TerrainType.Water:
-                    return '#0000cd';  // Medium blue
-                case TerrainType.Grass:
-                    return 'green';
-                case TerrainType.Hills:
-                    //dark gray
-                    return '#a9a9a9';
-                case TerrainType.Mountain:
-                    //very dark grey
-                    return '#696969';
-                case TerrainType.Snow:
-                    return '#fffafa';  // Snow white
-                case TerrainType.Desert:
-                    return '#ffd700';  // Gold
-                case TerrainType.Tundra:
-                    return '#696969';  // Dark gray
-                case TerrainType.Djungle:
-                    return '#115411';  // Forest green
-                case TerrainType.Plains:
-                    return '#deb887';  // Burlywood, a color of dry grass
-                case TerrainType.GrassHills:
-                    return '#2e8b57';  // Sea green, indicating a mix of grass and hill
-                case TerrainType.SaltLake:
-                    return 'white';
-                case TerrainType.IceFloe:
-                    return 'lightBlue';
-                case TerrainType.DjungleHills:
-                    return '#006400';
-                case TerrainType.HighMountain:
-                    return '#d3d3d3';
-                case TerrainType.SnowMountain:
-                    return 'white';
-                case TerrainType.Lava:
-                    return '#c11313FF'
-                case TerrainType.AshPlains:
-                    return '#282626';
-                case TerrainType.AshHills:
-                    return '#383838';
-                default:
-                    return '#ffffff';
-            }
-    }
-
-    function getCustomColor(terrainType) {
-        switch (terrainType) {
-            case TerrainType.Water:
-                return '#0000ff';  // More deep blue
-            case TerrainType.Grass:
-                return 'green';
-            case TerrainType.Hills:
-                return '#8b4513';  // Darker brown to distinguish from mountains
-            case TerrainType.Mountain:
-                return '#696969';
-            case TerrainType.Snow:
-                return '#ffffff';
-            case TerrainType.Desert:
-                return 'yellow';
-            case TerrainType.Tundra:
-                return '#d3d3d3';  // Lighter grey, to distinguish from snow
-            case TerrainType.Djungle:
-                return '#015b01';  // Dark green
-            case TerrainType.Plains:
-                return '#a0a237'
-            case TerrainType.GrassHills:
-                return '#556b2f';  // Keep this color
-            case TerrainType.SaltLake:
-                return 'white';
-            case TerrainType.IceFloe:
-                // bright blue
-                return '#00ffff';
-            case TerrainType.DjungleHills:
-                return '#006400';
-            case TerrainType.HighMountain:
-                return '#a9a9a9';
-            case TerrainType.SnowMountain:
-                return 'white';
-            case TerrainType.Lava:
-                return '#ff0000';
-            case TerrainType.AshPlains:
-                return '#131313';
-            case TerrainType.AshHills:
-                return '#383838';
-            default:
-                return '#ffffff';
-        }
-    }
 
     function generateOceanPlanet() {
         let oceanPlanet = new OceanPlanet(variance);
@@ -252,69 +141,6 @@
         rerender();
     }
 
-
-    function getColor(terrainType) {
-        if (colorPalette === 'earthy') {
-            return getEarthyColor(terrainType);
-        } else {
-            return getCustomColor(terrainType);
-        }
-    }
-
-    function switchColorPalette() {
-        colorPalette = colorPalette === 'earthy' ? 'custom' : 'earthy';
-        renderTerrain();
-    }
-
-    let svgElement, gElement;
-
-    function renderTerrain() {
-        if (!terrain) terrain = generateTerrain(width, height);
-        // clear the previous terrain
-        select(gElement).selectAll(".hexagon").remove();
-        select(gElement).selectAll(".hexText").remove();
-
-        let hexbin = d3Hexbin().radius(radius);
-        let hexData = hexbin(terrain);
-        const format = d3Format(".1f");  // Display 2 decimal places
-
-        select(gElement)
-            .selectAll(".hexagon")
-            .data(hexData)
-            .join('path')
-            .attr("class", "hexagon")
-            .attr("d", hexbin.hexagon())
-            .attr("transform", d => `translate(${d.x}, ${d.y})`)
-            .style("fill", d => getColor(d[0][4]))
-            .style("stroke", "black")
-            .on("mouseover", function(event, d) {
-                select(this)
-                    .append("title")
-                    .text(`Height: ${format(d[0][2])} \n Temp: ${format(d[0][3])} \n Dryness: ${format(d[0][5])} \n Terrain: ${TerrainType[d[0][4]]} `);
-            })
-
-        let zoom = d3Zoom()
-            .scaleExtent([0.5, 5])
-            .on('zoom', (event) => {
-                select(gElement).attr('transform', event.transform);
-            });
-
-        select(svgElement).call(zoom);
-    }
-
-    function rerender() {
-        terrain = null;  // reset the terrain
-        renderTerrain();
-    }
-
-    onMount(renderTerrain);
-
-    let showAdvanced = false;
-
-    function toggleAdvancedOptions() {
-        showAdvanced = !showAdvanced;
-    }
-
     function generatePlanet(event) {
         switch(event.target.value) {
             case "EarthLikePlanet":
@@ -342,10 +168,104 @@
                 console.log("Please select a planet type.");
         }
     }
+
+
+    function switchColorPalette() {
+        colorPalette = colorPalette === 'earthy' ? 'custom' : 'earthy';
+        renderTerrain();
+    }
+
+    let svgElement, gElement;
+
+    function generateTerrain(width, height) {
+        mapCreator = new MapCreator()
+            .WithContinentalFrequency(continentalFrequency)
+            .WithBaseLevel(baseLevel)
+            .WithIslandWeight(islandWeight)
+            .WithRandomIslandWeight(randomIslandWeight)
+            .WithBaseTemperature(baseTemperature)
+            .WithTemperatureVariance(temperatureVariance)
+            .WithWaterLevel(waterLevel)
+            .WithDesertFrequency(desertFrequency)
+            .WithBaseDryness(baseDryness);
+        console.log("Generating full terrain...");
+        let allTerrainHexes = mapCreator.generateTerrain(width, height);
+        console.log("Compress terrain...");
+        //allTerrainHexes = new TerrainCompressor().compress(allTerrainHexes, 2);
+        console.log("map terrain...");
+        return allTerrainHexes.map(hex => [hex.x, hex.y, 0, 0, hex.terrainType, 0]);
+        //return allTerrainHexes.map(hex => [hex.x, hex.y, hex.h, hex.temperature, hex.terrainType, hex.dryness]);
+    }
+
+    let height = 1300;
+    let width = 2500;
+    let myZoom;
+    function renderTerrain() {
+        console.log("Rendering terrain...");
+        if (!terrain) terrain = generateTerrain(width, height);
+        // clear the previous terrain
+        select(gElement).selectAll(".hexagon").remove();
+        select(gElement).selectAll(".hexText").remove();
+
+        let hexbin = d3Hexbin().radius(radius);
+        let hexData = hexbin(terrain);
+        const format = d3Format(".1f");
+
+        select(gElement)
+            .selectAll(".hexagon")
+            .data(hexData)
+            .join('path')
+            .attr("class", "hexagon")
+            .attr("d", hexbin.hexagon())
+            .attr("transform", d => `translate(${d.x}, ${d.y})`)
+            .style("fill", d => getColor(d[0][4], colorPalette))
+            .style("stroke", "black")
+            .on("mouseover", function(event, d) {
+                select(this)
+                    .append("title")
+                    .text(`Height: ${format(d[0][2])} \n Temp: ${format(d[0][3])} \n Dryness: ${format(d[0][5])} \n Terrain: ${TerrainType[d[0][4]]} `);
+            })
+            .on("click", function(event, d) {
+                alert(`Height: ${format(d[0][2])} \n Temp: ${format(d[0][3])} \n Dryness: ${format(d[0][5])} \n Terrain: ${TerrainType[d[0][4]]}`);
+                console.log(event);
+            })
+
+        myZoom = zoom()
+            .scaleExtent([0.1, 5])
+            .on('zoom', (event) => {
+                select(gElement).attr('transform', event.transform);
+            });
+
+        select(svgElement).call(myZoom);
+        console.log("Rendering terrain completed");
+    }
+
+    function zoomOut() {
+        select(svgElement).transition().duration(1).call(myZoom.transform, zoomIdentity.scale(0.5));
+    }
+
+    function zoomIn(){
+        select(svgElement).transition().duration(1).call(myZoom.transform, zoomIdentity.scale(7));
+    }
+
+
+    function rerender() {
+        terrain = null;  // reset the terrain
+        renderTerrain();
+    }
+
+    onMount(renderTerrain);
+
+    let showAdvanced = false;
+
+    function toggleAdvancedOptions() {
+        showAdvanced = !showAdvanced;
+    }
 </script>
 
 
-
+<button on:click="{zoomOut}">Zoom Out</button>
+<button on:click="{zoomIn}">Zoom In</button>
 <div id="advanced-options" style="display: {showAdvanced ? 'block' : 'none'};">
         <div class="regler">
             <div class="control">
@@ -424,13 +344,14 @@
 </div>
 
 
+    <div class="container">
+        <svg bind:this={svgElement} width="100%" height="100%">
+            <g bind:this={gElement}>
+            </g>
+        </svg>
+    </div>
 
-<div class="container">
-    <svg bind:this={svgElement} width="100%" height="100%">
-        <g bind:this={gElement}>
-        </g>
-    </svg>
-</div>
+
 
 <style>
     .dropdown{
