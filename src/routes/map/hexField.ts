@@ -1,4 +1,4 @@
-import type {TerrainType} from "./terrainType";
+import type {TerrainType} from "../worldmap/hex/terrainType";
 
 export class HexField {
     public x: number;

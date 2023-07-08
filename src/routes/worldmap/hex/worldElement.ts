@@ -1,4 +1,4 @@
-import {TerrainType} from "../terrainType";
+import {TerrainType} from "./terrainType";
 
 export class WorldElement{
     public x = 0;

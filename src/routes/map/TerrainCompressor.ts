@@ -1,5 +1,5 @@
 import {HexField} from "./hexField";
-import {TerrainType} from "./terrainType";
+import {TerrainType} from "../worldmap/hex/terrainType";
 
 //TODO: Compress terrain 2d array. a compress factor of 2 means the terrain is compressed to half the size.
 //First look up how many TerrainType.Water is in the area. If it is more water than other than it is water

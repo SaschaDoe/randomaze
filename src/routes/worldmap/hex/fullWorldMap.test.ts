@@ -26,4 +26,6 @@ describe("FullWorldMap", () => {
         expect(worldMap.elements[3].x).toEqual(1);
         expect(worldMap.elements[3].y).toEqual(1);
     });
+
+
 });
