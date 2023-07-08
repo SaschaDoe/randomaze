@@ -1,4 +1,5 @@
 import {HexField} from "./hexField";
+import {TerrainType} from "./terrainType";
 
 export class HexMap{
     private width: number = 1;
@@ -22,5 +23,24 @@ export class HexMap{
                 this.hexesAsArray.push(hexField);
             }
         }
+    }
+
+    compress(compressFactor: number) {
+        let compressedHexMap = new HexMap();
+        //TODO
+        return compressedHexMap;
+    }
+
+    withHexFields(hexFields: HexField[][]) {
+        for(let i = 0; i < hexFields.length; i++) {
+            for (let j = 0; j < hexFields[i].length; j++) {
+                let hexField = hexFields[i][j];
+                hexField.x = i;
+                hexField.y = j;
+
+            }
+        }
+        this.hexesAsArray = hexFields.map((hexField) => hexField).flat();
+        return this;
     }
 }
