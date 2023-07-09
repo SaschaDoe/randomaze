@@ -27,5 +27,20 @@ describe("FullWorldMap", () => {
         expect(worldMap.elements[3].y).toEqual(1);
     });
 
+    it("should give block of given size", () => {
+        let worldMap = new FullWorldMap().withWidth(3).withHeight(3);
+        worldMap.generate();
+
+        let block = worldMap.getBlock(0, 0, 2, 2);
+        expect(block.length).toEqual(4);
+    });
+
+    it("should give block of too great size", () => {
+        let worldMap = new FullWorldMap().withWidth(3).withHeight(3);
+        worldMap.generate();
+
+        let block = worldMap.getBlock(2, 2, 2, 2);
+        expect(block.length).toEqual(1);
+    });
 
 });

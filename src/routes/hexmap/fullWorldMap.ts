@@ -30,4 +30,18 @@ export class FullWorldMap {
             }
         }
     }
+
+    getBlock(xStart: number, yStart: number, width: number, height: number) {
+        const block: WorldElement[] = [];
+        const xLimit = Math.min(this.width, xStart + width);
+        const yLimit = Math.min(this.height, yStart + height);
+
+        for(let y = yStart; y < yLimit; y++){
+            for(let x = xStart; x < xLimit; x++){
+                let element = this.elements.filter(element => element.x === x && element.y === y)[0];
+                block.push(element);
+            }
+        }
+        return block;
+    }
 }
