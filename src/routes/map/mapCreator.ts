@@ -1,7 +1,7 @@
 import {createNoise2D} from "simplex-noise";
 import {HexField} from "./hexField";
 import {Dice} from "../../lib/tables/Dice";
-import {TerrainType} from "../worldmap/hex/terrainType";
+import {TerrainType} from "../hexmap/terrainType";
 
 export class MapCreator {
 

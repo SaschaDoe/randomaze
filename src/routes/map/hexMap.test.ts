@@ -1,7 +1,7 @@
 import {describe, expect} from "vitest";
 import {HexMap} from "./hexMap";
 import {HexField} from "./hexField";
-import {TerrainType} from "../worldmap/hex/terrainType";
+import {TerrainType} from "../hexmap/terrainType";
 
 describe("HexMap", () => {
     it("should have one hexField given 1 width and 1 height", () => {

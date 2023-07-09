@@ -1,7 +1,7 @@
 import {describe, expect, test} from "vitest";
 import {MapCreator} from "./mapCreator";
 import {FakeDice} from "../../lib/tables/FakeDice";
-import {TerrainType} from "../worldmap/hex/terrainType";
+import {TerrainType} from "../hexmap/terrainType";
 
 describe("MapCreator", () => {
     let mapCreator: MapCreator;

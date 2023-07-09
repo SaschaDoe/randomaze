@@ -3,7 +3,7 @@
     import {hexbin as d3Hexbin} from 'd3-hexbin';
     import {format as d3Format, select, zoomIdentity, zoom } from 'd3';
     import {MapCreator} from "./mapCreator.ts";
-    import {TerrainType} from "../worldmap/hex/terrainType.ts";
+    import {TerrainType} from "../hexmap/terrainType.ts";
     import {
         DesertPlanet,
         EarthLikePlanet,

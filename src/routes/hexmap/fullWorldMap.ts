@@ -5,6 +5,14 @@ export class FullWorldMap {
     private height = 0;
     public elements: WorldElement[] = [];
 
+    getWidth()  {
+        return this.width;
+    }
+
+    getHeight()  {
+        return this.height;
+    }
+
     withWidth(width: number) {
         this.width = width;
         return this;
