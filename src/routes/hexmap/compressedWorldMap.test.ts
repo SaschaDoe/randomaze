@@ -1,82 +1,84 @@
 import {describe} from "vitest";
 import {FullWorldMap} from "./fullWorldMap";
-import type {WorldElement} from "./worldElement";
 import {TerrainType} from "./terrainType";
-
-class CompressedWorldMap {
-    elements: WorldElement[] = [];
-    private compressFactor: number = 1;
-    private fullWorldMap: FullWorldMap = new FullWorldMap();
-    of(fullWorldMap: FullWorldMap) {
-        this.fullWorldMap = fullWorldMap;
-        return this;
-    }
-
-    withCompressFactor(compressFactor: number) {
-        this.compressFactor = compressFactor;
-        return this;
-    }
-
-    compress() {
-        const fullWorldElements = this.fullWorldMap.elements; // Assuming getElements() gives all elements in the fullWorldMap
-        const compressedWorldElements: WorldElement[] = [];
-
-        for (let i = 0; i < fullWorldElements.length; i += this.compressFactor * this.compressFactor) {
-            // Aggregate or perform any operation you need on the elements being compressed
-            // For now, we just take the first element of each compressed block
-            compressedWorldElements.push(fullWorldElements[i]);
-        }
-
-        this.elements = compressedWorldElements;
-        return this;
-    }
-}
+import {CompressedWorldMap} from "./compressedWorldMap";
+import type {TerrainTypeAssigner} from "./terrainTypeAssigner";
+import {FakeTerrainTypeAssigner} from "./fakeTerrainTypeAssigner";
 
 describe("CompressedWorldMap", () => {
-   it("should have 1 elements given width height 1", () => {
-       let fullWorldMap = new FullWorldMap().withWidth(1).withHeight(1);
-         fullWorldMap.generate();
-         let compressedWorldMap = new CompressedWorldMap().of(fullWorldMap).compress();
-            expect(compressedWorldMap.elements.length).toEqual(1);
-   });
+
+    let fullWorldMap: FullWorldMap;
+    let compressedWorldMap: CompressedWorldMap;
+    let terrainTypeAssigner: TerrainTypeAssigner;
+
+    beforeEach(() => {
+        fullWorldMap = new FullWorldMap();
+        compressedWorldMap = new CompressedWorldMap();
+    });
+
+    const testCompress = (expectedElements: number, expectedTerrain: TerrainType = TerrainType.Water) => {
+
+        fullWorldMap.generate();
+
+        compressedWorldMap.compress();
+
+        expect(compressedWorldMap.elements.length).toEqual(expectedElements);
+        if (expectedTerrain) {
+            expect(compressedWorldMap.elements[0].terrainType).toEqual(expectedTerrain);
+        }
+    };
+
+    it("should have 1 elements given width height 1", () => {
+        fullWorldMap
+            .withWidth(1).withHeight(1);
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(1);
+        testCompress( 1);
+    });
 
     it("should have 4 elements given width height 2 and compress factor 1", () => {
-        let fullWorldMap = new FullWorldMap().withWidth(2).withHeight(2);
-        fullWorldMap.generate();
-        let compressedWorldMap = new CompressedWorldMap()
-            .of(fullWorldMap)
-            .withCompressFactor(1)
-            .compress();
-        expect(compressedWorldMap.elements.length).toEqual(4);
+        fullWorldMap
+            .withWidth(2).withHeight(2);
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(1);
+
+        testCompress( 4);
     });
 
     it("should have 1 element given width height 2 and compress factor 2", () => {
-        let fullWorldMap = new FullWorldMap().withWidth(2).withHeight(2);
-        fullWorldMap.generate();
-        let compressedWorldMap = new CompressedWorldMap()
-            .of(fullWorldMap)
-            .withCompressFactor(2)
-            .compress();
-        expect(compressedWorldMap.elements.length).toEqual(1);
+        fullWorldMap
+            .withWidth(2).withHeight(2);
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(2);
+
+        testCompress(1);
     });
 
     it("should have 1 water given water width height 2 and compress factor 2", () => {
-        let fullWorldMap = new FullWorldMap().withWidth(2).withHeight(2);
-        fullWorldMap.generate();
-        let compressedWorldMap = new CompressedWorldMap()
-            .of(fullWorldMap)
-            .withCompressFactor(2)
-            .compress();
-        expect(compressedWorldMap.elements[0].terrainType).toEqual(TerrainType.Water);
+        fullWorldMap
+            .withWidth(2).withHeight(2);
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(2);
+
+        testCompress( 1, TerrainType.Water);
     });
 
     it("should have 1 water given 2 water width height 2 and compress factor 2", () => {
-        let fullWorldMap = new FullWorldMap().withWidth(2).withHeight(2);
-        //add mock for elements that should return 2x water worldElements 2x grass worldElements
-        let compressedWorldMap = new CompressedWorldMap()
-            .of(fullWorldMap)
-            .withCompressFactor(2)
-            .compress();
-        expect(compressedWorldMap.elements[0].terrainType).toEqual(TerrainType.Water);
+        fullWorldMap
+            .withWidth(2).withHeight(2);
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(2);
+
+        testCompress( 1, TerrainType.Water);
+    });
+
+    it("should have 1 grass given 3 grass width height 2 and compress factor 2", () => {
+        fullWorldMap
+            .withWidth(2).withHeight(2)
+            .withTerrainTypeAssigner(new FakeTerrainTypeAssigner().withOnlyTerrainType(TerrainType.Grass));
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(2);
+
+        testCompress(  1, TerrainType.Grass);
     });
 });
