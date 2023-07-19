@@ -20,7 +20,6 @@ export class CompressedWorldMap {
     compress() {
         const compressedWorldElements: WorldElement[] = [];
 
-
         for (let y = 0; y < this.fullWorldMap.getHeight(); y += this.compressFactor) {
             for (let x = 0; x < this.fullWorldMap.getWidth(); x += this.compressFactor) {
                 let block = this.fullWorldMap.getBlock(x, y, this.compressFactor, this.compressFactor);

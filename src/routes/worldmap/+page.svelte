@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount, afterUpdate } from 'svelte';
-    import {FullWorldMap} from "../hexmap/fullWorldMap";
+    import {FullWorldMap} from "../hexmap/domain/fullWorldMap";
     import {WorldMapCanvas} from "./worldMapCanvas";
-    import {TerrainType} from "../hexmap/terrainType.js";
+    import {TerrainType} from "../hexmap/domain/terrainType.js";
 
     let worldMap = new FullWorldMap().withWidth(100).withHeight(100);
     worldMap.generate();

@@ -1,5 +1,5 @@
-import type {FullWorldMap} from "../hexmap/fullWorldMap";
-import {TerrainType} from "../hexmap/terrainType";
+import type {FullWorldMap} from "../hexmap/domain/fullWorldMap";
+import {TerrainType} from "../hexmap/domain/terrainType";
 
 export const TerrainColors: Record<TerrainType, string> = {
     [TerrainType.Water]: '#0000ff',      // Blue

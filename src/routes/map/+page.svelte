@@ -3,7 +3,7 @@
     import {hexbin as d3Hexbin} from 'd3-hexbin';
     import {format as d3Format, select, zoomIdentity, zoom } from 'd3';
     import {MapCreator} from "./mapCreator.ts";
-    import {TerrainType} from "../hexmap/terrainType.ts";
+    import {TerrainType} from "../hexmap/domain/terrainType.ts";
     import {
         DesertPlanet,
         EarthLikePlanet,
@@ -193,6 +193,7 @@
         console.log("Compress terrain...");
         //allTerrainHexes = new TerrainCompressor().compress(allTerrainHexes, 2);
         console.log("map terrain...");
+        let bla = allTerrainHexes.map(hex => [hex.x, hex.y, 0, 0, hex.terrainType, 0]);
         return allTerrainHexes.map(hex => [hex.x, hex.y, 0, 0, hex.terrainType, 0]);
         //return allTerrainHexes.map(hex => [hex.x, hex.y, hex.h, hex.temperature, hex.terrainType, hex.dryness]);
     }

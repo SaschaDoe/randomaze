@@ -19,7 +19,6 @@ describe("CompressedWorldMap", () => {
     const testCompress = (expectedElements: number, expectedTerrain: TerrainType = TerrainType.Water) => {
 
         fullWorldMap.generate();
-
         compressedWorldMap.compress();
 
         expect(compressedWorldMap.elements.length).toEqual(expectedElements);
@@ -80,5 +79,19 @@ describe("CompressedWorldMap", () => {
         compressedWorldMap.of(fullWorldMap).withCompressFactor(2);
 
         testCompress(  1, TerrainType.Grass);
+    });
+
+    it("should have 1 grass given 1 grass at the edge", () => {
+        fullWorldMap
+            .withWidth(3).withHeight(3)
+            .withTerrainTypeAssigner(new FakeTerrainTypeAssigner().withOnlyTerrainType(TerrainType.Grass));
+
+        compressedWorldMap.of(fullWorldMap).withCompressFactor(2);
+
+        fullWorldMap.generate();
+        compressedWorldMap.compress();
+
+        expect(compressedWorldMap.elements.length).toEqual(4);
+        expect(compressedWorldMap.elements[3].terrainType).toEqual(TerrainType.Grass);
     });
 });

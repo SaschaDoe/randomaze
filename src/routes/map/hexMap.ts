@@ -1,5 +1,5 @@
 import {HexField} from "./hexField";
-import {TerrainType} from "../hexmap/terrainType";
+import {TerrainType} from "../hexmap/domain/terrainType";
 
 export class HexMap{
     private width: number = 1;

@@ -1,5 +1,5 @@
 import {HexField} from "./hexField";
-import {TerrainType} from "../hexmap/terrainType";
+import {TerrainType} from "../hexmap/domain/terrainType";
 import {TerrainCompressor} from "./TerrainCompressor";
 import {expect} from "vitest";
 

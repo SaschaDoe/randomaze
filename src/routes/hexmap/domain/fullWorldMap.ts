@@ -30,6 +30,12 @@ export class FullWorldMap {
         return this;
     }
 
+    withTerrainTypeAssigner(terrainTypeAssigner: TerrainTypeAssigner) {
+        if(!terrainTypeAssigner) throw new Error("terrainTypeAssigner is required");
+        this.terrainTypeAssigner = terrainTypeAssigner;
+        return this;
+    }
+
     generate() {
         for(let y = 0; y < this.height; y++){
             for(let x = 0; x < this.width; x++){
@@ -40,6 +46,7 @@ export class FullWorldMap {
                 this.elements.push(worldElement);
             }
         }
+        return this;
     }
 
     getBlock(xStart: number, yStart: number, width: number, height: number) {
@@ -57,9 +64,5 @@ export class FullWorldMap {
         return new WorldMapPart().withElements(block);
     }
 
-    withTerrainTypeAssigner(terrainTypeAssigner: TerrainTypeAssigner) {
-        if(!terrainTypeAssigner) throw new Error("terrainTypeAssigner is required");
-        this.terrainTypeAssigner = terrainTypeAssigner;
-        return this;
-    }
+
 }

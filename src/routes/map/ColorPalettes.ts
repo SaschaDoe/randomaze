@@ -1,4 +1,4 @@
-import {TerrainType} from "../hexmap/terrainType";
+import {TerrainType} from "../hexmap/domain/terrainType";
 
 export function getColor(terrainType: TerrainType, colorPalette: string) {
     if (colorPalette === 'earthy') {
