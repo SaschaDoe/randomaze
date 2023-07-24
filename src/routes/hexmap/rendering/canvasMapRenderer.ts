@@ -1,3 +1,6 @@
+import type {TerrainType} from "../domain/terrainType";
+import type {WorldElement} from "../domain/worldElement";
+
 export class Hex {
 
     id = 0;
@@ -61,6 +64,25 @@ export default class CanvasHexmapRenderer {
         };
         img.src = imgSrc;
 
+        return hexes;
+    }
+
+    drawHexMapFrom(worldElements: WorldElement[], images: Record<TerrainType, HTMLImageElement>): Hex[] {
+        let hexes : Hex[] = [];
+        const horizDist = this.hexSize + this.spacing + (1/3) * this.hexSize + 10;
+        const vertDist = (1/2) * this.hexSize + this.spacing;
+        let counter = 0;
+        for (let worldElement of worldElements) {
+            const {x, y, terrainType} = worldElement;
+            const img = images[terrainType];
+            const posX = x * horizDist + ((y % 2 === 0) ? 0 : horizDist / 2);
+            const posY = y * vertDist + 20;
+
+            this.ctx.drawImage(img, posX, posY, this.hexSize, this.hexSize);
+
+            hexes.push(new Hex(counter, posX, posY, this.hexSize, this.hexSize, x, y));
+            counter++;
+        }
         return hexes;
     }
 

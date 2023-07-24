@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     import CanvasHexmapRenderer, { Hex } from "./rendering/canvasMapRenderer";
+    import {FullWorldMap} from "./domain/fullWorldMap";
+    import {TerrainType} from "./domain/terrainType";
 
     let canvas: HTMLCanvasElement;
     let tooltip: HTMLElement;
@@ -11,15 +13,46 @@
     const columns = 60;
     let mouseMoveHandler;
     let hexes: Hex[] = [];
+    const fullWorldMap = new FullWorldMap()
+        .withWidth(columns)
+        .withHeight(rows)
+        .generate();
 
-    onMount(() => {
+
+
+
+    onMount(async () => {
+        if (typeof window === 'undefined') {
+            console.log("no dom available");
+
+        }
+
+        const images = {
+            [TerrainType.Water]: new Image(),
+            [TerrainType.Grass]: new Image(),
+            [TerrainType.Hills]: new Image(),
+            [TerrainType.Mountain]: new Image(),
+            [TerrainType.HighMountain]: new Image(),
+        } as Record<TerrainType, HTMLImageElement>;
+
+            images[TerrainType.Water].src = '/hextiles/water.png';
+            images[TerrainType.Grass].src = '/hextiles/grass.png';
+            images[TerrainType.Hills].src = '/hextiles/plain.png';
+            images[TerrainType.Mountain].src = '/hextiles/mountain.png';
+            images[TerrainType.HighMountain].src = '/hextiles/snow.png';
+
+
         const ctx = canvas.getContext('2d');
         const renderer = new CanvasHexmapRenderer(ctx);
 
         width = renderer.getCanvasWidth(columns);
         height = renderer.getCanvasHeight(rows);
 
-        hexes = renderer.drawHexMap(rows, columns, '/hextiles/water.png');
+        await Promise.all(Object.values(images).map(img => new Promise(resolve => {
+            img.onload = resolve;
+        })));
+
+        hexes = renderer.drawHexMapFrom(fullWorldMap.elements, images);
 
         mouseMoveHandler = function(event) {
             const rect = canvas.getBoundingClientRect();

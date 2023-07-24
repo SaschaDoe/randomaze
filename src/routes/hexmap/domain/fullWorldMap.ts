@@ -9,7 +9,7 @@ export class FullWorldMap {
     private terrainTypeAssigner: TerrainTypeAssigner;
 
     constructor() {
-        this.terrainTypeAssigner = new TerrainTypeAssigner();
+        this.terrainTypeAssigner = new TerrainTypeAssigner(100);
     }
 
     getWidth()  {

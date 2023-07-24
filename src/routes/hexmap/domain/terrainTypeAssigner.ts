@@ -1,9 +1,26 @@
-import type {WorldElement} from "./worldElement";
+import {makeNoise2D} from 'open-simplex-noise';
 import {TerrainType} from "./terrainType";
 
 export class TerrainTypeAssigner {
+    private noise2D: (x: number, y: number) => number;
+
+    constructor(seed: number) {
+        this.noise2D = makeNoise2D(seed);
+    }
 
     getTerrainTypeAt(x: number, y: number) {
-        return TerrainType.Water;
+        const noise = this.noise2D(x / 100, y / 100);
+
+        if(noise < -0.1) {
+            return TerrainType.Water;
+        } else if(noise < 0.1) {
+            return TerrainType.Grass;
+        } else if(noise < 0.3) {
+            return TerrainType.Hills;
+        } else if(noise < 0.5) {
+            return TerrainType.Mountain;
+        } else {
+            return TerrainType.HighMountain;
+        }
     }
 }
