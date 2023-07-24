@@ -3,7 +3,7 @@ import {FullWorldMap} from "./fullWorldMap";
 import {TerrainType} from "./terrainType";
 import {CompressedWorldMap} from "./compressedWorldMap";
 import type {TerrainTypeAssigner} from "./terrainTypeAssigner";
-import {FakeTerrainTypeAssigner} from "./fakeTerrainTypeAssigner";
+import {FakeTerrainTypeAssigner} from "./FakeTerrainTypeAssigner";
 
 describe("CompressedWorldMap", () => {
 

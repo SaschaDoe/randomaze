@@ -3,47 +3,42 @@
     import CanvasHexmapRenderer, { Hex } from "./rendering/canvasMapRenderer";
     import {FullWorldMap} from "./domain/fullWorldMap";
     import {TerrainType} from "./domain/terrainType";
+    import {ImageDefinition} from "./rendering/imageDefinition";
+    import {CompressedWorldMap} from "./domain/compressedWorldMap";
 
     let canvas: HTMLCanvasElement;
     let tooltip: HTMLElement;
     let width: number;
     let height: number;
     let tooltipText: string = '';
-    const rows = 100;
-    const columns = 60;
+    let rows = 100;
+    let columns = 60;
     let mouseMoveHandler;
     let hexes: Hex[] = [];
+    let useCompressedMap = false;
+    let ctx: CanvasRenderingContext2D;
+    let renderer: CanvasHexmapRenderer;
+    let images: Record<TerrainType, HTMLImageElement>;
+
     const fullWorldMap = new FullWorldMap()
         .withWidth(columns)
         .withHeight(rows)
         .generate();
+    const compressedWorldMap = new CompressedWorldMap()
+        .of(fullWorldMap)
+        .withCompressFactor(2)
+        .compress();
 
-
-
-
-    onMount(async () => {
+        onMount(async () => {
         if (typeof window === 'undefined') {
             console.log("no dom available");
 
         }
 
-        const images = {
-            [TerrainType.Water]: new Image(),
-            [TerrainType.Grass]: new Image(),
-            [TerrainType.Hills]: new Image(),
-            [TerrainType.Mountain]: new Image(),
-            [TerrainType.HighMountain]: new Image(),
-        } as Record<TerrainType, HTMLImageElement>;
+        images = ImageDefinition.get();
 
-            images[TerrainType.Water].src = '/hextiles/water.png';
-            images[TerrainType.Grass].src = '/hextiles/grass.png';
-            images[TerrainType.Hills].src = '/hextiles/plain.png';
-            images[TerrainType.Mountain].src = '/hextiles/mountain.png';
-            images[TerrainType.HighMountain].src = '/hextiles/snow.png';
-
-
-        const ctx = canvas.getContext('2d');
-        const renderer = new CanvasHexmapRenderer(ctx);
+        ctx = canvas.getContext('2d');
+        renderer = new CanvasHexmapRenderer(ctx);
 
         width = renderer.getCanvasWidth(columns);
         height = renderer.getCanvasHeight(rows);
@@ -52,7 +47,10 @@
             img.onload = resolve;
         })));
 
-        hexes = renderer.drawHexMapFrom(fullWorldMap.elements, images);
+
+            hexes = useCompressedMap ?
+                renderer.drawHexMapFrom(compressedWorldMap.elements, images) :
+                renderer.drawHexMapFrom(fullWorldMap.elements, images);
 
         mouseMoveHandler = function(event) {
             const rect = canvas.getBoundingClientRect();
@@ -89,10 +87,46 @@
             canvas.removeEventListener('mousemove', mouseMoveHandler);
         }
     });
+
+    function switchMap() {
+        // First, toggle the boolean
+        useCompressedMap = !useCompressedMap;
+/*
+        // Update the size of the map
+        columns = useCompressedMap ? 30 : 60;
+        rows = useCompressedMap ? 50 : 100;
+
+        // Update the canvas size
+        width = renderer.getCanvasWidth(columns);
+        height = renderer.getCanvasHeight(rows);
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+*/
+        // Update the actual size of the canvas, not just the CSS size
+        if(useCompressedMap){
+            canvas.width = width / 2;
+            canvas.height = height / 2;
+
+        }else{
+            canvas.width = width;
+            canvas.height = height;
+
+        }
+
+
+        hexes = useCompressedMap ?
+            renderer.drawHexMapFrom(compressedWorldMap.elements, images) :
+            renderer.drawHexMapFrom(fullWorldMap.elements, images);
+    }
+
+
 </script>
 
+<button on:click={switchMap}>Switch Map</button>
 <canvas class="map" bind:this={canvas} {width} {height}></canvas>
 <div class="tooltip" bind:this={tooltip}>{tooltipText}</div>
+
 
 <style>
     .map {

@@ -24,13 +24,18 @@ export class Hex {
 
 export default class CanvasHexmapRenderer {
     private ctx: CanvasRenderingContext2D;
-    public readonly hexSize: number;
+    public hexSize: number;
     private readonly spacing: number;
 
     constructor(ctx: CanvasRenderingContext2D, hexSize: number = 64, spacing: number = 0) {
         this.ctx = ctx;
         this.hexSize = hexSize;
         this.spacing = spacing;
+    }
+
+    withHexSize(hexSize: number) {
+        this.hexSize = hexSize;
+        return this;
     }
 
     getCanvasWidth(columns: number): number {
@@ -42,31 +47,6 @@ export default class CanvasHexmapRenderer {
         const vertDist = (1/2)* this.hexSize + this.spacing;
         return rows * vertDist + this.hexSize; // Add an extra hexSize to accommodate the top and bottom rows
     }
-
-    drawHexMap(rows: number, columns: number, imgSrc: string): Hex[] {
-        const img = new Image();
-        let hexes : Hex[] = [];
-        img.onload = () => {
-            const horizDist = this.hexSize + this.spacing + (1/3) * this.hexSize + 10;
-            const vertDist = (1/2) * this.hexSize + this.spacing;
-            let counter = 0;
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
-                    const x = j * horizDist + ((i % 2 === 0) ? 0 : horizDist / 2);
-                    const y = i * vertDist + 20;
-
-                    this.ctx.drawImage(img, x, y, this.hexSize, this.hexSize);
-
-                    hexes.push(new Hex(counter, x, y, this.hexSize, this.hexSize, i, j))
-                    counter++;
-                }
-            }
-        };
-        img.src = imgSrc;
-
-        return hexes;
-    }
-
     drawHexMapFrom(worldElements: WorldElement[], images: Record<TerrainType, HTMLImageElement>): Hex[] {
         let hexes : Hex[] = [];
         const horizDist = this.hexSize + this.spacing + (1/3) * this.hexSize + 10;

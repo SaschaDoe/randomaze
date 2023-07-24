@@ -4,8 +4,13 @@ import {TerrainType} from "./terrainType";
 export class TerrainTypeAssigner {
     private noise2D: (x: number, y: number) => number;
 
-    constructor(seed: number) {
+    constructor() {
+        this.noise2D = makeNoise2D(Math.random());
+    }
+
+    withSeed(seed: number) {
         this.noise2D = makeNoise2D(seed);
+        return this;
     }
 
     getTerrainTypeAt(x: number, y: number) {
