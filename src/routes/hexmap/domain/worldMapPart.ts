@@ -2,7 +2,7 @@ import type {WorldElement} from "./worldElement";
 import {TerrainType} from "./terrainType";
 
 export class WorldMapPart {
-    private elements: WorldElement[] = [];
+    public elements: WorldElement[] = [];
 
     withElements(worldElements: WorldElement[]) {
         this.elements = worldElements;

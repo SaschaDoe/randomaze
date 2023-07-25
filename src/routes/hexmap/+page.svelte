@@ -11,15 +11,15 @@
     let width: number;
     let height: number;
     let tooltipText: string = '';
-    let rows = 300;
-    let columns = 180;
+    let rows = 1000;
+    let columns = 700;
     let mouseMoveHandler;
     let hexes: Hex[] = [];
-    let useCompressedMap = true;
+    let showOriginalPart = false;
     let ctx: CanvasRenderingContext2D;
     let renderer: CanvasHexmapRenderer;
     let images: Record<TerrainType, HTMLImageElement>;
-    let compressFactor = 3;
+    let compressFactor = 10;
     let fullWorldMap = new FullWorldMap();
     let compressedWorldMap = new CompressedWorldMap();
 
@@ -43,25 +43,15 @@
 
         width = renderer.getCanvasWidth(columns);
         height = renderer.getCanvasHeight(rows);
-
+        console.log(`width: ${width}, height: ${height}`);
 
         await Promise.all(Object.values(images).map(img => new Promise(resolve => {
             img.onload = resolve;
         })));
 
-            if(useCompressedMap){
-                canvas.width = width / compressFactor;
-                canvas.height = height / compressFactor;
-
-            }else{
-                canvas.width = width;
-                canvas.height = height;
-
-            }
-            hexes = useCompressedMap ?
-                renderer.drawHexMapFrom(compressedWorldMap.elements.flat(), images) :
-                renderer.drawHexMapFrom(fullWorldMap.elements.flat(), images);
-
+            canvas.width = width / compressFactor +100;
+            canvas.height = height / compressFactor +100;
+            renderer.drawHexMapFrom(compressedWorldMap.elements.flat(), images)
 
             mouseMoveHandler = function(event) {
             const rect = canvas.getBoundingClientRect();
@@ -98,45 +88,21 @@
             canvas.removeEventListener('mousemove', mouseMoveHandler);
         }
     });
+    function showOriginal() {
+        showOriginalPart = !showOriginalPart;
+        if(showOriginalPart){
+            let partOfMap = fullWorldMap.elements.slice(0, 100).map(row => row.slice(0, 70));
 
-    function switchMap() {
-        // First, toggle the boolean
-        useCompressedMap = !useCompressedMap;
-/*
-        // Update the size of the map
-        columns = useCompressedMap ? 30 : 60;
-        rows = useCompressedMap ? 50 : 100;
-
-        // Update the canvas size
-        width = renderer.getCanvasWidth(columns);
-        height = renderer.getCanvasHeight(rows);
-
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-*/
-        // Update the actual size of the canvas, not just the CSS size
-        if(useCompressedMap){
-            canvas.width = width / compressFactor;
-            canvas.height = height / compressFactor;
-
-        }else{
-            canvas.width = width;
-            canvas.height = height;
-
+            renderer.drawHexMapFrom(partOfMap.flat(), images)
+        } else {
+            canvas.width = width / compressFactor +100;
+            canvas.height = height / compressFactor +100;
+            renderer.drawHexMapFrom(compressedWorldMap.elements.flat(), images)
         }
-
-
-        hexes = useCompressedMap ?
-            renderer.drawHexMapFrom(compressedWorldMap.elements.flat(), images) :
-            renderer.drawHexMapFrom(fullWorldMap.elements.flat(), images);
-
-
     }
 
-
 </script>
-
-<button on:click={switchMap}>Switch Map</button>
+<button on:click={showOriginal}>Show original part</button>
 <canvas class="map" bind:this={canvas} {width} {height}></canvas>
 <div class="tooltip" bind:this={tooltip}>{tooltipText}</div>
 
