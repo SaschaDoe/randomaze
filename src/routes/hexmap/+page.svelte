@@ -15,25 +15,26 @@
     let columns = 60;
     let mouseMoveHandler;
     let hexes: Hex[] = [];
-    let useCompressedMap = false;
+    let useCompressedMap = true;
     let ctx: CanvasRenderingContext2D;
     let renderer: CanvasHexmapRenderer;
     let images: Record<TerrainType, HTMLImageElement>;
-
-    const fullWorldMap = new FullWorldMap()
-        .withWidth(columns)
-        .withHeight(rows)
-        .generate();
-    const compressedWorldMap = new CompressedWorldMap()
-        .of(fullWorldMap)
-        .withCompressFactor(2)
-        .compress();
+    let compressFactor = 2;
+    let fullWorldMap = new FullWorldMap();
+    let compressedWorldMap = new CompressedWorldMap();
 
         onMount(async () => {
         if (typeof window === 'undefined') {
             console.log("no dom available");
-
         }
+        fullWorldMap = new FullWorldMap()
+                .withWidth(columns)
+                .withHeight(rows)
+                .generate();
+        compressedWorldMap = new CompressedWorldMap()
+                .of(fullWorldMap)
+                .withCompressFactor(compressFactor)
+                .compress();
 
         images = ImageDefinition.get();
 
@@ -43,11 +44,20 @@
         width = renderer.getCanvasWidth(columns);
         height = renderer.getCanvasHeight(rows);
 
+
         await Promise.all(Object.values(images).map(img => new Promise(resolve => {
             img.onload = resolve;
         })));
 
+            if(useCompressedMap){
+                canvas.width = width / compressFactor;
+                canvas.height = height / compressFactor;
 
+            }else{
+                canvas.width = width;
+                canvas.height = height;
+
+            }
             hexes = useCompressedMap ?
                 renderer.drawHexMapFrom(compressedWorldMap.elements, images) :
                 renderer.drawHexMapFrom(fullWorldMap.elements, images);
@@ -105,8 +115,8 @@
 */
         // Update the actual size of the canvas, not just the CSS size
         if(useCompressedMap){
-            canvas.width = width / 2;
-            canvas.height = height / 2;
+            canvas.width = width / compressFactor;
+            canvas.height = height / compressFactor;
 
         }else{
             canvas.width = width;
