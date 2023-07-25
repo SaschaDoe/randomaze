@@ -1,11 +1,11 @@
 import {WorldElement} from "./worldElement";
-import {WorldMapPart} from "./worldMapPart";
 import {TerrainTypeAssigner} from "./terrainTypeAssigner";
+import {WorldMapPart} from "./worldMapPart";
 
 export class FullWorldMap {
     private width = 0;
     private height = 0;
-    public elements: WorldElement[] = [];
+    public elements: WorldElement[][] = [];
     private terrainTypeAssigner: TerrainTypeAssigner;
 
     constructor() {
@@ -37,13 +37,12 @@ export class FullWorldMap {
     }
 
     generate() {
+        this.elements = new Array(this.height).fill(null).map(() => new Array(this.width).fill(null));
         for(let y = 0; y < this.height; y++){
             for(let x = 0; x < this.width; x++){
-                let worldElement = new WorldElement()
-                    .withLocation(x,y)
-                    .withTerrainType(this.terrainTypeAssigner.getTerrainTypeAt(x,y));
-
-                this.elements.push(worldElement);
+                this.elements[y][x] = new WorldElement()
+                    .withLocation(x, y)
+                    .withTerrainType(this.terrainTypeAssigner.getTerrainTypeAt(x, y));
             }
         }
         return this;
@@ -56,13 +55,10 @@ export class FullWorldMap {
 
         for(let y = yStart; y < yLimit; y++){
             for(let x = xStart; x < xLimit; x++){
-                let element = this.elements.filter(element => element.x === x && element.y === y)[0];
-                block.push(element);
+                block.push(this.elements[y][x]);
             }
         }
 
         return new WorldMapPart().withElements(block);
     }
-
-
 }

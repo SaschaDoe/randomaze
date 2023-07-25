@@ -11,15 +11,15 @@
     let width: number;
     let height: number;
     let tooltipText: string = '';
-    let rows = 100;
-    let columns = 60;
+    let rows = 300;
+    let columns = 180;
     let mouseMoveHandler;
     let hexes: Hex[] = [];
     let useCompressedMap = true;
     let ctx: CanvasRenderingContext2D;
     let renderer: CanvasHexmapRenderer;
     let images: Record<TerrainType, HTMLImageElement>;
-    let compressFactor = 2;
+    let compressFactor = 3;
     let fullWorldMap = new FullWorldMap();
     let compressedWorldMap = new CompressedWorldMap();
 
@@ -59,10 +59,11 @@
 
             }
             hexes = useCompressedMap ?
-                renderer.drawHexMapFrom(compressedWorldMap.elements, images) :
-                renderer.drawHexMapFrom(fullWorldMap.elements, images);
+                renderer.drawHexMapFrom(compressedWorldMap.elements.flat(), images) :
+                renderer.drawHexMapFrom(fullWorldMap.elements.flat(), images);
 
-        mouseMoveHandler = function(event) {
+
+            mouseMoveHandler = function(event) {
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
@@ -126,8 +127,10 @@
 
 
         hexes = useCompressedMap ?
-            renderer.drawHexMapFrom(compressedWorldMap.elements, images) :
-            renderer.drawHexMapFrom(fullWorldMap.elements, images);
+            renderer.drawHexMapFrom(compressedWorldMap.elements.flat(), images) :
+            renderer.drawHexMapFrom(fullWorldMap.elements.flat(), images);
+
+
     }
 
 
