@@ -38,12 +38,15 @@ export class FullWorldMap {
 
     generate() {
         console.time("generation completed in");
+        let idCounter = 0;
         this.elements = new Array(this.height).fill(null).map(() => new Array(this.width).fill(null));
         for(let y = 0; y < this.height; y++){
             for(let x = 0; x < this.width; x++){
                 this.elements[y][x] = new WorldElement()
                     .withLocation(x, y)
-                    .withTerrainType(this.terrainTypeAssigner.getTerrainTypeAt(x, y));
+                    .withTerrainType(this.terrainTypeAssigner.getTerrainTypeAt(x, y))
+                    .withId(idCounter);
+                idCounter++;
             }
         }
         console.timeEnd("generation completed in");

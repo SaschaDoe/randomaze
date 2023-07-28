@@ -7,10 +7,16 @@ export class WorldElement{
     public terrainType: TerrainType = TerrainType.Water;
     public temperature = 0;
     public dryness = 0;
+    public id = 0;
 
     withLocation(x: number,y: number){
         this.x = x;
         this.y = y;
+        return this;
+    }
+
+    withId(id: number){
+        this.id = id;
         return this;
     }
 
